@@ -1,6 +1,23 @@
 import UIKit
 
 class RIVCardSourcesViewController: UITableViewController {
+    convenience override init() {
+        self.init(style: UITableViewStyle.Plain)
+    }
+
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+        self.navigationItem.title = "vCard Import"
+    }
+
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,7 +35,12 @@ class RIVCardSourcesViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath) as UITableViewCell
-        cell.textLabel?.text = "oh my"
+        cell.textLabel.text = "oh my"
         return cell
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let vc = RIVCardSourceDetailViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

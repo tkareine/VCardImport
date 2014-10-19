@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E95E95AD19F4380F002D864B /* RIVCardSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E95AC19F4380F002D864B /* RIVCardSourceDetailViewController.swift */; };
+		E95E95AF19F43862002D864B /* RIVCardSourceDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E95E95AE19F43862002D864B /* RIVCardSourceDetailViewController.xib */; };
 		E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D719E9C76F00219305 /* AppDelegate.swift */; };
 		E983F1DA19E9C76F00219305 /* RIVCardSourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D919E9C76F00219305 /* RIVCardSourcesViewController.swift */; };
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
@@ -25,6 +27,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E95E95AC19F4380F002D864B /* RIVCardSourceDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RIVCardSourceDetailViewController.swift; sourceTree = "<group>"; };
+		E95E95AE19F43862002D864B /* RIVCardSourceDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RIVCardSourceDetailViewController.xib; sourceTree = "<group>"; };
 		E983F1D219E9C76F00219305 /* vCardImport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vCardImport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 			children = (
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
 				E983F1D919E9C76F00219305 /* RIVCardSourcesViewController.swift */,
+				E95E95AC19F4380F002D864B /* RIVCardSourceDetailViewController.swift */,
+				E95E95AE19F43862002D864B /* RIVCardSourceDetailViewController.xib */,
 				E983F1DE19E9C76F00219305 /* Images.xcassets */,
 				E983F1E019E9C76F00219305 /* LaunchScreen.xib */,
 				E983F1D519E9C76F00219305 /* Supporting Files */,
@@ -191,6 +197,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E983F1E219E9C76F00219305 /* LaunchScreen.xib in Resources */,
+				E95E95AF19F43862002D864B /* RIVCardSourceDetailViewController.xib in Resources */,
 				E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E983F1DA19E9C76F00219305 /* RIVCardSourcesViewController.swift in Sources */,
+				E95E95AD19F4380F002D864B /* RIVCardSourceDetailViewController.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,6 +410,7 @@
 				E983F1F319E9C76F00219305 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E983F1F419E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCardImportTests" */ = {
 			isa = XCConfigurationList;
@@ -410,6 +419,7 @@
 				E983F1F619E9C76F00219305 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
