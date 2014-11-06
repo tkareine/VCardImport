@@ -1,26 +1,24 @@
 import UIKit
 import XCTest
+import AddressBook
 
 class vCardImportTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testReadsRecordsFromVCard() {
+        let vcardPath = NSBundle(forClass: vCardImportTests.self).pathForResource("example-contacts", ofType: "vcf")
+        let vcardData = NSData(contentsOfFile: vcardPath!)
+        let persons: [ABRecord] = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData).takeRetainedValue()
+
+        let firstRecord: ABRecord = persons.first!
+        assertPersonProperty(kABPersonFirstNameProperty, of: firstRecord, toEqual: "Arnold")
+        assertPersonProperty(kABPersonLastNameProperty, of: firstRecord, toEqual: "Alpha")
+
+        let secondRecord: ABRecord = persons[1]
+        assertPersonProperty(kABPersonFirstNameProperty, of: secondRecord, toEqual: "Bert")
+        assertPersonProperty(kABPersonLastNameProperty, of: secondRecord, toEqual: "Beta")
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
+    private func assertPersonProperty(property: ABPropertyID, of person: ABRecord, toEqual expected: String) {
+        let actual = ABRecordCopyValue(person, property).takeRetainedValue() as String
+        XCTAssertEqual(expected, actual)
     }
 }

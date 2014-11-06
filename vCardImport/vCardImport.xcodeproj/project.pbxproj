@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E95E95AD19F4380F002D864B /* RIVCardSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E95AC19F4380F002D864B /* RIVCardSourceDetailViewController.swift */; };
 		E95E95AF19F43862002D864B /* RIVCardSourceDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E95E95AE19F43862002D864B /* RIVCardSourceDetailViewController.xib */; };
+		E97DE1821A0EC4CD005FAB7D /* example-contacts.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E97DE1811A0EC4CD005FAB7D /* example-contacts.vcf */; };
 		E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D719E9C76F00219305 /* AppDelegate.swift */; };
 		E983F1DA19E9C76F00219305 /* RIVCardSourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D919E9C76F00219305 /* RIVCardSourcesViewController.swift */; };
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
@@ -29,6 +30,7 @@
 /* Begin PBXFileReference section */
 		E95E95AC19F4380F002D864B /* RIVCardSourceDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RIVCardSourceDetailViewController.swift; sourceTree = "<group>"; };
 		E95E95AE19F43862002D864B /* RIVCardSourceDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RIVCardSourceDetailViewController.xib; sourceTree = "<group>"; };
+		E97DE1811A0EC4CD005FAB7D /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
 		E983F1D219E9C76F00219305 /* vCardImport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vCardImport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 		E983F1EB19E9C76F00219305 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E97DE1811A0EC4CD005FAB7D /* example-contacts.vcf */,
 				E983F1EC19E9C76F00219305 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -206,6 +209,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E97DE1821A0EC4CD005FAB7D /* example-contacts.vcf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
