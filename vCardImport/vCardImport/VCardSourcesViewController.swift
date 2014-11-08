@@ -1,6 +1,6 @@
 import UIKit
 
-class RIVCardSourcesViewController: UITableViewController {
+class VCardSourcesViewController: UITableViewController {
     convenience override init() {
         self.init(style: UITableViewStyle.Plain)
     }

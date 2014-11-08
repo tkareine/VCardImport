@@ -2,7 +2,7 @@ import UIKit
 
 class RIVCardSourceDetailViewController: UIViewController {
     convenience override init() {
-        self.init(nibName: "RIVCardSourceDetailViewController", bundle: nil)
+        self.init(nibName: "VCardSourceDetailViewController", bundle: nil)
     }
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {

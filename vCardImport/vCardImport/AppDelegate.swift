@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let w = UIWindow(frame: UIScreen.mainScreen().bounds)
         w.backgroundColor = UIColor.whiteColor()
-        let vcardSourcesVC = RIVCardSourcesViewController()
+        let vcardSourcesVC = VCardSourcesViewController()
         w.rootViewController = UINavigationController(rootViewController: vcardSourcesVC)
         w.makeKeyAndVisible()
 

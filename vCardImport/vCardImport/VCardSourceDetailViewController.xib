@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RIVCardSourceDetailViewController" customModule="vCardImport">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VCardSourceDetailViewController" customModule="vCardImport">
             <connections>
                 <outlet property="view" destination="o4r-Pt-0I5" id="7fT-w4-Xb6"/>
             </connections>
