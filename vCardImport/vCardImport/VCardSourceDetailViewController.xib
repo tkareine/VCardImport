@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VCardSourceDetailViewController" customModule="vCardImport">
             <connections>
+                <outlet property="sourceURLField" destination="K1K-lX-4oR" id="6fC-9t-kfw"/>
                 <outlet property="view" destination="o4r-Pt-0I5" id="7fT-w4-Xb6"/>
             </connections>
         </placeholder>

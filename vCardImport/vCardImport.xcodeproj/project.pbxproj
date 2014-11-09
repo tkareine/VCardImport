@@ -10,11 +10,13 @@
 		E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E9375BC81A0ED1120065A042 /* example-contacts.vcf */; };
 		E95E95AD19F4380F002D864B /* VCardSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */; };
 		E95E95AF19F43862002D864B /* VCardSourceDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E95E95AE19F43862002D864B /* VCardSourceDetailViewController.xib */; };
+		E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */; };
 		E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D719E9C76F00219305 /* AppDelegate.swift */; };
 		E983F1DA19E9C76F00219305 /* VCardSourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */; };
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
 		E983F1E219E9C76F00219305 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E983F1E019E9C76F00219305 /* LaunchScreen.xib */; };
 		E983F1EE19E9C76F00219305 /* vCardImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1ED19E9C76F00219305 /* vCardImportTests.swift */; };
+		E9F31E121A0FD2570015509F /* VCardErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F31E111A0FD2570015509F /* VCardErrors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +33,7 @@
 		E9375BC81A0ED1120065A042 /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
 		E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceDetailViewController.swift; sourceTree = "<group>"; };
 		E95E95AE19F43862002D864B /* VCardSourceDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VCardSourceDetailViewController.xib; sourceTree = "<group>"; };
+		E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardImporter.swift; sourceTree = "<group>"; };
 		E983F1D219E9C76F00219305 /* vCardImport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vCardImport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -40,6 +43,7 @@
 		E983F1E719E9C76F00219305 /* vCardImportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vCardImportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1EC19E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1ED19E9C76F00219305 /* vCardImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vCardImportTests.swift; sourceTree = "<group>"; };
+		E9F31E111A0FD2570015509F /* VCardErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardErrors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
+				E9F31E111A0FD2570015509F /* VCardErrors.swift */,
+				E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */,
 				E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */,
 				E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */,
 				E95E95AE19F43862002D864B /* VCardSourceDetailViewController.xib */,
@@ -220,6 +226,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */,
+				E9F31E121A0FD2570015509F /* VCardErrors.swift in Sources */,
 				E983F1DA19E9C76F00219305 /* VCardSourcesViewController.swift in Sources */,
 				E95E95AD19F4380F002D864B /* VCardSourceDetailViewController.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
