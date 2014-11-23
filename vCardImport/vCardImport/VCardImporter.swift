@@ -68,7 +68,8 @@ class VCardImporter {
             dispatch_semaphore_signal(semaphore)
         }
 
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        let timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC) * Int64(30))
+        dispatch_semaphore_wait(semaphore, timeout)
 
         return authResolution ? .Authorized : .Denied
     }
