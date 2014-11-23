@@ -40,7 +40,7 @@ class VCardSourcesViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let vc = RIVCardSourceDetailViewController()
+        let vc = VCardSourceDetailViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

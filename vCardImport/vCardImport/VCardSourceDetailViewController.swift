@@ -1,6 +1,6 @@
 import UIKit
 
-class RIVCardSourceDetailViewController: UIViewController {
+class VCardSourceDetailViewController: UIViewController {
     @IBOutlet weak var sourceURLField: UITextField!
 
     convenience override init() {
