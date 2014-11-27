@@ -4,7 +4,7 @@ import AddressBook
 
 class vCardImportTests: XCTestCase {
     func testReadsRecordsFromVCard() {
-        let vcardPath = NSBundle(forClass: vCardImportTests.self).pathForResource("example-contacts", ofType: "vcf")
+        let vcardPath = NSBundle.mainBundle().pathForResource("example-contacts", ofType: "vcf")
         let vcardData = NSData(contentsOfFile: vcardPath!)
         let persons: [ABRecord] = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData).takeRetainedValue()
 
