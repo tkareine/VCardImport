@@ -168,15 +168,17 @@
 		E983F1CA19E9C76F00219305 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = "";
 				LastUpgradeCheck = 0600;
-				ORGANIZATIONNAME = "Reaktor Innovations Oy";
+				ORGANIZATIONNAME = "Tuomas Kareinen";
 				TargetAttributes = {
 					E983F1D119E9C76F00219305 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = JXNJYC9443;
+						DevelopmentTeam = R235CYQ493;
 					};
 					E983F1E619E9C76F00219305 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = R235CYQ493;
 						TestTargetID = E983F1D119E9C76F00219305;
 					};
 				};

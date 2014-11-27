@@ -1,7 +1,7 @@
 import Foundation
 
 struct VCardErrors {
-    static let domain = "fi.reaktor.vcardimport.ErrorDomain"
+    static let domain = "org.tkareine.vcardimport.ErrorDomain"
     static let titleKey = "VCardErrorTitle"
 
     static func addressBookAccessDeniedOrResticted() -> NSError {
