@@ -35,7 +35,7 @@ class VCardSourcesViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath) as UITableViewCell
-        cell.textLabel.text = "oh my"
+        cell.textLabel?.text = "example source"
         return cell
     }
 
