@@ -30,12 +30,13 @@ class VCardSourcesViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return VCardSourceStore.sharedStore.sources.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath) as UITableViewCell
-        cell.textLabel?.text = "example source"
+        let source = VCardSourceStore.sharedStore.sources[indexPath.row]
+        cell.textLabel?.text = source.name
         return cell
     }
 
