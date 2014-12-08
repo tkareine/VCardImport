@@ -1,9 +1,14 @@
 import Foundation
 import AddressBook
 
-let sharedVCardImporter = VCardImporter()
-
 class VCardImporter {
+  class var sharedImporter: VCardImporter {
+    struct Singleton {
+      static let instance = VCardImporter()
+    }
+    return Singleton.instance
+  }
+
   private init() {}
 
   func importFrom(url: NSURL, error: NSErrorPointer) -> Bool {

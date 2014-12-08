@@ -18,7 +18,7 @@ class VCardSourceDetailViewController: UIViewController {
   @IBAction func testURL(sender: UIButton) {
     var error: NSError?
     let url = NSURL(string: sourceURLField.text)!
-    let success = sharedVCardImporter.importFrom(url, error: &error)
+    let success = VCardImporter.sharedImporter.importFrom(url, error: &error)
     if (!success) {
       let alertController = UIAlertController(title: error?.localizedFailureReason,
         message: error?.localizedDescription,
