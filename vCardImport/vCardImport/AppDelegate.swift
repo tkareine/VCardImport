@@ -2,17 +2,13 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-  var window: UIWindow?
+  var window: UIWindow!
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    let w = UIWindow(frame: UIScreen.mainScreen().bounds)
-    w.backgroundColor = UIColor.whiteColor()
-    let vcardSourcesVC = VCardSourcesViewController()
-    w.rootViewController = UINavigationController(rootViewController: vcardSourcesVC)
-    w.makeKeyAndVisible()
-
-    window = w
-
+    window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    window.backgroundColor = UIColor.whiteColor()
+    window.rootViewController = UINavigationController(rootViewController: VCardSourcesViewController())
+    window.makeKeyAndVisible()
     return true
   }
 

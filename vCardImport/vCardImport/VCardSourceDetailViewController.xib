@@ -6,7 +6,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VCardSourceDetailViewController" customModule="vCardImport">
             <connections>
-                <outlet property="sourceURLField" destination="K1K-lX-4oR" id="6fC-9t-kfw"/>
+                <outlet property="nameField" destination="w4Q-Av-MiB" id="KYe-Yn-4Nt"/>
+                <outlet property="urlField" destination="K1K-lX-4oR" id="3b3-v8-5kw"/>
                 <outlet property="view" destination="o4r-Pt-0I5" id="7fT-w4-Xb6"/>
             </connections>
         </placeholder>
@@ -15,23 +16,31 @@
             <rect key="frame" x="0.0" y="44" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="URL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lrn-LY-24h">
-                    <rect key="frame" x="8" y="76" width="50" height="21"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="50" id="518-9n-Tap"/>
-                    </constraints>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="URL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lrn-LY-24h">
+                    <rect key="frame" x="8" y="120" width="60" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="K1K-lX-4oR">
-                    <rect key="frame" x="66" y="73" width="246" height="30"/>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="K1K-lX-4oR">
+                    <rect key="frame" x="77" y="116" width="235" height="30"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IOr-j9-cfb">
-                    <rect key="frame" x="145" y="111" width="30" height="30"/>
-                    <state key="normal" title="Test">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fLb-Ji-VKL" userLabel="Name">
+                    <rect key="frame" x="8" y="76" width="60" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w4Q-Av-MiB">
+                    <rect key="frame" x="76" y="72" width="236" height="30"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IOr-j9-cfb">
+                    <rect key="frame" x="90" y="154" width="140" height="30"/>
+                    <state key="normal" title="Test Connection">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -40,16 +49,6 @@
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-            <constraints>
-                <constraint firstItem="Lrn-LY-24h" firstAttribute="top" secondItem="o4r-Pt-0I5" secondAttribute="top" constant="76" id="5nQ-yr-8xp"/>
-                <constraint firstItem="IOr-j9-cfb" firstAttribute="top" secondItem="K1K-lX-4oR" secondAttribute="bottom" constant="8" id="7v8-1Q-MLJ"/>
-                <constraint firstItem="Lrn-LY-24h" firstAttribute="leading" secondItem="o4r-Pt-0I5" secondAttribute="leading" constant="8" id="LGa-EB-iUb"/>
-                <constraint firstItem="Lrn-LY-24h" firstAttribute="baseline" secondItem="K1K-lX-4oR" secondAttribute="baseline" constant="-0.5" id="QlJ-DM-kle"/>
-                <constraint firstAttribute="centerX" secondItem="IOr-j9-cfb" secondAttribute="centerX" id="SFZ-qI-mTb"/>
-                <constraint firstAttribute="trailing" secondItem="K1K-lX-4oR" secondAttribute="trailing" constant="8" id="guM-8Z-MQT"/>
-                <constraint firstItem="K1K-lX-4oR" firstAttribute="leading" secondItem="Lrn-LY-24h" secondAttribute="trailing" constant="8" id="wFX-xt-JQf"/>
-                <constraint firstItem="K1K-lX-4oR" firstAttribute="top" secondItem="o4r-Pt-0I5" secondAttribute="top" constant="73" id="ykh-7h-748"/>
-            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>

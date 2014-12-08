@@ -8,13 +8,23 @@ class VCardSourceStore {
     return Singleton.instance
   }
 
-  var sources: [VCardSource] {
-    return _sources
+  private var sources: [VCardSource]
+
+  var count: Int {
+    return sources.count
   }
 
-  private var _sources: [VCardSource]
-
   private init() {
-    _sources = [VCardSource(name: "Reaktor", connection: VCardSource.Connection(url: "https://download.reaktor.fi/"))]
+    sources = [VCardSource(name: "Reaktor", connection: VCardSource.Connection(url: "https://download.reaktor.fi/"))]
+  }
+
+  subscript(index: Int) -> VCardSource {
+    get {
+      return sources[index]
+    }
+
+    set {
+      sources[index] = newValue
+    }
   }
 }

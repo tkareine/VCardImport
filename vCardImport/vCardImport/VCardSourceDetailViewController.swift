@@ -1,23 +1,37 @@
 import UIKit
 
 class VCardSourceDetailViewController: UIViewController {
-  @IBOutlet weak var sourceURLField: UITextField!
+  @IBOutlet weak var nameField: UITextField!
+  @IBOutlet weak var urlField: UITextField!
 
-  convenience override init() {
-    self.init(nibName: "VCardSourceDetailViewController", bundle: nil)
+  private var source: VCardSource
+  private var doneCallback: ((VCardSource) -> Void)
+
+  init(source: VCardSource, doneCallback: (VCardSource) -> Void) {
+    self.source = source
+    self.doneCallback = doneCallback
+    super.init(nibName: "VCardSourceDetailViewController", bundle: nil)
   }
 
-  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+  required init(coder decoder: NSCoder) {
+    fatalError("state restoration not supported")
   }
 
-  required init(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    nameField.text = source.name
+    urlField.text = source.connection.url
+  }
+
+  override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    let newSource = VCardSource(name: nameField.text, connection: VCardSource.Connection(url: urlField.text))
+    doneCallback(newSource)
   }
 
   @IBAction func testURL(sender: UIButton) {
     var error: NSError?
-    let url = NSURL(string: sourceURLField.text)!
+    let url = NSURL(string: urlField.text)!
     let success = VCardImporter.sharedImporter.importFrom(url, error: &error)
     if (!success) {
       let alertController = UIAlertController(title: error?.localizedFailureReason,
