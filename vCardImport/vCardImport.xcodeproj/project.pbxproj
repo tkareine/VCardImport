@@ -20,6 +20,8 @@
 		E983F1EE19E9C76F00219305 /* vCardImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1ED19E9C76F00219305 /* vCardImportTests.swift */; };
 		E9F31E121A0FD2570015509F /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F31E111A0FD2570015509F /* Errors.swift */; };
 		E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */; };
+		E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */; };
+		E9F9D8601A361C1B0054DCB8 /* UIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* UIConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,8 @@
 		E983F1ED19E9C76F00219305 /* vCardImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vCardImportTests.swift; sourceTree = "<group>"; };
 		E9F31E111A0FD2570015509F /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
+		E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourcesDataSource.swift; sourceTree = "<group>"; };
+		E9F9D85F1A361C1B0054DCB8 /* UIConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +98,9 @@
 				E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */,
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
 				E9F31E111A0FD2570015509F /* Errors.swift */,
+				E9F9D85F1A361C1B0054DCB8 /* UIConfig.swift */,
 				E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */,
+				E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */,
 				E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */,
 				E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */,
 				E95E95AE19F43862002D864B /* VCardSourceDetailViewController.xib */,
@@ -238,8 +244,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */,
+				E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */,
 				E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */,
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
+				E9F9D8601A361C1B0054DCB8 /* UIConfig.swift in Sources */,
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
 				E983F1DA19E9C76F00219305 /* VCardSourcesViewController.swift in Sources */,
 				E95E95AD19F4380F002D864B /* VCardSourceDetailViewController.swift in Sources */,
