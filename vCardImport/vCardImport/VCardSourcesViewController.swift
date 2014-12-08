@@ -35,7 +35,8 @@ class VCardSourcesViewController: UITableViewController {
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     let vc = VCardSourceDetailViewController(source: getSource(at: indexPath.row)) { newSource in
       VCardSourceStore.sharedStore[indexPath.row] = newSource
-      self.tableView.reloadData()
+      VCardSourceStore.sharedStore.save()
+      self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
     }
     self.navigationController?.pushViewController(vc, animated: true)
   }
