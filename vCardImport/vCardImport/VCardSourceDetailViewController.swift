@@ -4,11 +4,15 @@ class VCardSourceDetailViewController: UIViewController {
   @IBOutlet weak var nameField: UITextField!
   @IBOutlet weak var urlField: UITextField!
 
-  private var source: VCardSource
-  private var doneCallback: ((VCardSource) -> Void)
+  private let appContext: AppContext
+  private let sourceIndex: Int
+  private let source: VCardSource
+  private let doneCallback: () -> Void
 
-  init(source: VCardSource, doneCallback: (VCardSource) -> Void) {
-    self.source = source
+  init(appContext: AppContext, onIndex: Int, doneCallback: () -> Void) {
+    self.appContext = appContext
+    self.sourceIndex = onIndex
+    self.source = appContext.vcardSourceStore[sourceIndex]
     self.doneCallback = doneCallback
     super.init(nibName: "VCardSourceDetailViewController", bundle: nil)
   }
@@ -26,18 +30,22 @@ class VCardSourceDetailViewController: UIViewController {
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
     let newSource = VCardSource(name: nameField.text, connection: VCardSource.Connection(url: urlField.text))
-    doneCallback(newSource)
+    appContext.vcardSourceStore[sourceIndex] = newSource
+    appContext.vcardSourceStore.save()
+    doneCallback()
   }
 
   @IBAction func testURL(sender: UIButton) {
     var error: NSError?
     let url = NSURL(string: urlField.text)!
-    let success = VCardImporter.sharedImporter.importFrom(url, error: &error)
+    let success = appContext.vcardImporter.importFrom(url, error: &error)
     if (!success) {
-      let alertController = UIAlertController(title: error?.localizedFailureReason,
+      let alertController = UIAlertController(
+        title: error?.localizedFailureReason,
         message: error?.localizedDescription,
         preferredStyle: .Alert)
       let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+
       alertController.addAction(dismissAction)
 
       presentViewController(alertController, animated: true, completion: nil);

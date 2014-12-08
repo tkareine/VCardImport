@@ -2,13 +2,18 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-  var window: UIWindow!
+  private var window: UIWindow!
+  private var appContext: AppContext!
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    appContext = AppContext(vcardImporter: VCardImporter(), vcardSourceStore: VCardSourceStore())
+    appContext.vcardSourceStore.load()
+
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
     window.backgroundColor = UIColor.whiteColor()
-    window.rootViewController = UINavigationController(rootViewController: VCardSourcesViewController())
+    window.rootViewController = UINavigationController(rootViewController: VCardSourcesViewController(appContext: appContext))
     window.makeKeyAndVisible()
+
     return true
   }
 

@@ -2,15 +2,6 @@ import Foundation
 import AddressBook
 
 class VCardImporter {
-  class var sharedImporter: VCardImporter {
-    struct Singleton {
-      static let instance = VCardImporter()
-    }
-    return Singleton.instance
-  }
-
-  private init() {}
-
   func importFrom(url: NSURL, error: NSErrorPointer) -> Bool {
     return importRecords(loadExampleContacts(), error: error)
   }
@@ -33,7 +24,7 @@ class VCardImporter {
     default:
       NSLog("AB access is denied or restricted")
       if error != nil {
-        error.memory = VCardErrors.addressBookAccessDeniedOrResticted()
+        error.memory = Errors.addressBookAccessDeniedOrResticted()
       }
       return false
     }

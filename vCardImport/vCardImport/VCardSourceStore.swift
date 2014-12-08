@@ -1,22 +1,13 @@
 import Foundation
 
 class VCardSourceStore {
-  class var sharedStore: VCardSourceStore {
-    struct Singleton {
-      static let instance = VCardSourceStore()
-    }
-    return Singleton.instance
-  }
-
   private var sources: [VCardSource] = []
 
   var count: Int {
     return sources.count
   }
 
-  private init() {
-    load()
-  }
+  init() {}
 
   subscript(index: Int) -> VCardSource {
     get {

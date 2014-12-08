@@ -1,15 +1,13 @@
 import UIKit
 
 class VCardSourcesViewController: UITableViewController {
-  let CellReuseIdentifier = "UITableViewCell"
+  private let CellReuseIdentifier = "UITableViewCell"
+  private let appContext: AppContext
 
-  override init() {
+  init(appContext: AppContext) {
+    self.appContext = appContext
     super.init(nibName: nil, bundle: nil)
     self.navigationItem.title = "vCard Import"
-  }
-
-  convenience override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-    self.init()
   }
 
   required init(coder decoder: NSCoder) {
@@ -23,7 +21,7 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return VCardSourceStore.sharedStore.count
+    return appContext.vcardSourceStore.count
   }
 
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -33,15 +31,13 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    let vc = VCardSourceDetailViewController(source: getSource(at: indexPath.row)) { newSource in
-      VCardSourceStore.sharedStore[indexPath.row] = newSource
-      VCardSourceStore.sharedStore.save()
+    let vc = VCardSourceDetailViewController(appContext: appContext, onIndex: indexPath.row) {
       self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
     }
     self.navigationController?.pushViewController(vc, animated: true)
   }
 
   private func getSource(at index: Int) -> VCardSource {
-    return VCardSourceStore.sharedStore[index]
+    return appContext.vcardSourceStore[index]
   }
 }
