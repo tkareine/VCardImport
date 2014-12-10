@@ -9,9 +9,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     appContext = AppContext(vcardImporter: VCardImporter(), vcardSourceStore: VCardSourceStore())
     appContext.vcardSourceStore.load()
 
+    let vcardSourcesController = VCardSourcesViewController(appContext: appContext)
+
+    let navigationController = UINavigationController(rootViewController: vcardSourcesController)
+    navigationController.toolbarHidden = false
+
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
     window.backgroundColor = UIColor.whiteColor()
-    window.rootViewController = UINavigationController(rootViewController: VCardSourcesViewController(appContext: appContext))
+    window.rootViewController = navigationController
     window.makeKeyAndVisible()
 
     return true

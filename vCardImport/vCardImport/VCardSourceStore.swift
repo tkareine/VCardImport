@@ -7,6 +7,10 @@ class VCardSourceStore {
     return sources.count
   }
 
+  var first: VCardSource? {
+    return sources.first
+  }
+
   init() {}
 
   subscript(index: Int) -> VCardSource {
@@ -30,7 +34,9 @@ class VCardSourceStore {
     if let sourcesData = NSUserDefaults.standardUserDefaults().objectForKey("VCardSources") as? NSData {
       sources = NSKeyedUnarchiver.unarchiveObjectWithData(sourcesData) as Array<VCardSource>
     } else {
-      sources = [VCardSource(name: "Reaktor", connection: VCardSource.Connection(url: "https://download.reaktor.fi/"))]
+      sources = [
+        VCardSource(name: "Reaktor", connection: VCardSource.Connection(url: NSURL(string: "https://download.reaktor.fi/")!))
+      ]
     }
   }
 }

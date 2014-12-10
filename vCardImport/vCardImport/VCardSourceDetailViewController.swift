@@ -9,6 +9,8 @@ class VCardSourceDetailViewController: UIViewController {
   private let source: VCardSource
   private let doneCallback: () -> Void
 
+  // MARK: Controller Life Cycle
+
   init(appContext: AppContext, onIndex: Int, doneCallback: () -> Void) {
     self.appContext = appContext
     self.sourceIndex = onIndex
@@ -21,34 +23,34 @@ class VCardSourceDetailViewController: UIViewController {
     fatalError("state restoration not supported")
   }
 
+  // MARK: View Life Cycle
+
   override func viewWillAppear(animated: Bool) {
     super.viewWillDisappear(animated)
     nameField.text = source.name
-    urlField.text = source.connection.url
+    urlField.text = source.connection.url.absoluteString
   }
 
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    let newSource = VCardSource(name: nameField.text, connection: VCardSource.Connection(url: urlField.text))
+
+    let urlCandidate = NSURL(string: urlField.text)
+    let newURL = urlCandidate != nil ? urlCandidate! : source.connection.url
+
+    let newSource = VCardSource(
+      name: nameField.text,
+      connection: VCardSource.Connection(url: newURL)
+    )
+
     appContext.vcardSourceStore[sourceIndex] = newSource
     appContext.vcardSourceStore.save()
+
     doneCallback()
   }
 
-  @IBAction func testURL(sender: UIButton) {
-    var error: NSError?
-    let url = NSURL(string: urlField.text)!
-    let success = appContext.vcardImporter.importFrom(url, error: &error)
-    if (!success) {
-      let alertController = UIAlertController(
-        title: error?.localizedFailureReason,
-        message: error?.localizedDescription,
-        preferredStyle: .Alert)
-      let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+  // MARK: Actions
 
-      alertController.addAction(dismissAction)
-
-      presentViewController(alertController, animated: true, completion: nil);
-    }
+  @IBAction func testConnection(sender: UIButton) {
+    NSLog("Test connection")
   }
 }

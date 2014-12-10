@@ -44,7 +44,7 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="testURL:" destination="-1" eventType="touchUpInside" id="Zq7-x0-TiF"/>
+                        <action selector="testConnection:" destination="-1" eventType="touchUpInside" id="jni-ok-mqy"/>
                     </connections>
                 </button>
             </subviews>

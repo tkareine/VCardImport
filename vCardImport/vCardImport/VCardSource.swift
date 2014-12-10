@@ -20,18 +20,18 @@ class VCardSource: NSObject, NSCoding {
   }
 
   class Connection: NSObject, NSCoding {
-    let url: String
+    let url: NSURL
 
-    init(url: String) {
+    init(url: NSURL) {
       self.url = url
     }
 
     required init(coder decoder: NSCoder) {
-      url = decoder.decodeObjectForKey("url") as String
+      url = NSURL(string: decoder.decodeObjectForKey("url") as String)!
     }
 
     func encodeWithCoder(coder: NSCoder) {
-      coder.encodeObject(url, forKey: "url")
+      coder.encodeObject(url.absoluteString, forKey: "url")
     }
   }
 }
