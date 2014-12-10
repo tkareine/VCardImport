@@ -13,7 +13,7 @@ class VCardImporter {
 
     var authStatus = ABAddressBookGetAuthorizationStatus()
 
-    if (authStatus == .NotDetermined) {
+    if authStatus == .NotDetermined {
       authStatus = askAddressBookAuthorizationSync(error)
     }
 
@@ -59,8 +59,8 @@ class VCardImporter {
     var authResolution = false
     let semaphore = dispatch_semaphore_create(0)
 
-    ABAddressBookRequestAccessWithCompletion(newAddressBook(error)) { (granted: Bool, _error) in
-      authResolution = granted
+    ABAddressBookRequestAccessWithCompletion(newAddressBook(error)) { isGranted, _error in
+      authResolution = isGranted
       dispatch_semaphore_signal(semaphore)
     }
 
