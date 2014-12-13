@@ -11,6 +11,13 @@ struct Errors {
       description: "The application needs access to Contacts, but the access is denied or restricted. Please allow access in System Settings.")
   }
 
+  static func fromCFError(error: CFError) -> NSError {
+    return NSError(
+      domain: CFErrorGetDomain(error),
+      code: CFErrorGetCode(error),
+      userInfo: CFErrorCopyUserInfo(error))
+  }
+
   private static func vcardError(#code: Int, failureReason: String, description: String) -> NSError {
     let userInfo = [
       NSLocalizedFailureReasonErrorKey: failureReason,

@@ -39,7 +39,7 @@ class VCardSourcesViewController: UITableViewController {
     if let source = appContext.vcardSourceStore.first {
       var error: NSError?
       let url = source.connection.url
-      let success = appContext.vcardImporter.importFrom(url, error: &error)
+      let success = appContext.vcardImporter.importFrom([url], error: &error)
       if (!success) {
         let alertController = UIAlertController(
           title: error?.localizedFailureReason,
