@@ -3,6 +3,7 @@ import UIKit
 class VCardSourceDetailViewController: UIViewController {
   @IBOutlet weak var nameField: UITextField!
   @IBOutlet weak var urlField: UITextField!
+  @IBOutlet weak var isEnabledSwitch: UISwitch!
 
   private let appContext: AppContext
   private let sourceIndex: Int
@@ -29,6 +30,7 @@ class VCardSourceDetailViewController: UIViewController {
     super.viewWillDisappear(animated)
     nameField.text = source.name
     urlField.text = source.connection.url.absoluteString
+    isEnabledSwitch.on = source.isEnabled
   }
 
   override func viewWillDisappear(animated: Bool) {
@@ -39,7 +41,8 @@ class VCardSourceDetailViewController: UIViewController {
 
     let newSource = VCardSource(
       name: nameField.text,
-      connection: VCardSource.Connection(url: newURL)
+      connection: VCardSource.Connection(url: newURL),
+      isEnabled: isEnabledSwitch.on
     )
 
     appContext.vcardSourceStore[sourceIndex] = newSource

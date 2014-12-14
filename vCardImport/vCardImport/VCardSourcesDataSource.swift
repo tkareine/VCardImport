@@ -8,7 +8,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   }
 
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return vcardSourceStore.count
+    return vcardSourceStore.countAll
   }
 
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

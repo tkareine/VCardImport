@@ -3,8 +3,12 @@ import Foundation
 class VCardSourceStore {
   private var sources: [VCardSource] = []
 
-  var count: Int {
+  var countAll: Int {
     return sources.count
+  }
+
+  var countEnabled: Int {
+    return sources.countWhere { $0.isEnabled }
   }
 
   var first: VCardSource? {
@@ -35,7 +39,11 @@ class VCardSourceStore {
       sources = NSKeyedUnarchiver.unarchiveObjectWithData(sourcesData) as Array<VCardSource>
     } else {
       sources = [
-        VCardSource(name: "Reaktor", connection: VCardSource.Connection(url: NSURL(string: "https://download.reaktor.fi/")!))
+        VCardSource(
+          name: "Reaktor",
+          connection: VCardSource.Connection(url: NSURL(string: "https://download.reaktor.fi/")!),
+          isEnabled: true
+        )
       ]
     }
   }
