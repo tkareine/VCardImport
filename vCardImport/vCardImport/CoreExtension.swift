@@ -15,6 +15,10 @@ extension Array {
   }
 }
 
-func ==<T: Equatable, U: Equatable>(lhs: (T, U), rhs: (T, U)) -> Bool {
+func ==<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
   return (lhs.0 == rhs.0) && (lhs.1 == rhs.1)
+}
+
+func !=<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
+  return !(lhs == rhs)
 }

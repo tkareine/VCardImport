@@ -15,6 +15,13 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertTrue((0, "1") == (0, "1"))
     XCTAssertFalse((0, "1") == (0, "2"))
     XCTAssertFalse((0, "1") == (1, "1"))
-    XCTAssertFalse(("0", "1") == (0, "1"))  // shouldn't compile :(
+    XCTAssertFalse(("0", "1") == (0, "1"))
+  }
+
+  func test2TupleNonEquality() {
+    XCTAssertFalse((0, "1") != (0, "1"))
+    XCTAssertTrue((0, "1") != (0, "2"))
+    XCTAssertTrue((0, "1") != (1, "1"))
+    XCTAssertTrue(("0", "1") != (0, "1"))
   }
 }
