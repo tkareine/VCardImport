@@ -6,6 +6,11 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertFalse(["a", "b", "c"].any { $0 == $0.uppercaseString })
   }
 
+  func testArrayCountWhere() {
+    XCTAssert(["A", "b", "C"].countWhere { $0 == $0.uppercaseString } == 2)
+    XCTAssert(["a", "b", "c"].countWhere { $0 == $0.uppercaseString } == 0)
+  }
+
   func testArrayFind() {
     XCTAssert(["a", "B", "c"].find { $0 == $0.uppercaseString } == "B")
     XCTAssert(["a", "b", "c"].find { $0 == $0.uppercaseString } == nil)
