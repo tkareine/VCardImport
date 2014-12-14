@@ -2,7 +2,7 @@ import Foundation
 import AddressBook
 
 class VCardImporter {
-  func importFrom(urls: [NSURL], error: NSErrorPointer) -> Bool {
+  func importFrom(sources: [VCardSource], error: NSErrorPointer) -> Bool {
     if let addressBook: ABAddressBook = newAddressBook(error) {
       if (!authorizeAddressBookAccess(addressBook, error: error)) {
         return false

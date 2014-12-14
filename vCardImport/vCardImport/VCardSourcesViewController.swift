@@ -46,21 +46,19 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   func syncVCardSources(sender: AnyObject) {
-    if let source = appContext.vcardSourceStore.first {
-      var error: NSError?
-      let url = source.connection.url
-      let success = appContext.vcardImporter.importFrom([url], error: &error)
-      if (!success) {
-        let alertController = UIAlertController(
-          title: error?.localizedFailureReason,
-          message: error?.localizedDescription,
-          preferredStyle: .Alert)
-        let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+    let enabledSources = appContext.vcardSourceStore.filterEnabled
+    var error: NSError?
+    let isSuccess = appContext.vcardImporter.importFrom(enabledSources, error: &error)
+    if !isSuccess {
+      let alertController = UIAlertController(
+        title: error!.localizedFailureReason,
+        message: error!.localizedDescription,
+        preferredStyle: .Alert)
+      let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
 
-        alertController.addAction(dismissAction)
+      alertController.addAction(dismissAction)
 
-        presentViewController(alertController, animated: true, completion: nil);
-      }
+      presentViewController(alertController, animated: true, completion: nil)
     }
   }
 }

@@ -15,6 +15,10 @@ class VCardSourceStore {
     return sources.first
   }
 
+  var filterEnabled: [VCardSource] {
+    return sources.filter { $0.isEnabled }
+  }
+
   init() {}
 
   subscript(index: Int) -> VCardSource {
