@@ -30,6 +30,7 @@ class VCardSourceStore {
   func save() {
     let sourcesData = NSKeyedArchiver.archivedDataWithRootObject(sources)
     let defaults = NSUserDefaults.standardUserDefaults()
+    defaults.setInteger(1, forKey: "VCardSourcesVersion")
     defaults.setObject(sourcesData, forKey: "VCardSources")
     defaults.synchronize()
   }
