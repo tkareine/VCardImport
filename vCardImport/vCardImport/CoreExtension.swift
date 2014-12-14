@@ -1,7 +1,9 @@
 import Foundation
 
 extension Array {
-  func countWhere(predicate: T -> Bool) -> Int {
+  typealias Predicate = T -> Bool
+
+  func countWhere(predicate: Predicate) -> Int {
     var c = 0
     for e in self {
       if predicate(e) {
@@ -11,7 +13,7 @@ extension Array {
     return c
   }
 
-  func find(predicate: T -> Bool) -> T? {
+  func find(predicate: Predicate) -> T? {
     for e in self {
       if predicate(e) {
         return e
@@ -20,7 +22,7 @@ extension Array {
     return nil
   }
 
-  func any(predicate: T -> Bool) -> Bool {
+  func any(predicate: Predicate) -> Bool {
     return find(predicate) != nil
   }
 }
