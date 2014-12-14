@@ -16,6 +16,12 @@ class CoreExtensionTests: XCTestCase {
     XCTAssert(["a", "b", "c"].find { $0 == $0.uppercaseString } == nil)
   }
 
+  func testArrayPartition() {
+    let (first, second) = ["a", "B", "c"].partition { $0 == $0.uppercaseString }
+    XCTAssertEqual(first, ["B"])
+    XCTAssertEqual(second, ["a", "c"])
+  }
+
   func test2TupleEquality() {
     XCTAssertTrue((0, "1") == (0, "1"))
     XCTAssertFalse((0, "1") == (0, "2"))

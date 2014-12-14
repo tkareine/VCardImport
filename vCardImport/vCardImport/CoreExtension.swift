@@ -25,6 +25,21 @@ extension Array {
   func any(predicate: Predicate) -> Bool {
     return find(predicate) != nil
   }
+
+  func partition(predicate: Predicate) -> ([T], [T]) {
+    var applicables: [T] = []
+    var nonApplicables:[T] = []
+
+    for e in self {
+      if predicate(e) {
+        applicables.append(e)
+      } else {
+        nonApplicables.append(e)
+      }
+    }
+
+    return (applicables, nonApplicables)
+  }
 }
 
 func ==<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
