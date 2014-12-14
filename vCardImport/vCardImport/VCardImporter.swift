@@ -3,39 +3,66 @@ import AddressBook
 
 class VCardImporter {
   func importFrom(sources: [VCardSource], error: NSErrorPointer) -> Bool {
-    if let addressBook: ABAddressBook = newAddressBook(error) {
-      if (!authorizeAddressBookAccess(addressBook, error: error)) {
+    var addressBookOpt: ABAddressBook? = newAddressBook(error)
+
+    if addressBookOpt == nil {
+      return false
+    }
+
+    let addressBook: ABAddressBook = addressBookOpt!
+
+    if (!authorizeAddressBookAccess(addressBook, error: error)) {
+      return false
+    }
+
+    let loadedRecords = loadExampleContacts()
+    let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
+
+    let (newRecords, matchingRecords) = findNewAndMatchingRecords(
+      loadedRecords,
+      existing: existingRecords,
+      error: error
+    )
+
+    let updateChangeSets = makeUpdateChangeSets(matching: matchingRecords, error: error)
+
+    if !newRecords.isEmpty {
+      let isSuccess = addRecords(newRecords, toAddressBook: addressBook, error: error)
+
+      if !isSuccess {
         return false
-      }
-
-      let newRecords = loadExampleContacts()
-      let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
-
-      let recordsToAdd = filterRecordsToAdd(newRecords, existing: existingRecords, error: error)
-
-      let isImported = addRecords(recordsToAdd, toAddressBook: addressBook, error: error)
-
-      if isImported {
-        if ABAddressBookHasUnsavedChanges(addressBook) {
-          var abError: Unmanaged<CFError>?
-          let isSaved = ABAddressBookSave(addressBook, &abError)
-
-          if isSaved {
-            NSLog("Added %d contacts", recordsToAdd.count)
-            return true
-          }
-
-          if error != nil && abError != nil {
-            error.memory = Errors.fromCFError(abError!.takeRetainedValue())
-          }
-        } else {
-          NSLog("No importable contacts")
-          return true
-        }
       }
     }
 
-    return false
+    if !updateChangeSets.isEmpty {
+      let isSuccess = updateRecords(
+        matchingRecords,
+        changes: updateChangeSets,
+        toAddressBook: addressBook,
+        error: error)
+
+      if !isSuccess {
+        return false
+      }
+    }
+
+    if ABAddressBookHasUnsavedChanges(addressBook) {
+      var abError: Unmanaged<CFError>?
+      let isSaved = ABAddressBookSave(addressBook, &abError)
+
+      if !isSaved {
+        if error != nil && abError != nil {
+          error.memory = Errors.fromCFError(abError!.takeRetainedValue())
+        }
+        return false
+      }
+
+      NSLog("Added %d contact(s), updated %d contact(s)", newRecords.count, updateChangeSets.count)
+    } else {
+      NSLog("No contacts to add or update")
+    }
+
+    return true
   }
 
   private func authorizeAddressBookAccess(
@@ -93,27 +120,64 @@ class VCardImporter {
     return nil
   }
 
-  private func filterRecordsToAdd(
-    newRecords: [ABRecord],
+  private func findNewAndMatchingRecords(
+    loadedRecords: [ABRecord],
     existing existingRecords: [ABRecord],
-    error: NSErrorPointer) -> [ABRecord]
+    error: NSErrorPointer)
+    -> ([ABRecord], [ContactName: (ABRecord, ABRecord)])
   {
-    return newRecords.filter { newRecord in
-      let nameOfNewRecord = self.recordNameOf(newRecord)
-      return !existingRecords.any { self.recordNameOf($0) == nameOfNewRecord }
+    var newRecords: [ABRecord] = []
+    var matchingRecordsByName: [ContactName: (ABRecord, ABRecord)] = [:]
+
+    for loadedRecord in loadedRecords {
+      let nameOfLoadedRecord = self.recordNameOf(loadedRecord)
+      let existingRecordsWithName = existingRecords.filter { self.recordNameOf($0) == nameOfLoadedRecord }
+
+      switch existingRecordsWithName.count {
+      case 0:
+        newRecords.append(loadedRecord)
+      case 1:
+        let existingRecord: ABRecord = existingRecordsWithName.first!
+        let (firstName, lastName) = recordNameOf(existingRecord)
+        let name = ContactName(firstName: firstName, lastName: lastName)
+        matchingRecordsByName[name] = (existingRecord, loadedRecord)
+      default:
+        let (firstName, lastName) = recordNameOf(loadedRecord)
+        NSLog("Skipping updating contact that has multiple records with the same name: %@, %@", lastName, firstName)
+      }
     }
+
+    return (newRecords, matchingRecordsByName)
   }
 
   private func recordNameOf(rec: ABRecord) -> (String, String) {
-    let firstName = ABRecordCopyValue(rec, kABPersonFirstNameProperty).takeRetainedValue() as String
-    let lastName = ABRecordCopyValue(rec, kABPersonLastNameProperty).takeRetainedValue() as String
+    let firstName = Contacts.getSingleValueProperty(kABPersonFirstNameProperty, ofRecord: rec)
+    let lastName = Contacts.getSingleValueProperty(kABPersonLastNameProperty, ofRecord: rec)
     return (firstName, lastName)
+  }
+
+  private func makeUpdateChangeSets(
+    matching matchingRecords: [ContactName: (ABRecord, ABRecord)],
+    error: NSErrorPointer)
+    -> [ContactChangeSet]
+  {
+    var changeSets: [ContactChangeSet] = []
+
+    for (name, (existingRecord, loadedRecord)) in matchingRecords {
+      let changeSet = ContactChangeSet.resolve(name, oldRecord: existingRecord, newRecord: loadedRecord)
+      if let cs = changeSet {
+        changeSets.append(cs)
+      }
+    }
+
+    return changeSets
   }
 
   private func addRecords(
     records: [ABRecord],
     toAddressBook addressBook: ABAddressBook,
-    error: NSErrorPointer) -> Bool
+    error: NSErrorPointer)
+    -> Bool
   {
     for record in records {
       var abError: Unmanaged<CFError>?
@@ -126,6 +190,36 @@ class VCardImporter {
         }
 
         return false
+      }
+    }
+
+    return true
+  }
+
+  private func updateRecords(
+    matchingRecords: [ContactName: (ABRecord, ABRecord)],
+    changes changeSets: [ContactChangeSet],
+    toAddressBook addressBook: ABAddressBook,
+    error: NSErrorPointer)
+    -> Bool
+  {
+    for changeSet in changeSets {
+      for (property, changes) in changeSet.multiValueChanges {
+        let existingRecord: ABRecord = matchingRecords[changeSet.name]!.0
+        let isUpdated = Contacts.addValues(
+          changes,
+          toMultiValueProperty: property,
+          ofRecord: existingRecord)
+
+        if !isUpdated {
+          if error != nil {
+            error.memory = Errors.addressBookFailedToUpdateContact(
+              firstName: changeSet.name.firstName,
+              lastName: changeSet.name.lastName,
+              property: property)
+          }
+          return false
+        }
       }
     }
 
