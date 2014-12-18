@@ -1,6 +1,7 @@
 import Foundation
 import AddressBook
 
+// TODO: Class without instance variables.
 class VCardImporter {
   func importFrom(sources: [VCardSource], error: NSErrorPointer) -> Bool {
     var addressBookOpt: ABAddressBook? = newAddressBook(error)
@@ -18,29 +19,17 @@ class VCardImporter {
     let loadedRecords = loadExampleContacts()
     let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
 
-    let (newRecords, matchingRecords) = findNewAndMatchingRecords(
-      loadedRecords,
-      existing: existingRecords,
-      error: error
-    )
+    let recordUpdates = RecordUpdates.collectFor(existingRecords, from: loadedRecords)
 
-    let updateChangeSets = makeUpdateChangeSets(matching: matchingRecords, error: error)
-
-    if !newRecords.isEmpty {
-      let isSuccess = addRecords(newRecords, toAddressBook: addressBook, error: error)
-
+    if !recordUpdates.newRecords.isEmpty {
+      let isSuccess = addRecords(recordUpdates.newRecords, toAddressBook: addressBook, error: error)
       if !isSuccess {
         return false
       }
     }
 
-    if !updateChangeSets.isEmpty {
-      let isSuccess = updateRecords(
-        matchingRecords,
-        changes: updateChangeSets,
-        toAddressBook: addressBook,
-        error: error)
-
+    if !recordUpdates.changeSets.isEmpty {
+      let isSuccess = updateRecords(recordUpdates.changeSets, error: error)
       if !isSuccess {
         return false
       }
@@ -57,7 +46,8 @@ class VCardImporter {
         return false
       }
 
-      NSLog("Added %d contact(s), updated %d contact(s)", newRecords.count, updateChangeSets.count)
+      NSLog("Added %d contact(s), updated %d contact(s)",
+        recordUpdates.newRecords.count, recordUpdates.changeSets.count)
     } else {
       NSLog("No contacts to add or update")
     }
@@ -120,59 +110,6 @@ class VCardImporter {
     return nil
   }
 
-  private func findNewAndMatchingRecords(
-    loadedRecords: [ABRecord],
-    existing existingRecords: [ABRecord],
-    error: NSErrorPointer)
-    -> ([ABRecord], [ContactName: (ABRecord, ABRecord)])
-  {
-    var newRecords: [ABRecord] = []
-    var matchingRecordsByName: [ContactName: (ABRecord, ABRecord)] = [:]
-
-    for loadedRecord in loadedRecords {
-      let nameOfLoadedRecord = self.recordNameOf(loadedRecord)
-      let existingRecordsWithName = existingRecords.filter { self.recordNameOf($0) == nameOfLoadedRecord }
-
-      switch existingRecordsWithName.count {
-      case 0:
-        newRecords.append(loadedRecord)
-      case 1:
-        let existingRecord: ABRecord = existingRecordsWithName.first!
-        let (firstName, lastName) = recordNameOf(existingRecord)
-        let name = ContactName(firstName: firstName, lastName: lastName)
-        matchingRecordsByName[name] = (existingRecord, loadedRecord)
-      default:
-        let (firstName, lastName) = recordNameOf(loadedRecord)
-        NSLog("Skipping updating contact that has multiple records with the same name: %@, %@", lastName, firstName)
-      }
-    }
-
-    return (newRecords, matchingRecordsByName)
-  }
-
-  private func recordNameOf(rec: ABRecord) -> (String, String) {
-    let firstName = Contacts.getSingleValueProperty(kABPersonFirstNameProperty, ofRecord: rec)
-    let lastName = Contacts.getSingleValueProperty(kABPersonLastNameProperty, ofRecord: rec)
-    return (firstName, lastName)
-  }
-
-  private func makeUpdateChangeSets(
-    matching matchingRecords: [ContactName: (ABRecord, ABRecord)],
-    error: NSErrorPointer)
-    -> [ContactChangeSet]
-  {
-    var changeSets: [ContactChangeSet] = []
-
-    for (name, (existingRecord, loadedRecord)) in matchingRecords {
-      let changeSet = ContactChangeSet.resolve(name, oldRecord: existingRecord, newRecord: loadedRecord)
-      if let cs = changeSet {
-        changeSets.append(cs)
-      }
-    }
-
-    return changeSets
-  }
-
   private func addRecords(
     records: [ABRecord],
     toAddressBook addressBook: ABAddressBook,
@@ -197,25 +134,21 @@ class VCardImporter {
   }
 
   private func updateRecords(
-    matchingRecords: [ContactName: (ABRecord, ABRecord)],
-    changes changeSets: [ContactChangeSet],
-    toAddressBook addressBook: ABAddressBook,
+    changeSets: [RecordChangeSet],
     error: NSErrorPointer)
     -> Bool
   {
     for changeSet in changeSets {
       for (property, changes) in changeSet.multiValueChanges {
-        let existingRecord: ABRecord = matchingRecords[changeSet.name]!.0
-        let isUpdated = Contacts.addValues(
+        let isUpdated = Records.addValues(
           changes,
           toMultiValueProperty: property,
-          ofRecord: existingRecord)
+          ofRecord: changeSet.record)
 
         if !isUpdated {
           if error != nil {
             error.memory = Errors.addressBookFailedToUpdateContact(
-              firstName: changeSet.name.firstName,
-              lastName: changeSet.name.lastName,
+              name: ABRecordCopyCompositeName(changeSet.record).takeRetainedValue(),
               property: property)
           }
           return false

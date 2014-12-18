@@ -1,25 +1,26 @@
-import Foundation
 import AddressBook
 
-struct ContactChangeSet {
-  static let MultiValuePropertiesToCheck = [
-    kABPersonPhoneProperty
-  ]
-
-  let name: ContactName
+struct RecordChangeSet {
+  let record: ABRecord
   let multiValueChanges: [ABPropertyID: [(String, String)]]
 
+  static let MultiValuePropertiesToCheck = [
+    kABPersonEmailProperty,
+    kABPersonPhoneProperty,
+    kABPersonURLProperty,
+  ]
+
   static func resolve(
-    name: ContactName,
+    name: String,
     oldRecord: ABRecord,
     newRecord: ABRecord)
-    -> ContactChangeSet?
+    -> RecordChangeSet?
   {
     var multiValueChanges: [ABPropertyID: [(String, String)]] = [:]
 
     for prop in MultiValuePropertiesToCheck {
-      let oldMV = Contacts.getMultiValueProperty(prop, ofRecord: oldRecord)
-      let newMV = Contacts.getMultiValueProperty(prop, ofRecord: newRecord)
+      let oldMV = Records.getMultiValueProperty(prop, ofRecord: oldRecord)
+      let newMV = Records.getMultiValueProperty(prop, ofRecord: newRecord)
 
       let oldValues = oldMV.map { $0.1 }
       var changesByLabel: [(String, String)] = []
@@ -38,6 +39,6 @@ struct ContactChangeSet {
 
     return multiValueChanges.isEmpty
       ? nil
-      : ContactChangeSet(name: name, multiValueChanges: multiValueChanges)
+      : RecordChangeSet(record: oldRecord, multiValueChanges: multiValueChanges)
   }
 }

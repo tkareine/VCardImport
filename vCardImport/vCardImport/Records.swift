@@ -1,7 +1,7 @@
 import Foundation
 import AddressBook
 
-struct Contacts {
+struct Records {
   static func getSingleValueProperty(
     property: ABPropertyID,
     ofRecord record: ABRecord)

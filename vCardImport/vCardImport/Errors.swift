@@ -13,8 +13,7 @@ struct Errors {
   }
 
   static func addressBookFailedToUpdateContact(
-    #firstName: String,
-    lastName: String,
+    #name: String,
     property: ABPropertyID)
     -> NSError
   {
@@ -22,7 +21,7 @@ struct Errors {
     return vcardError(
       code: 7,
       failureReason: "Address book update error",
-      description: "Failed in updating property \(propDesc) for contact \(firstName) \(lastName)")
+      description: "Failed in updating property \(propDesc) for contact \(name)")
   }
 
   static func fromCFError(error: CFError) -> NSError {
