@@ -55,4 +55,21 @@ struct Records {
 
     return true
   }
+
+  static func setValue(
+    value: AnyObject,
+    toProperty property: ABPropertyID,
+    ofRecord record: ABRecord)
+    -> Bool
+  {
+    var abError: Unmanaged<CFError>?
+    let didSet = ABRecordSetValue(record, property, value, &abError)
+    if !didSet {
+      if abError != nil {
+        let err = Errors.fromCFError(abError!.takeRetainedValue())
+        NSLog("Failed to set value: %@ (%d)", err.localizedDescription, err.code)
+      }
+    }
+    return true
+  }
 }
