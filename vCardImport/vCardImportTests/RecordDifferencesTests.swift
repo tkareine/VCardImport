@@ -1,13 +1,13 @@
 import AddressBook
 import XCTest
 
-class RecordUpdatesTests: XCTestCase {
+class RecordDifferencesTests: XCTestCase {
   func testFindsNewRecord() {
     let newRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
-    let recordUpdates = RecordUpdates.collectFor([], from: [newRecord])
+    let recordDiff = RecordDifferences.resolveBetween(oldRecords: [], newRecords: [newRecord])
 
-    XCTAssertEqual(recordUpdates.newRecords.count, 1)
-    XCTAssertEqual(recordUpdates.changeSets.count, 0)
+    XCTAssertEqual(recordDiff.additions.count, 1)
+    XCTAssertEqual(recordDiff.changes.count, 0)
   }
 
   func testDoesNotFindExistingRecordToUpdateIfNoNewFieldValues() {
@@ -19,10 +19,12 @@ class RecordUpdatesTests: XCTestCase {
       firstName: "Arnold",
       lastName: "Alpha",
       phones: [(kABPersonPhoneMainLabel, "5551001001")])
-    let recordUpdates = RecordUpdates.collectFor([existingRecord], from: [newRecord])
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [existingRecord],
+      newRecords: [newRecord])
 
-    XCTAssertEqual(recordUpdates.newRecords.count, 0)
-    XCTAssertEqual(recordUpdates.changeSets.count, 0)
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 0)
   }
 
   func testFindsExistingRecordToUpdateIfNewFieldValue() {
@@ -34,12 +36,14 @@ class RecordUpdatesTests: XCTestCase {
       firstName: "Arnold",
       lastName: "Alpha",
       phones: [(kABPersonPhoneMainLabel, "5551001002")])
-    let recordUpdates = RecordUpdates.collectFor([existingRecord], from: [newRecord])
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [existingRecord],
+      newRecords: [newRecord])
 
-    XCTAssertEqual(recordUpdates.newRecords.count, 0)
-    XCTAssertEqual(recordUpdates.changeSets.count, 1)
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 1)
 
-    let changes = recordUpdates.changeSets.first!.multiValueChanges
+    let changes = recordDiff.changes.first!.multiValueChanges
 
     XCTAssertEqual(changes.count, 1)
 

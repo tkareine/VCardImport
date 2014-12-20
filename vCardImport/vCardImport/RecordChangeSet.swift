@@ -10,15 +10,10 @@ struct RecordChangeSet {
     kABPersonURLProperty,
   ]
 
-  static func resolve(
-    name: String,
-    oldRecord: ABRecord,
-    newRecord: ABRecord)
-    -> RecordChangeSet?
-  {
+  init?(oldRecord: ABRecord, newRecord: ABRecord) {
     var multiValueChanges: [ABPropertyID: [(String, String)]] = [:]
 
-    for prop in MultiValuePropertiesToCheck {
+    for prop in RecordChangeSet.MultiValuePropertiesToCheck {
       let oldMV = Records.getMultiValueProperty(prop, ofRecord: oldRecord)
       let newMV = Records.getMultiValueProperty(prop, ofRecord: newRecord)
 
@@ -37,8 +32,11 @@ struct RecordChangeSet {
       }
     }
 
-    return multiValueChanges.isEmpty
-      ? nil
-      : RecordChangeSet(record: oldRecord, multiValueChanges: multiValueChanges)
+    if multiValueChanges.isEmpty {
+      return nil
+    }
+
+    self.record = oldRecord
+    self.multiValueChanges = multiValueChanges
   }
 }

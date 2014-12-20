@@ -12,24 +12,26 @@ class VCardImporter {
 
     let addressBook: ABAddressBook = addressBookOpt!
 
-    if (!authorizeAddressBookAccess(addressBook, error: error)) {
+    if !authorizeAddressBookAccess(addressBook, error: error) {
       return false
     }
 
     let loadedRecords = loadExampleContacts()
     let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
 
-    let recordUpdates = RecordUpdates.collectFor(existingRecords, from: loadedRecords)
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: existingRecords,
+      newRecords: loadedRecords)
 
-    if !recordUpdates.newRecords.isEmpty {
-      let isSuccess = addRecords(recordUpdates.newRecords, toAddressBook: addressBook, error: error)
+    if !recordDiff.additions.isEmpty {
+      let isSuccess = addRecords(recordDiff.additions, toAddressBook: addressBook, error: error)
       if !isSuccess {
         return false
       }
     }
 
-    if !recordUpdates.changeSets.isEmpty {
-      let isSuccess = updateRecords(recordUpdates.changeSets, error: error)
+    if !recordDiff.changes.isEmpty {
+      let isSuccess = changeRecords(recordDiff.changes, error: error)
       if !isSuccess {
         return false
       }
@@ -47,7 +49,7 @@ class VCardImporter {
       }
 
       NSLog("Added %d contact(s), updated %d contact(s)",
-        recordUpdates.newRecords.count, recordUpdates.changeSets.count)
+        recordDiff.additions.count, recordDiff.changes.count)
     } else {
       NSLog("No contacts to add or update")
     }
@@ -133,7 +135,7 @@ class VCardImporter {
     return true
   }
 
-  private func updateRecords(
+  private func changeRecords(
     changeSets: [RecordChangeSet],
     error: NSErrorPointer)
     -> Bool
