@@ -42,6 +42,13 @@ extension Array {
   }
 }
 
+extension Dictionary {
+  var first: (Key, Value)? {
+    var gen = self.generate()
+    return gen.next()
+  }
+}
+
 func ==<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
   return (lhs.0 == rhs.0) && (lhs.1 == rhs.1)
 }

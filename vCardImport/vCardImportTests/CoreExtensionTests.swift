@@ -22,6 +22,13 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertEqual(second, ["a", "c"])
   }
 
+  func testDictionaryFirst() {
+    let empty: [String: Int] = [:]
+    XCTAssert(empty.first == nil)
+
+    XCTAssert(["a": 1].first! == ("a", 1))
+  }
+
   func test2TupleEquality() {
     XCTAssertTrue((0, "1") == (0, "1"))
     XCTAssertFalse((0, "1") == (0, "2"))
