@@ -32,7 +32,12 @@ struct Records {
     -> Bool
   {
     let multiVal: ABMultiValue = ABRecordCopyValue(record, property).takeRetainedValue() as ABMultiValue
-    let mutableMultiVal: ABMutableMultiValue = ABMultiValueCreateMutableCopy(multiVal).takeRetainedValue() as ABMutableMultiValue
+    let currentType: ABPropertyType = ABMultiValueGetPropertyType(multiVal)
+
+    let mutableMultiVal: ABMutableMultiValue = currentType == ABPropertyType(kABInvalidPropertyType)
+         ? ABMultiValueCreateMutable(ABPropertyType(kABMultiStringPropertyType)).takeRetainedValue() as ABMutableMultiValue
+         : ABMultiValueCreateMutableCopy(multiVal).takeRetainedValue() as ABMutableMultiValue
+
     for (label, value) in values {
       let wasAdded = ABMultiValueAddValueAndLabel(mutableMultiVal, value, label, nil)
 
