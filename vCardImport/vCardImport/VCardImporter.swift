@@ -141,13 +141,26 @@ class VCardImporter {
     -> Bool
   {
     for changeSet in changeSets {
+      for (property, value) in changeSet.singleValueChanges {
+        let isChanged = Records.setValue(value, toProperty: property, ofRecord: changeSet.record)
+        if !isChanged {
+          // TODO: Make it DRY
+          if error != nil {
+            error.memory = Errors.addressBookFailedToUpdateContact(
+              name: ABRecordCopyCompositeName(changeSet.record).takeRetainedValue(),
+              property: property)
+          }
+          return false
+        }
+      }
+
       for (property, changes) in changeSet.multiValueChanges {
-        let isUpdated = Records.addValues(
+        let isChanged = Records.addValues(
           changes,
           toMultiValueProperty: property,
           ofRecord: changeSet.record)
-
-        if !isUpdated {
+        if !isChanged {
+          // TODO: Make it DRY
           if error != nil {
             error.memory = Errors.addressBookFailedToUpdateContact(
               name: ABRecordCopyCompositeName(changeSet.record).takeRetainedValue(),
