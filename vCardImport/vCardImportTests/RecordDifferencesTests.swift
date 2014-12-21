@@ -196,6 +196,24 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssert(valueChanges.first! == (kABPersonPhoneMainLabel, "5551001002"))
   }
 
+  func testLatterRecordChangeOverridesFormer() {
+    let oldRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let newRecords = [
+      newPersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
+      newPersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
+    ]
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [oldRecord],
+      newRecords: newRecords)
+
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 1)
+
+    let jobTitleChange = recordDiff.changes.first!.singleValueChanges[kABPersonJobTitleProperty]!
+
+    XCTAssertEqual(jobTitleChange, "latter")
+  }
+
   private func newPersonRecord(
     firstName: String? = nil,
     middleName: String? = nil,
