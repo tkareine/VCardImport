@@ -144,12 +144,10 @@ class VCardImporter {
       for (property, value) in changeSet.singleValueChanges {
         let isChanged = Records.setValue(value, toProperty: property, ofRecord: changeSet.record)
         if !isChanged {
-          // TODO: Make it DRY
-          if error != nil {
-            error.memory = Errors.addressBookFailedToUpdateContact(
-              name: ABRecordCopyCompositeName(changeSet.record).takeRetainedValue(),
-              property: property)
-          }
+          setUpdateErrorIfErrorPointerGiven(
+            property: property,
+            record: changeSet.record,
+            error: error)
           return false
         }
       }
@@ -160,18 +158,28 @@ class VCardImporter {
           toMultiValueProperty: property,
           ofRecord: changeSet.record)
         if !isChanged {
-          // TODO: Make it DRY
-          if error != nil {
-            error.memory = Errors.addressBookFailedToUpdateContact(
-              name: ABRecordCopyCompositeName(changeSet.record).takeRetainedValue(),
-              property: property)
-          }
+          setUpdateErrorIfErrorPointerGiven(
+            property: property,
+            record: changeSet.record,
+            error: error)
           return false
         }
       }
     }
 
     return true
+  }
+
+  private func setUpdateErrorIfErrorPointerGiven(
+    #property: ABPropertyID,
+    record: ABRecord,
+    error: NSErrorPointer)
+  {
+    if error != nil {
+      error.memory = Errors.addressBookFailedToUpdateContact(
+        name: ABRecordCopyCompositeName(record).takeRetainedValue(),
+        property: property)
+    }
   }
 
   private func loadExampleContacts() -> [ABRecord] {
