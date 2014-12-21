@@ -18,23 +18,30 @@ struct RecordDifferences {
   private static func findAdditionsAndExistingMatchesBetween(
     oldRecords: [ABRecord],
     _ newRecords: [ABRecord])
-    -> ([ABRecord], [String: (ABRecord, ABRecord)])
+    -> ([ABRecord], [RecordName: (ABRecord, ABRecord)])
   {
     var additions: [ABRecord] = []
-    var matchingRecordsByName: [String: (ABRecord, ABRecord)] = [:]
+    var matchingRecordsByName: [RecordName: (ABRecord, ABRecord)] = [:]
 
     for newRecord in newRecords {
-      let newRecordName = self.recordNameOf(newRecord)
-      let existingRecordsWithName = oldRecords.filter { self.recordNameOf($0) == newRecordName }
+      if let newRecordName = RecordName(ofRecord: newRecord) {
+        let existingRecordsWithName = oldRecords.filter { oldRecord in
+          if let oldRecordName = RecordName(ofRecord: oldRecord) {
+            return oldRecordName == newRecordName
+          } else {
+            return false
+          }
+        }
 
-      switch existingRecordsWithName.count {
-      case 0:
-        additions.append(newRecord)
-      case 1:
-        let existingRecord: ABRecord = existingRecordsWithName.first!
-        matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
-      default:
-        NSLog("Skipping updating contact having multiple records with the same name: %@", newRecordName)
+        switch existingRecordsWithName.count {
+        case 0:
+          additions.append(newRecord)
+        case 1:
+          let existingRecord: ABRecord = existingRecordsWithName.first!
+          matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
+        default:
+          NSLog("Skipping update for multiple records having same name: %@", newRecordName.description)
+        }
       }
     }
 
@@ -42,12 +49,12 @@ struct RecordDifferences {
   }
 
   private static func findChanges(
-    matchingRecords: [String: (ABRecord, ABRecord)])
+    matchingRecords: [RecordName: (ABRecord, ABRecord)])
     -> [RecordChangeSet]
   {
     var changeSets: [RecordChangeSet] = []
 
-    for (name, (existingRecord, newRecord)) in matchingRecords {
+    for (_, (existingRecord, newRecord)) in matchingRecords {
       let changeSet = RecordChangeSet(oldRecord: existingRecord, newRecord: newRecord)
       if let cs = changeSet {
         changeSets.append(cs)
@@ -55,9 +62,5 @@ struct RecordDifferences {
     }
 
     return changeSets
-  }
-
-  private static func recordNameOf(record: ABRecord) -> String {
-    return ABRecordCopyCompositeName(record).takeRetainedValue()
   }
 }
