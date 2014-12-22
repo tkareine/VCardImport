@@ -1,9 +1,10 @@
+import Foundation
 import AddressBook
 
 struct RecordChangeSet {
   let record: ABRecord
-  let singleValueChanges: [ABPropertyID: String]
-  let multiValueChanges: [ABPropertyID: [(String, String)]]
+  let singleValueChanges: [ABPropertyID: NSObject]
+  let multiValueChanges: [ABPropertyID: [(NSString, NSObject)]]
 
   init?(oldRecord: ABRecord, newRecord: ABRecord) {
     let singleValueChanges = RecordChangeSet.findSingleValueChanges(oldRecord, newRecord)
@@ -29,21 +30,22 @@ struct RecordChangeSet {
     kABPersonEmailProperty,
     kABPersonPhoneProperty,
     kABPersonURLProperty,
+    kABPersonAddressProperty
   ]
 
   private static func findSingleValueChanges(
     oldRecord: ABRecord,
     _ newRecord: ABRecord)
-    -> [ABPropertyID: String]
+    -> [ABPropertyID: NSObject]
   {
-    var changes: [ABPropertyID: String] = [:]
+    var changes: [ABPropertyID: NSObject] = [:]
 
     for prop in TrackedSingleValueProperties {
       let oldVal = Records.getSingleValueProperty(prop, ofRecord: oldRecord)
       if oldVal == nil {
         let newVal = Records.getSingleValueProperty(prop, ofRecord: newRecord)
         if let nv = newVal {
-          changes[prop] = newVal
+          changes[prop] = nv
         }
       }
     }
@@ -54,9 +56,9 @@ struct RecordChangeSet {
   private static func findMultiValueChanges(
     oldRecord: ABRecord,
     _ newRecord: ABRecord)
-    -> [ABPropertyID: [(String, String)]]
+    -> [ABPropertyID: [(NSString, NSObject)]]
   {
-    var changes: [ABPropertyID: [(String, String)]] = [:]
+    var changes: [ABPropertyID: [(NSString, NSObject)]] = [:]
 
     for prop in TrackedMultiValueProperties {
       let oldMultiVals = Records.getMultiValueProperty(prop, ofRecord: oldRecord)
@@ -65,10 +67,11 @@ struct RecordChangeSet {
       if let newMV = newMultiVals {
         let oldValues = oldMultiVals != nil ? oldMultiVals!.map { $0.1 } : []
 
-        var changesByLabel: [(String, String)] = []
+        var changesByLabel: [(NSString, NSObject)] = []
 
         for newLabelAndValue in newMV {
           let (newLabel, newValue) = newLabelAndValue
+
           if !contains(oldValues, newValue) {
             changesByLabel.append(newLabelAndValue)
           }

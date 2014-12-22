@@ -12,6 +12,11 @@ class RecordDifferencesTests: XCTestCase {
 
   func testFindsRecordChangesInFieldValues() {
     let oldRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let newRecordHomeAddress = newAddress(
+      street: "Suite 1173",
+      zip: "95814",
+      city: "Sacramento",
+      state: "CA")
     let newRecord: ABRecord = newPersonRecord(
       firstName: "Arnold",
       middleName: "Big",
@@ -21,7 +26,8 @@ class RecordDifferencesTests: XCTestCase {
       organization: "State Council",
       phones: [(kABPersonPhoneMainLabel, "5551001002")],
       emails: [("Home", "arnold.alpha@example.com")],
-      urls: [("Work", "https://exampleinc.com/")]
+      urls: [("Work", "https://exampleinc.com/")],
+      addresses: [("Home", newRecordHomeAddress)]
     )
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
@@ -52,22 +58,31 @@ class RecordDifferencesTests: XCTestCase {
 
     let multiValueChanges = recordDiff.changes.first!.multiValueChanges
 
-    XCTAssertEqual(multiValueChanges.count, 3)
+    XCTAssertEqual(multiValueChanges.count, 4)
 
     let phoneChanges = multiValueChanges[kABPersonPhoneProperty]!
 
     XCTAssertEqual(phoneChanges.count, 1)
-    XCTAssert(phoneChanges.first! == (kABPersonPhoneMainLabel, "5551001002"))
+    XCTAssertEqual(phoneChanges.first!.0, kABPersonPhoneMainLabel)
+    XCTAssertEqual(phoneChanges.first!.1, "5551001002")
 
     let emailChanges = multiValueChanges[kABPersonEmailProperty]!
 
     XCTAssertEqual(emailChanges.count, 1)
-    XCTAssert(emailChanges.first! == ("Home", "arnold.alpha@example.com"))
+    XCTAssertEqual(emailChanges.first!.0, "Home")
+    XCTAssertEqual(emailChanges.first!.1, "arnold.alpha@example.com")
 
     let urlChanges = multiValueChanges[kABPersonURLProperty]!
 
     XCTAssertEqual(urlChanges.count, 1)
-    XCTAssert(urlChanges.first! == ("Work", "https://exampleinc.com/"))
+    XCTAssertEqual(urlChanges.first!.0, "Work")
+    XCTAssertEqual(urlChanges.first!.1, "https://exampleinc.com/")
+
+    let addressChanges = multiValueChanges[kABPersonAddressProperty]!
+
+    XCTAssertEqual(addressChanges.count, 1)
+    XCTAssertEqual(addressChanges.first!.0, "Home")
+    XCTAssertEqual(addressChanges.first!.1, newRecordHomeAddress)
   }
 
   func testDeterminesExistingRecordsByFirstAndLastName() {
@@ -152,7 +167,7 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(recordDiff.changes.count, 0)
   }
 
-  func testDoesNotFindRecordChangesIfNoNewValuesForMultiValueFields() {
+  func testDoesNotFindRecordChangeIfNoNewValueForMultiValueFieldOfString() {
     let oldRecord: ABRecord = newPersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
@@ -169,7 +184,7 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(recordDiff.changes.count, 0)
   }
 
-  func testFindsRecordChangeIfNewValueForMultiValueField() {
+  func testFindsRecordChangeIfNewValueForMultiValueFieldOfString() {
     let oldRecord: ABRecord = newPersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
@@ -193,7 +208,56 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(propertyChange, kABPersonPhoneProperty)
     XCTAssertEqual(valueChanges.count, 1)
-    XCTAssert(valueChanges.first! == (kABPersonPhoneMainLabel, "5551001002"))
+    XCTAssertEqual(valueChanges.first!.0, kABPersonPhoneMainLabel)
+    XCTAssertEqual(valueChanges.first!.1, "5551001002")
+  }
+
+  func testDoesNotFindRecordChangeIfNoNewValueForMultiValueFieldOfDictionary() {
+    let addr = newAddress(street: "Street 1", zip: "00001", city: "City", state: "CA")
+    let oldRecord: ABRecord = newPersonRecord(
+      firstName: "Arnold",
+      lastName: "Alpha",
+      addresses: [("Home", addr)])
+    let newRecord: ABRecord = newPersonRecord(
+      firstName: "Arnold",
+      lastName: "Alpha",
+      addresses: [("Work", addr)])
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [oldRecord],
+      newRecords: [newRecord])
+
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 0)
+  }
+
+  func testFindsRecordChangeIfNewValueForMultiValueFieldOfDictionary() {
+    let oldAddr = newAddress(street: "Street 1", zip: "00001", city: "City", state: "CA")
+    let newAddr = newAddress(street: "Street 2", zip: "00001", city: "City", state: "CA")
+    let oldRecord: ABRecord = newPersonRecord(
+      firstName: "Arnold",
+      lastName: "Alpha",
+      addresses: [("Home", oldAddr)])
+    let newRecord: ABRecord = newPersonRecord(
+      firstName: "Arnold",
+      lastName: "Alpha",
+      addresses: [("Work", newAddr)])
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [oldRecord],
+      newRecords: [newRecord])
+
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 1)
+
+    let changes = recordDiff.changes.first!.multiValueChanges
+
+    XCTAssertEqual(changes.count, 1)
+
+    let (propertyChange, valueChanges) = changes.first!
+
+    XCTAssertEqual(propertyChange, kABPersonAddressProperty)
+    XCTAssertEqual(valueChanges.count, 1)
+    XCTAssertEqual(valueChanges.first!.0, "Work")
+    XCTAssertEqual(valueChanges.first!.1, newAddr)
   }
 
   func testLatterRecordChangeOverridesFormer() {
@@ -215,15 +279,16 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   private func newPersonRecord(
-    firstName: String? = nil,
-    middleName: String? = nil,
-    lastName: String? = nil,
-    jobTitle: String? = nil,
-    department: String? = nil,
-    organization: String? = nil,
-    phones: [(String, String)]? = nil,
-    emails: [(String, String)]? = nil,
-    urls: [(String, String)]? = nil)
+    firstName: NSString? = nil,
+    middleName: NSString? = nil,
+    lastName: NSString? = nil,
+    jobTitle: NSString? = nil,
+    department: NSString? = nil,
+    organization: NSString? = nil,
+    phones: [(NSString, NSString)]? = nil,
+    emails: [(NSString, NSString)]? = nil,
+    urls: [(NSString, NSString)]? = nil,
+    addresses: [(NSString, NSDictionary)]? = nil)
     -> ABRecord
   {
     let record: ABRecord = ABPersonCreate().takeRetainedValue()
@@ -254,6 +319,24 @@ class RecordDifferencesTests: XCTestCase {
     if let vals = urls {
       Records.addValues(vals, toMultiValueProperty: kABPersonURLProperty, ofRecord: record)
     }
+    if let vals = addresses {
+      Records.addValues(vals, toMultiValueProperty: kABPersonAddressProperty, ofRecord: record)
+    }
     return record
+  }
+
+  private func newAddress(
+    #street: String,
+    zip: String,
+    city: String,
+    state: String)
+    -> [String: String]
+  {
+    return [
+      kABPersonAddressStreetKey: street,
+      kABPersonAddressZIPKey: zip,
+      kABPersonAddressCityKey: city,
+      kABPersonAddressStateKey: state
+    ]
   }
 }
