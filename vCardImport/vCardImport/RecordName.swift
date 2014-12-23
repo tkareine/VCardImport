@@ -22,13 +22,10 @@ class RecordName: Hashable, Equatable, Printable {
   }
 
   convenience init?(ofRecord record: ABRecord) {
-    let fn = Records.getSingleValueProperty(kABPersonFirstNameProperty, ofRecord: record) as String?
-    let firstName = fn == nil ? "" : fn!
+    let fn = (Records.getSingleValueProperty(kABPersonFirstNameProperty, ofRecord: record) as String?) ?? ""
+    let ln = (Records.getSingleValueProperty(kABPersonLastNameProperty, ofRecord: record) as String?) ?? ""
 
-    let ln = Records.getSingleValueProperty(kABPersonLastNameProperty, ofRecord: record) as String?
-    let lastName = ln == nil ? "" : ln!
-
-    self.init(firstName: firstName, lastName: lastName)
+    self.init(firstName: fn, lastName: ln)
 
     if self.firstName.isEmpty && self.lastName.isEmpty {
       return nil
