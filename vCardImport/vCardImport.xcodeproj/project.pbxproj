@@ -21,6 +21,10 @@
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
 		E983F1E219E9C76F00219305 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E983F1E019E9C76F00219305 /* LaunchScreen.xib */; };
 		E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */; };
+		E9C46E6E1A4A3C3F004BD769 /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6A1A4A3C3F004BD769 /* Condition.swift */; };
+		E9C46E6F1A4A3C3F004BD769 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6B1A4A3C3F004BD769 /* Future.swift */; };
+		E9C46E701A4A3C3F004BD769 /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */; };
+		E9C46E711A4A3C3F004BD769 /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6D1A4A3C3F004BD769 /* Try.swift */; };
 		E9CF04B21A3CE02A00A13EF6 /* CoreExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */; };
 		E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */; };
 		E9CF04B51A3CE40E00A13EF6 /* CoreExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */; };
@@ -100,6 +104,10 @@
 		E983F1E719E9C76F00219305 /* vCardImportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vCardImportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1EC19E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordChangeSet.swift; sourceTree = "<group>"; };
+		E9C46E6A1A4A3C3F004BD769 /* Condition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Condition.swift; sourceTree = "<group>"; };
+		E9C46E6B1A4A3C3F004BD769 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
+		E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Semaphore.swift; sourceTree = "<group>"; };
+		E9C46E6D1A4A3C3F004BD769 /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Try.swift; sourceTree = "<group>"; };
 		E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreExtension.swift; sourceTree = "<group>"; };
 		E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreExtensionTests.swift; sourceTree = "<group>"; };
 		E9EB13111A3EB4C2002BC521 /* Records.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Records.swift; sourceTree = "<group>"; };
@@ -160,6 +168,10 @@
 		E983F1D419E9C76F00219305 /* vCardImport */ = {
 			isa = PBXGroup;
 			children = (
+				E9C46E6A1A4A3C3F004BD769 /* Condition.swift */,
+				E9C46E6B1A4A3C3F004BD769 /* Future.swift */,
+				E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */,
+				E9C46E6D1A4A3C3F004BD769 /* Try.swift */,
 				E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */,
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
 				E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */,
@@ -340,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9CF04B21A3CE02A00A13EF6 /* CoreExtension.swift in Sources */,
+				E9C46E6E1A4A3C3F004BD769 /* Condition.swift in Sources */,
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
@@ -348,6 +361,9 @@
 				E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */,
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
 				E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */,
+				E9C46E701A4A3C3F004BD769 /* Semaphore.swift in Sources */,
+				E9C46E711A4A3C3F004BD769 /* Try.swift in Sources */,
+				E9C46E6F1A4A3C3F004BD769 /* Future.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
 				E9F9D8601A361C1B0054DCB8 /* UIConfig.swift in Sources */,
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
