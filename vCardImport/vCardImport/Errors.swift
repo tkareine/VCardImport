@@ -12,16 +12,30 @@ struct Errors {
       description: "The application needs access to Contacts, but the access is denied or restricted. Please allow access in System Settings.")
   }
 
-  static func addressBookFailedToUpdateContact(
+  static func addressBookFailedToLoadVCardFile() -> NSError {
+    return vcardError(
+      code: 6,
+      failureReason: "Invalid VCard file",
+      description: "Failed to load records from VCard file.")
+  }
+
+  static func addressBookFailedToLoadVCardURL(description: String) -> NSError {
+    return vcardError(
+      code: 7,
+      failureReason: "Failed to load VCard URL",
+      description: description)
+  }
+
+  static func addressBookFailedToChangeRecord(
     #name: String,
     property: ABPropertyID)
     -> NSError
   {
     let propDesc = describeAddressBookProperty(property)
     return vcardError(
-      code: 7,
+      code: 8,
       failureReason: "Address book update error",
-      description: "Failed in updating property \(propDesc) for contact \(name)")
+      description: "Failed in updating property \(propDesc) for contact \(name).")
   }
 
   static func fromCFError(error: CFError) -> NSError {

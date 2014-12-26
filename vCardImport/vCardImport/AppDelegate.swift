@@ -6,7 +6,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private var appContext: AppContext!
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    appContext = AppContext(vcardImporter: VCardImporter(), vcardSourceStore: VCardSourceStore())
+    appContext = AppContext(vcardSourceStore: VCardSourceStore())
     appContext.vcardSourceStore.load()
 
     let vcardSourcesController = VCardSourcesViewController(appContext: appContext)

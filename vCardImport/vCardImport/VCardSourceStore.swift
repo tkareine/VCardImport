@@ -41,12 +41,12 @@ class VCardSourceStore {
 
   func load() {
     if let sourcesData = NSUserDefaults.standardUserDefaults().objectForKey("VCardSources") as? NSData {
-      sources = NSKeyedUnarchiver.unarchiveObjectWithData(sourcesData) as Array<VCardSource>
+      sources = NSKeyedUnarchiver.unarchiveObjectWithData(sourcesData) as [VCardSource]
     } else {
       sources = [
         VCardSource(
           name: "Reaktor",
-          connection: VCardSource.Connection(url: NSURL(string: "https://download.reaktor.fi/")!),
+          connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/tmp/example-contacts.vcf")!),
           isEnabled: true
         )
       ]

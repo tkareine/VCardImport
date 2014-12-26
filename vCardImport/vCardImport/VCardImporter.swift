@@ -1,60 +1,98 @@
 import Foundation
 import AddressBook
 
-// TODO: Class without instance variables.
 class VCardImporter {
-  func importFrom(sources: [VCardSource], error: NSErrorPointer) -> Bool {
-    var addressBookOpt: ABAddressBook? = newAddressBook(error)
+  typealias OnSourceErrorCallback = (VCardSource, NSError) -> Void
+  typealias OnFailureCallback = NSError -> Void
+  typealias OnSuccessCallback = () -> Void
 
-    if addressBookOpt == nil {
-      return false
-    }
+  private let onSourceError: OnSourceErrorCallback
+  private let onFailure: OnFailureCallback
+  private let onSuccess: OnSuccessCallback
 
-    let addressBook: ABAddressBook = addressBookOpt!
+  class func builder() -> Builder {
+    return Builder()
+  }
 
-    if !authorizeAddressBookAccess(addressBook, error: error) {
-      return false
-    }
+  private init(
+    onSourceError: OnSourceErrorCallback,
+    onFailure: OnFailureCallback,
+    onSuccess: OnSuccessCallback)
+  {
+    self.onSourceError = onSourceError
+    self.onFailure = onFailure
+    self.onSuccess = onSuccess
+  }
 
-    let loadedRecords = loadExampleContacts()
-    let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
+  func importFrom(sources: [VCardSource]) {
+    BackgroundExecution.dispatchAsync {
+      var error: NSError?
+      var addressBookOpt: ABAddressBook? = self.newAddressBook(&error)
 
-    let recordDiff = RecordDifferences.resolveBetween(
-      oldRecords: existingRecords,
-      newRecords: loadedRecords)
-
-    if !recordDiff.additions.isEmpty {
-      let isSuccess = addRecords(recordDiff.additions, toAddressBook: addressBook, error: error)
-      if !isSuccess {
-        return false
+      if addressBookOpt == nil {
+        BackgroundExecution.dispatchAsyncToMain { self.onFailure(error!) }
+        return
       }
-    }
 
-    if !recordDiff.changes.isEmpty {
-      let isSuccess = changeRecords(recordDiff.changes, error: error)
-      if !isSuccess {
-        return false
+      let addressBook: ABAddressBook = addressBookOpt!
+
+      if !self.authorizeAddressBookAccess(addressBook, error: &error) {
+        BackgroundExecution.dispatchAsyncToMain { self.onFailure(error!) }
+        return
       }
-    }
 
-    if ABAddressBookHasUnsavedChanges(addressBook) {
-      var abError: Unmanaged<CFError>?
-      let isSaved = ABAddressBookSave(addressBook, &abError)
+      let loadedRecords = self.loadRecordsFromURL(sources.first!.connection.url, error: &error)
 
-      if !isSaved {
-        if error != nil && abError != nil {
-          error.memory = Errors.fromCFError(abError!.takeRetainedValue())
+      if loadedRecords == nil {
+        BackgroundExecution.dispatchAsyncToMain { self.onSourceError(sources.first!, error!) }
+        return
+      }
+
+      let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
+
+      let recordDiff = RecordDifferences.resolveBetween(
+        oldRecords: existingRecords,
+        newRecords: loadedRecords!)
+
+      if !recordDiff.additions.isEmpty {
+        let isSuccess = self.addRecords(
+          recordDiff.additions,
+          toAddressBook: addressBook,
+          error: &error)
+        if !isSuccess {
+          BackgroundExecution.dispatchAsyncToMain { self.onSourceError(sources.first!, error!) }
+          return
         }
-        return false
       }
 
-      NSLog("Added %d contact(s), updated %d contact(s)",
-        recordDiff.additions.count, recordDiff.changes.count)
-    } else {
-      NSLog("No contacts to add or update")
-    }
+      if !recordDiff.changes.isEmpty {
+        let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
+        if !isSuccess {
+          BackgroundExecution.dispatchAsyncToMain { self.onSourceError(sources.first!, error!) }
+          return
+        }
+      }
 
-    return true
+      if ABAddressBookHasUnsavedChanges(addressBook) {
+        var abError: Unmanaged<CFError>?
+        let isSaved = ABAddressBookSave(addressBook, &abError)
+
+        if !isSaved {
+          if abError != nil {
+            error = Errors.fromCFError(abError!.takeRetainedValue())
+          }
+          BackgroundExecution.dispatchAsyncToMain { self.onFailure(error!) }
+          return
+        }
+
+        NSLog("Added %d contact(s), updated %d contact(s)",
+          recordDiff.additions.count, recordDiff.changes.count)
+      } else {
+        NSLog("No contacts to add or update")
+      }
+
+      BackgroundExecution.dispatchAsyncToMain(self.onSuccess)
+    }
   }
 
   private func authorizeAddressBookAccess(
@@ -135,19 +173,12 @@ class VCardImporter {
     return true
   }
 
-  private func changeRecords(
-    changeSets: [RecordChangeSet],
-    error: NSErrorPointer)
-    -> Bool
-  {
+  private func changeRecords(changeSets: [RecordChangeSet], error: NSErrorPointer) -> Bool {
     for changeSet in changeSets {
       for (property, value) in changeSet.singleValueChanges {
         let isChanged = Records.setValue(value, toProperty: property, ofRecord: changeSet.record)
         if !isChanged {
-          setUpdateErrorIfErrorPointerGiven(
-            property: property,
-            record: changeSet.record,
-            error: error)
+          setRecordChangeError(property: property, record: changeSet.record, error: error)
           return false
         }
       }
@@ -158,10 +189,7 @@ class VCardImporter {
           toMultiValueProperty: property,
           ofRecord: changeSet.record)
         if !isChanged {
-          setUpdateErrorIfErrorPointerGiven(
-            property: property,
-            record: changeSet.record,
-            error: error)
+          setRecordChangeError(property: property, record: changeSet.record, error: error)
           return false
         }
       }
@@ -170,15 +198,50 @@ class VCardImporter {
     return true
   }
 
-  private func setUpdateErrorIfErrorPointerGiven(
+  private func setRecordChangeError(
     #property: ABPropertyID,
     record: ABRecord,
     error: NSErrorPointer)
   {
-    if error != nil {
-      error.memory = Errors.addressBookFailedToUpdateContact(
-        name: ABRecordCopyCompositeName(record).takeRetainedValue(),
-        property: property)
+    error.memory = Errors.addressBookFailedToChangeRecord(
+      name: ABRecordCopyCompositeName(record).takeRetainedValue(),
+      property: property)
+  }
+
+  // TODO
+  private func loadRecordsFromURL(
+    url: NSURL,
+    error: NSErrorPointer)
+    -> [ABRecord]?
+  {
+    let docDirURL = NSFileManager.defaultManager()
+      .URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0] as NSURL
+    let destinationURL = docDirURL.URLByAppendingPathComponent("download.vcf")
+    NSFileManager.defaultManager().removeItemAtURL(destinationURL, error: nil)
+    let sourceToLoad = URLConnection.download(url, toDestination: destinationURL)
+    let result = sourceToLoad.get()
+    if let failure = result as? Failure {
+      error.memory = Errors.addressBookFailedToLoadVCardURL(failure.desc)
+      return nil
+    }
+    let loadedRecords = loadRecordsFromFile(result.value!, error: error)
+    if loadedRecords == nil {
+      return nil
+    }
+    return loadedRecords!
+  }
+
+  private func loadRecordsFromFile(
+    fileURL: NSURL,
+    error: NSErrorPointer)
+    -> [ABRecord]?
+  {
+    let vcardData = NSData(contentsOfURL: fileURL)
+    if let records = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData) {
+      return records.takeRetainedValue()
+    } else {
+      error.memory = Errors.addressBookFailedToLoadVCardFile()
+      return nil
     }
   }
 
@@ -186,5 +249,36 @@ class VCardImporter {
     let vcardPath = NSBundle.mainBundle().pathForResource("example-contacts", ofType: "vcf")
     let vcardData = NSData(contentsOfFile: vcardPath!)
     return ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData).takeRetainedValue()
+  }
+
+  class Builder {
+    private var _onSourceError: OnSourceErrorCallback?
+    private var _onFailure: OnFailureCallback?
+    private var _onSuccess: OnSuccessCallback?
+
+    func onSourceError(callback: OnSourceErrorCallback) -> Builder {
+      _onSourceError = callback
+      return self
+    }
+
+    func onFailure(callback: OnFailureCallback) -> Builder {
+      _onFailure = callback
+      return self
+    }
+
+    func onSuccess(callback: OnSuccessCallback) -> Builder {
+      _onSuccess = callback
+      return self
+    }
+
+    func build() -> VCardImporter {
+      if _onSourceError == nil || _onFailure == nil || _onSuccess == nil {
+        fatalError("all callbacks must be given")
+      }
+      return VCardImporter(
+        onSourceError: _onSourceError!,
+        onFailure: _onFailure!,
+        onSuccess: _onSuccess!)
+    }
   }
 }

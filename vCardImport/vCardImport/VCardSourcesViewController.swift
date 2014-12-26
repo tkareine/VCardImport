@@ -5,6 +5,7 @@ class VCardSourcesViewController: UITableViewController {
   private let appContext: AppContext
 
   private var syncButton: UIBarButtonItem!
+  private var vcardImporter: VCardImporter!
 
   // MARK: Controller Life Cycle
 
@@ -19,6 +20,28 @@ class VCardSourcesViewController: UITableViewController {
     self.navigationItem.title = "vCard Import"
     self.toolbarItems = [syncButton]
     self.tableView.dataSource = dataSource
+
+    self.vcardImporter = VCardImporter.builder()
+      .onSourceError { vCardSource in
+        // TODO
+      }
+      .onFailure { error in
+        let alertController = UIAlertController(
+          title: error.localizedFailureReason,
+          message: error.localizedDescription,
+          preferredStyle: .Alert)
+        let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+
+        alertController.addAction(dismissAction)
+
+        self.presentViewController(alertController, animated: true, completion: nil)
+
+        self.syncButton.enabled = true
+      }
+      .onSuccess {
+        self.syncButton.enabled = true
+      }
+      .build()
   }
 
   required init(coder decoder: NSCoder) {
@@ -47,18 +70,7 @@ class VCardSourcesViewController: UITableViewController {
 
   func syncVCardSources(sender: AnyObject) {
     let enabledSources = appContext.vcardSourceStore.filterEnabled
-    var error: NSError?
-    let isSuccess = appContext.vcardImporter.importFrom(enabledSources, error: &error)
-    if !isSuccess {
-      let alertController = UIAlertController(
-        title: error!.localizedFailureReason,
-        message: error!.localizedDescription,
-        preferredStyle: .Alert)
-      let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-
-      alertController.addAction(dismissAction)
-
-      presentViewController(alertController, animated: true, completion: nil)
-    }
+    syncButton.enabled = false
+    vcardImporter.importFrom(enabledSources)
   }
 }
