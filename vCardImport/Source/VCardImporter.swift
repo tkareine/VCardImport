@@ -208,27 +208,24 @@ class VCardImporter {
       property: property)
   }
 
-  // TODO
   private func loadRecordsFromURL(
     url: NSURL,
     error: NSErrorPointer)
     -> [ABRecord]?
   {
-    let docDirURL = NSFileManager.defaultManager()
-      .URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0] as NSURL
-    let destinationURL = docDirURL.URLByAppendingPathComponent("download.vcf")
-    NSFileManager.defaultManager().removeItemAtURL(destinationURL, error: nil)
-    let sourceToLoad = URLConnection.download(url, toDestination: destinationURL)
-    let result = sourceToLoad.get()
-    if let failure = result as? Failure {
-      error.memory = Errors.addressBookFailedToLoadVCardURL(failure.desc)
-      return nil
+    return Files.withTempFile { filePath in
+      let sourceToLoad = URLConnection.download(url, toDestination: filePath)
+      let result = sourceToLoad.get()
+      if let failure = result as? Failure {
+        error.memory = Errors.addressBookFailedToLoadVCardURL(failure.desc)
+        return nil
+      }
+      let loadedRecords = self.loadRecordsFromFile(result.value!, error: error)
+      if loadedRecords == nil {
+        return nil
+      }
+      return loadedRecords!
     }
-    let loadedRecords = loadRecordsFromFile(result.value!, error: error)
-    if loadedRecords == nil {
-      return nil
-    }
-    return loadedRecords!
   }
 
   private func loadRecordsFromFile(

@@ -6,11 +6,11 @@ struct URLConnection {
     let promise = Future<NSURL>.promise()
     Alamofire
       .download(.GET, url) { tmpURL, response in
-        NSLog("downloading: %@\n%@", tmpURL, response)
+        NSLog("downloading: %@ -> %@", tmpURL, destinationURL)
         return destinationURL
       }
       .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
-        NSLog("progress: %d/%d", totalBytesRead, totalBytesExpectedToRead)
+        NSLog("download progress: %d/%d", totalBytesRead, totalBytesExpectedToRead)
       }
       .response(
         queue: BackgroundExecution.sharedQueue,
@@ -18,7 +18,6 @@ struct URLConnection {
         completionHandler: { request, response, _, error in
           NSLog("got response: %@", response!)
           if let err = error {
-            NSLog("download failed: %@", err)
             if !promise.isCompleted {
               promise.reject("\(err.localizedFailureReason): \(err.localizedDescription)")
             }
