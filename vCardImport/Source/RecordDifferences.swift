@@ -35,10 +35,15 @@ struct RecordDifferences {
 
         switch existingRecordsWithName.count {
         case 0:
-          additions.append(newRecord)
+          let isToBeAdded = additions.any { RecordName(ofRecord: $0) == newRecordName }
+          if !isToBeAdded {
+            additions.append(newRecord)
+          }
         case 1:
-          let existingRecord: ABRecord = existingRecordsWithName.first!
-          matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
+          if !matchingRecordsByName.hasKey(newRecordName) {
+            let existingRecord: ABRecord = existingRecordsWithName.first!
+            matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
+          }
         default:
           NSLog("Skipping update for multiple records having same name: %@", newRecordName.description)
         }
