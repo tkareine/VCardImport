@@ -29,6 +29,12 @@ class CoreExtensionTests: XCTestCase {
     XCTAssert(["a": 1].first! == ("a", 1))
   }
 
+  func testDictionaryHasKey() {
+    let dict = ["foo": 1]
+    XCTAssertTrue(dict.hasKey("foo"))
+    XCTAssertFalse(dict.hasKey("bar"))
+  }
+
   func test2TupleEquality() {
     XCTAssertTrue((0, "1") == (0, "1"))
     XCTAssertFalse((0, "1") == (0, "2"))

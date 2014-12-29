@@ -47,6 +47,10 @@ extension Dictionary {
     var gen = self.generate()
     return gen.next()
   }
+
+  func hasKey(key: Key) -> Bool {
+    return indexForKey(key) != nil
+  }
 }
 
 func ==<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
