@@ -12,18 +12,11 @@ struct Errors {
       description: "The application needs access to Contacts, but the access is denied or restricted. Please allow access in System Settings.")
   }
 
-  static func addressBookFailedToLoadVCardFile() -> NSError {
+  static func addressBookFailedToLoadVCardSource(reason: String) -> NSError {
     return vcardError(
       code: 6,
-      failureReason: "Invalid VCard file",
-      description: "Failed to load records from VCard file.")
-  }
-
-  static func addressBookFailedToLoadVCardURL(description: String) -> NSError {
-    return vcardError(
-      code: 7,
-      failureReason: "Failed to load VCard URL",
-      description: description)
+      failureReason: "Failed to load VCard",
+      description: "Failed to load records from VCard source: \(reason)")
   }
 
   static func addressBookFailedToChangeRecord(

@@ -41,18 +41,22 @@ class VCardImporter {
         return
       }
 
-      let loadedRecords = self.loadRecordsFromURL(sources.first!.connection.url, error: &error)
+      // TODO: Load multiple sources here, process them one-by-one in reduce
+      let loadingResult = self.loadRecordsFromURL(sources.first!.connection.url).get()
 
-      if loadedRecords == nil {
-        BackgroundExecution.dispatchAsyncToMain { self.onSourceError(sources.first!, error!) }
+      if let failure = loadingResult as? Failure {
+        BackgroundExecution.dispatchAsyncToMain {
+          self.onSourceError(sources.first!, Errors.addressBookFailedToLoadVCardSource(failure.desc))
+        }
         return
       }
 
+      let loadedRecords = loadingResult.value!
       let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
 
       let recordDiff = RecordDifferences.resolveBetween(
         oldRecords: existingRecords,
-        newRecords: loadedRecords!)
+        newRecords: loadedRecords)
 
       if !recordDiff.additions.isEmpty {
         let isSuccess = self.addRecords(
@@ -208,37 +212,21 @@ class VCardImporter {
       property: property)
   }
 
-  private func loadRecordsFromURL(
-    url: NSURL,
-    error: NSErrorPointer)
-    -> [ABRecord]?
-  {
-    return Files.withTempFile { filePath in
-      let sourceToLoad = URLConnection.download(url, toDestination: filePath)
-      let result = sourceToLoad.get()
-      if let failure = result as? Failure {
-        error.memory = Errors.addressBookFailedToLoadVCardURL(failure.desc)
-        return nil
-      }
-      let loadedRecords = self.loadRecordsFromFile(result.value!, error: error)
-      if loadedRecords == nil {
-        return nil
-      }
-      return loadedRecords!
-    }
+  private func loadRecordsFromURL(url: NSURL) -> Future<[ABRecord]> {
+    let fileURL = Files.tempFile()
+    let future = URLConnection
+        .download(url, toDestination: fileURL)
+        .flatMap(loadRecordsFromFile)
+    future.onComplete { _ in Files.removeFile(fileURL) }
+    return future
   }
 
-  private func loadRecordsFromFile(
-    fileURL: NSURL,
-    error: NSErrorPointer)
-    -> [ABRecord]?
-  {
+  private func loadRecordsFromFile(fileURL: NSURL) -> Future<[ABRecord]> {
     let vcardData = NSData(contentsOfURL: fileURL)
     if let records = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData) {
-      return records.takeRetainedValue()
+      return Future.succeeded(records.takeRetainedValue())
     } else {
-      error.memory = Errors.addressBookFailedToLoadVCardFile()
-      return nil
+      return Future.failed("invalid VCard file")
     }
   }
 

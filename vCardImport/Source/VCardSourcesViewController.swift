@@ -22,8 +22,8 @@ class VCardSourcesViewController: UITableViewController {
     self.tableView.dataSource = dataSource
 
     self.vcardImporter = VCardImporter.builder()
-      .onSourceError { vCardSource in
-        // TODO
+      .onSourceError { source, error in
+        NSLog("Source error for %@: %@", source.name, error)
       }
       .onFailure { error in
         let alertController = UIAlertController(
