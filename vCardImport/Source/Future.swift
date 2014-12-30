@@ -26,7 +26,7 @@ struct FutureExecution {
   }
 }
 
-public class Future<T> {
+public class Future<T>: Printable {
   public class func async(block: () -> Try<T>) -> Future<T> {
     return AsyncFuture(block)
   }
@@ -53,6 +53,14 @@ public class Future<T> {
 
   public var isCompleted: Bool {
     return result != nil
+  }
+
+  public var description: String {
+    return "\(futureName)(\(result))"
+  }
+
+  private var futureName: String {
+    fatalError("must be overridden")
   }
 
   private init(_ val: Try<T>?) {
@@ -89,6 +97,10 @@ public class Future<T> {
 }
 
 public class ImmediateFuture<T>: Future<T> {
+  override var futureName: String {
+    return "ImmediateFuture"
+  }
+
   private init(_ val: Try<T>) {
     super.init(val)
   }
@@ -105,6 +117,10 @@ public class ImmediateFuture<T>: Future<T> {
 
 public class AsyncFuture<T>: Future<T> {
   private let Group = FutureExecution.newGroup()
+
+  override var futureName: String {
+    return "AsyncFuture"
+  }
 
   private init(_ block: () -> Try<T>) {
     super.init(nil)
@@ -129,6 +145,10 @@ public class PromiseFuture<T>: Future<T> {
   private let condition = Condition()
   private var completionCallbacks: [CompletionCallback] = []
 
+  override var futureName: String {
+    return "PromiseFuture"
+  }
+
   private init() {
     super.init(nil)
   }
@@ -143,7 +163,9 @@ public class PromiseFuture<T>: Future<T> {
 
   public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
-      assert(self.result == nil, "must complete only once")
+      if self.result != nil {
+        fatalError("PromiseFuture is already completed, don't complete me more than once")
+      }
 
       self.result = value
 
