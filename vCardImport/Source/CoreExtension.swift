@@ -49,7 +49,7 @@ extension Dictionary {
   }
 
   func hasKey(key: Key) -> Bool {
-    return indexForKey(key) != nil
+    return self[key] != nil
   }
 }
 
