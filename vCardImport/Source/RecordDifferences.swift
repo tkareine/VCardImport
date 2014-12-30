@@ -10,43 +10,52 @@ struct RecordDifferences {
     newRecords: [ABRecord])
     -> RecordDifferences
   {
-    let (additions, matches) = findAdditionsAndExistingMatchesBetween(oldRecords, newRecords)
+    let (additions, matches) = findAdditionsAndExistingMatchesBetween(
+      oldRecords,
+      uniqueRecordsOf(newRecords))
     let changes = findChanges(matches)
     return RecordDifferences(additions: additions, changes: changes)
   }
 
+  private static func uniqueRecordsOf(records: [ABRecord]) -> [RecordName: ABRecord] {
+    var result: [RecordName: ABRecord] = [:]
+    for rec in records {
+      if let name = RecordName(ofRecord: rec) {
+        if result.hasKey(name) {
+          result.removeValueForKey(name)
+        } else {
+          result[name] = rec
+        }
+      }
+    }
+    return result
+  }
+
   private static func findAdditionsAndExistingMatchesBetween(
     oldRecords: [ABRecord],
-    _ newRecords: [ABRecord])
+    _ newRecords: [RecordName: ABRecord])
     -> ([ABRecord], [RecordName: (ABRecord, ABRecord)])
   {
     var additions: [ABRecord] = []
     var matchingRecordsByName: [RecordName: (ABRecord, ABRecord)] = [:]
 
-    for newRecord in newRecords {
-      if let newRecordName = RecordName(ofRecord: newRecord) {
-        let existingRecordsWithName = oldRecords.filter { oldRecord in
-          if let oldRecordName = RecordName(ofRecord: oldRecord) {
-            return oldRecordName == newRecordName
-          } else {
-            return false
-          }
+    for (newRecordName, newRecord) in newRecords {
+      let existingRecordsWithName = oldRecords.filter { oldRecord in
+        if let oldRecordName = RecordName(ofRecord: oldRecord) {
+          return oldRecordName == newRecordName
+        } else {
+          return false
         }
+      }
 
-        switch existingRecordsWithName.count {
-        case 0:
-          let isToBeAdded = additions.any { RecordName(ofRecord: $0) == newRecordName }
-          if !isToBeAdded {
-            additions.append(newRecord)
-          }
-        case 1:
-          if !matchingRecordsByName.hasKey(newRecordName) {
-            let existingRecord: ABRecord = existingRecordsWithName.first!
-            matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
-          }
-        default:
-          NSLog("Skipping update for multiple records having same name: %@", newRecordName.description)
-        }
+      switch existingRecordsWithName.count {
+      case 0:
+        additions.append(newRecord)
+      case 1:
+        let existingRecord: ABRecord = existingRecordsWithName.first!
+        matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
+      default:
+        NSLog("Skipping update for multiple existing records having same name: %@", newRecordName.description)
       }
     }
 
