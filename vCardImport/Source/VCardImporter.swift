@@ -24,6 +24,8 @@ class VCardImporter {
     self.onSuccess = onSuccess
   }
 
+  // The implementation is long and ugly, but I prefer to keep dispatching calls
+  // to background jobs and back to the main thread in one place.
   func importFrom(sources: [VCardSource]) {
     BackgroundExecution.dispatchAsync {
       var error: NSError?
@@ -41,58 +43,64 @@ class VCardImporter {
         return
       }
 
-      // TODO: Load multiple sources here, process them one-by-one in reduce
-      let loadingResult = self.loadRecordsFromURL(sources.first!.connection.url).get()
-
-      if let failure = loadingResult as? Failure {
-        BackgroundExecution.dispatchAsyncToMain {
-          self.onSourceError(sources.first!, Errors.addressBookFailedToLoadVCardSource(failure.desc))
-        }
-        return
+      let recordLoaders: [(VCardSource, Future<[ABRecord]>)] = sources.map { source in
+        let recordLoader = self.loadRecordsFromURL(source.connection.url)
+        return (source, recordLoader)
       }
 
-      let loadedRecords = loadingResult.value!
-      let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
+      for (source, recordLoader) in recordLoaders {
+        let loadingResult = recordLoader.get()
 
-      let recordDiff = RecordDifferences.resolveBetween(
-        oldRecords: existingRecords,
-        newRecords: loadedRecords)
-
-      if !recordDiff.additions.isEmpty {
-        let isSuccess = self.addRecords(
-          recordDiff.additions,
-          toAddressBook: addressBook,
-          error: &error)
-        if !isSuccess {
-          BackgroundExecution.dispatchAsyncToMain { self.onSourceError(sources.first!, error!) }
-          return
-        }
-      }
-
-      if !recordDiff.changes.isEmpty {
-        let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
-        if !isSuccess {
-          BackgroundExecution.dispatchAsyncToMain { self.onSourceError(sources.first!, error!) }
-          return
-        }
-      }
-
-      if ABAddressBookHasUnsavedChanges(addressBook) {
-        var abError: Unmanaged<CFError>?
-        let isSaved = ABAddressBookSave(addressBook, &abError)
-
-        if !isSaved {
-          if abError != nil {
-            error = Errors.fromCFError(abError!.takeRetainedValue())
+        if let failure = loadingResult as? Failure {
+          BackgroundExecution.dispatchAsyncToMain {
+            self.onSourceError(source, Errors.addressBookFailedToLoadVCardSource(failure.desc))
           }
-          BackgroundExecution.dispatchAsyncToMain { self.onFailure(error!) }
-          return
+          continue
         }
 
-        NSLog("Added %d contact(s), updated %d contact(s)",
-          recordDiff.additions.count, recordDiff.changes.count)
-      } else {
-        NSLog("No contacts to add or update")
+        let loadedRecords = loadingResult.value!
+        let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
+
+        let recordDiff = RecordDifferences.resolveBetween(
+          oldRecords: existingRecords,
+          newRecords: loadedRecords)
+
+        if !recordDiff.additions.isEmpty {
+          let isSuccess = self.addRecords(
+            recordDiff.additions,
+            toAddressBook: addressBook,
+            error: &error)
+          if !isSuccess {
+            BackgroundExecution.dispatchAsyncToMain { self.onSourceError(source, error!) }
+            continue
+          }
+        }
+
+        if !recordDiff.changes.isEmpty {
+          let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
+          if !isSuccess {
+            BackgroundExecution.dispatchAsyncToMain { self.onSourceError(source, error!) }
+            continue
+          }
+        }
+
+        if ABAddressBookHasUnsavedChanges(addressBook) {
+          var abError: Unmanaged<CFError>?
+          let isSaved = ABAddressBookSave(addressBook, &abError)
+
+          if !isSaved {
+            if abError != nil {
+              error = Errors.fromCFError(abError!.takeRetainedValue())
+            }
+            BackgroundExecution.dispatchAsyncToMain { self.onSourceError(source, error!) }
+            continue
+          }
+
+          NSLog("VCard source %@: added %d contact(s), updated %d contact(s)",
+            source.name, recordDiff.additions.count, recordDiff.changes.count)
+        } else {
+          NSLog("VCard source %@: no contacts to add or update", source.name)
+        }
       }
 
       BackgroundExecution.dispatchAsyncToMain(self.onSuccess)
@@ -228,12 +236,6 @@ class VCardImporter {
     } else {
       return Future.failed("invalid VCard file")
     }
-  }
-
-  private func loadExampleContacts() -> [ABRecord] {
-    let vcardPath = NSBundle.mainBundle().pathForResource("example-contacts", ofType: "vcf")
-    let vcardData = NSData(contentsOfFile: vcardPath!)
-    return ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData).takeRetainedValue()
   }
 
   class Builder {
