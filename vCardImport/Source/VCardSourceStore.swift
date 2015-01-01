@@ -45,8 +45,13 @@ class VCardSourceStore {
     } else {
       sources = [
         VCardSource(
-          name: "Reaktor",
-          connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/tmp/example-contacts.vcf")!),
+          name: "Example: Body Corp",
+          connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf")!),
+          isEnabled: true
+        ),
+        VCardSource(
+          name: "Example: Cold Temp",
+          connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf")!),
           isEnabled: true
         )
       ]
