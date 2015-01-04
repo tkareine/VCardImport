@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
+		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
 		E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E9375BC81A0ED1120065A042 /* example-contacts.vcf */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -92,6 +94,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E90684AB1A589F0700728D0B /* VCardSourceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceCell.swift; sourceTree = "<group>"; };
+		E90684B01A58B17900728D0B /* DictionaryConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryConvertible.swift; sourceTree = "<group>"; };
 		E9375BC81A0ED1120065A042 /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordName.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 				E947E1581A4F87A200513F77 /* Files.swift */,
 				E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */,
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
+				E90684B01A58B17900728D0B /* DictionaryConvertible.swift */,
 				E9F31E111A0FD2570015509F /* Errors.swift */,
 				E9EB13111A3EB4C2002BC521 /* Records.swift */,
 				E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */,
@@ -194,6 +199,7 @@
 				E9F9D85F1A361C1B0054DCB8 /* UIConfig.swift */,
 				E9C46E721A4A3C98004BD769 /* URLConnection.swift */,
 				E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */,
+				E90684AB1A589F0700728D0B /* VCardSourceCell.swift */,
 				E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */,
 				E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */,
 				E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */,
@@ -373,6 +379,8 @@
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
+				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
+				E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */,
 				E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */,
 				E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */,
 				E96925401A4F7CF000B6427A /* BackgroundExecution.swift in Sources */,

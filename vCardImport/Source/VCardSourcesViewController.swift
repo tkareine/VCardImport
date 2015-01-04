@@ -52,7 +52,7 @@ class VCardSourcesViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
+    self.tableView.registerClass(VCardSourceCell.self, forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
   }
 
   override func viewWillAppear(animated: Bool) {

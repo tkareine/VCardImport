@@ -32,7 +32,16 @@ class VCardSourceStore {
   }
 
   func save() {
-    let sourcesData = NSKeyedArchiver.archivedDataWithRootObject(sources)
+    func serializeJSON(obj: AnyObject) -> NSData {
+      var err: NSError?
+      if let data = NSJSONSerialization.dataWithJSONObject(obj, options: nil, error: &err) {
+        return data
+      } else {
+        fatalError("JSON serialization failed: \(err!)")
+      }
+    }
+
+    let sourcesData = serializeJSON(sources.map { $0.toDictionary() })
     let defaults = NSUserDefaults.standardUserDefaults()
     defaults.setInteger(1, forKey: "VCardSourcesVersion")
     defaults.setObject(sourcesData, forKey: "VCardSources")
@@ -40,8 +49,18 @@ class VCardSourceStore {
   }
 
   func load() {
+    func deserializeJSON(data: NSData) -> AnyObject {
+      var err: NSError?
+      if let obj: AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &err) {
+        return obj
+      } else {
+        fatalError("JSON deserialization failed: \(err!)")
+      }
+    }
+
     if let sourcesData = NSUserDefaults.standardUserDefaults().objectForKey("VCardSources") as? NSData {
-      sources = NSKeyedUnarchiver.unarchiveObjectWithData(sourcesData) as [VCardSource]
+      let obj = deserializeJSON(sourcesData) as [[String: AnyObject]]
+      sources = obj.map { VCardSource.fromDictionary($0) }
     } else {
       sources = [
         VCardSource(
