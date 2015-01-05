@@ -19,11 +19,13 @@ class VCardSourcesViewController: UITableViewController {
     self.tableView.dataSource = dataSource
 
     self.vcardImporter = VCardImporter.builder()
-      .onSourceError { source, error in
-        self.dataSource.setVCardSource(source, status: error.localizedDescription)
-        let indexPath = NSIndexPath(forRow: self.dataSource.rowForVCardSource(source), inSection: 0)
-        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        NSLog("VCard source error for %@: %@", source.name, error)
+      .onSourceFailure { source, error in
+        self.dataSource.setVCardSourceFailureStatus(source, error: error)
+        self.reloadTableViewSourceRow(source)
+      }
+      .onSourceSuccess { source, changes in
+        self.dataSource.setVCardSourceSuccessStatus(source, changes: changes)
+        self.reloadTableViewSourceRow(source)
       }
       .onFailure { error in
         let alertController = UIAlertController(
@@ -36,10 +38,10 @@ class VCardSourcesViewController: UITableViewController {
 
         self.presentViewController(alertController, animated: true, completion: nil)
 
-        self.syncButton.enabled = true
+        self.refreshSyncButtonEnabledState()
       }
       .onSuccess {
-        self.syncButton.enabled = true
+        self.refreshSyncButtonEnabledState()
       }
       .build()
   }
@@ -56,7 +58,7 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   override func viewWillAppear(animated: Bool) {
-    syncButton.enabled = dataSource.hasEnabledVCardSources
+    refreshSyncButtonEnabledState()
   }
 
   // MARK: Actions
@@ -73,5 +75,16 @@ class VCardSourcesViewController: UITableViewController {
   func syncVCardSources(sender: AnyObject) {
     syncButton.enabled = false
     vcardImporter.importFrom(dataSource.enabledVCardSources)
+  }
+
+  // MARK: Helpers
+
+  private func refreshSyncButtonEnabledState() {
+    syncButton.enabled = dataSource.hasEnabledVCardSources
+  }
+
+  private func reloadTableViewSourceRow(source: VCardSource) {
+    let indexPath = NSIndexPath(forRow: self.dataSource.rowForVCardSource(source), inSection: 0)
+    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
   }
 }

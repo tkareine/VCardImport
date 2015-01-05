@@ -59,7 +59,18 @@ private let ISODateFormatter: NSDateFormatter = {
   return formatter
 }()
 
+private let LocaleMediumDateFormatter: NSDateFormatter = {
+  let formatter = NSDateFormatter()
+  formatter.dateStyle = .MediumStyle
+  formatter.timeStyle = .ShortStyle
+  return formatter
+}()
+
 extension NSDate {
+  var localeMediumString: NSString {
+    return LocaleMediumDateFormatter.stringFromDate(self)
+  }
+
   var ISOString: NSString {
     return ISODateFormatter.stringFromDate(self)
   }

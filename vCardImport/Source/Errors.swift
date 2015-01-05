@@ -8,15 +8,15 @@ struct Errors {
   static func addressBookAccessDeniedOrResticted() -> NSError {
     return vcardError(
       code: 5,
-      failureReason: "Access error",
+      failureReason: "Contacts Access Error",
       description: "The application needs access to Contacts, but the access is denied or restricted. Please allow access in System Settings.")
   }
 
   static func addressBookFailedToLoadVCardSource(reason: String) -> NSError {
     return vcardError(
       code: 6,
-      failureReason: "Failed to load VCard",
-      description: "Failed to load records from VCard source: \(reason)")
+      failureReason: "VCard Download Error",
+      description: "Download failed: \(reason)")
   }
 
   static func addressBookFailedToChangeRecord(
@@ -27,8 +27,8 @@ struct Errors {
     let propDesc = describeAddressBookProperty(property)
     return vcardError(
       code: 8,
-      failureReason: "Address book update error",
-      description: "Failed in updating property \(propDesc) for contact \(name).")
+      failureReason: "Contact Update Error",
+      description: "Failed in updating \(propDesc) for contact \(name)")
   }
 
   static func fromCFError(error: CFError) -> NSError {
@@ -48,8 +48,22 @@ struct Errors {
 
   private static func describeAddressBookProperty(property: ABPropertyID) -> String {
     switch property {
+    case kABPersonMiddleNameProperty:
+      return "middle name"
+    case kABPersonJobTitleProperty:
+      return "job title"
+    case kABPersonDepartmentProperty:
+      return "department"
+    case kABPersonOrganizationProperty:
+      return "organization"
+    case kABPersonEmailProperty:
+      return "email"
     case kABPersonPhoneProperty:
       return "phone"
+    case kABPersonURLProperty:
+      return "URL"
+    case kABPersonAddressProperty:
+      return "address"
     default:
       return "unknown"
     }

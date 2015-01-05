@@ -13,13 +13,18 @@ struct URLConnection {
         queue: BackgroundExecution.sharedQueue,
         serializer: Alamofire.Request.responseDataSerializer(),
         completionHandler: { request, response, _, error in
-          NSLog("download complete %@: %d", url, response!.statusCode)
           if let err = error {
             promise.reject("\(err.localizedFailureReason): \(err.localizedDescription)")
-          } else if response != nil {
-            promise.resolve(destinationURL)
+          } else if let res = response {
+            NSLog("download complete %@: %d", url, response!.statusCode)
+            if res.statusCode == 200 {
+              promise.resolve(destinationURL)
+            } else {
+              let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+              promise.reject("(\(res.statusCode)) \(statusDesc)")
+            }
           } else {
-            promise.reject("unknown download error")
+            promise.reject("Unknown download error")
           }
         }
       )

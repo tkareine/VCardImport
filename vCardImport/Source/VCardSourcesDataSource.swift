@@ -22,9 +22,47 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     return vcardSourceStore.filterEnabled
   }
 
-  func setVCardSource(source: VCardSource, status: String) {
+  func setVCardSourceFailureStatus(source: VCardSource, error: NSError) {
+    setVCardSourceStatus(error.localizedDescription, to: source)
+  }
+
+  func setVCardSourceSuccessStatus(source: VCardSource, changes: (Int, Int)) {
+    var status: String
+
+    let (additions, updates) = changes
+    if additions == 0 && updates == 0 {
+      status = "Nothing to change"
+    } else {
+      var additionsStatus: String
+      switch additions {
+      case 0:
+        additionsStatus = "No additions"
+      case 1:
+        additionsStatus = "1 addition"
+      default:
+        additionsStatus = "\(additions) additions"
+      }
+
+      var updatesStatus: String
+      switch updates {
+      case 0:
+        updatesStatus = "no updates"
+      case 1:
+        updatesStatus = "1 update"
+      default:
+        updatesStatus = "\(updates) updates"
+      }
+
+      status = "\(additionsStatus), \(updatesStatus)"
+    }
+
+    setVCardSourceStatus(status, to: source)
+  }
+
+  func setVCardSourceStatus(status: String, to source: VCardSource) {
     let s = source.withSyncStatus(status, at: NSDate())
     vcardSourceStore[s.id] = s
+    vcardSourceStore.save()
   }
 
   func saveVCardSource(source: VCardSource) {
@@ -63,9 +101,9 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
 
     if let date = source.lastSyncedAt {
       let status = source.lastSyncStatus ?? ""
-      setDetailText("\(date) - \(status)", UIColor.blackColor())
+      setDetailText("\(date.localeMediumString) - \(status)", UIColor.blackColor())
     } else {
-      setDetailText("not synced", UIColor.grayColor())
+      setDetailText("Not synced", UIColor.grayColor())
     }
 
     return cell

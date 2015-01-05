@@ -2,11 +2,13 @@ import Foundation
 import AddressBook
 
 class VCardImporter {
-  typealias OnSourceErrorCallback = (VCardSource, NSError) -> Void
+  typealias OnSourceFailureCallback = (VCardSource, NSError) -> Void
+  typealias OnSourceSuccessCallback = (VCardSource, (additions: Int, changes: Int)) -> Void
   typealias OnFailureCallback = NSError -> Void
   typealias OnSuccessCallback = () -> Void
 
-  private let onSourceError: OnSourceErrorCallback
+  private let onSourceFailure: OnSourceFailureCallback
+  private let onSourceSuccess: OnSourceSuccessCallback
   private let onFailure: OnFailureCallback
   private let onSuccess: OnSuccessCallback
 
@@ -15,11 +17,13 @@ class VCardImporter {
   }
 
   private init(
-    onSourceError: OnSourceErrorCallback,
+    onSourceFailure: OnSourceFailureCallback,
+    onSourceSuccess: OnSourceSuccessCallback,
     onFailure: OnFailureCallback,
     onSuccess: OnSuccessCallback)
   {
-    self.onSourceError = onSourceError
+    self.onSourceFailure = onSourceFailure
+    self.onSourceSuccess = onSourceSuccess
     self.onFailure = onFailure
     self.onSuccess = onSuccess
   }
@@ -53,7 +57,7 @@ class VCardImporter {
 
         if let failure = loadingResult as? Failure {
           BackgroundExecution.dispatchAsyncToMain {
-            self.onSourceError(source, Errors.addressBookFailedToLoadVCardSource(failure.desc))
+            self.onSourceFailure(source, Errors.addressBookFailedToLoadVCardSource(failure.desc))
           }
           continue
         }
@@ -71,7 +75,7 @@ class VCardImporter {
             toAddressBook: addressBook,
             error: &error)
           if !isSuccess {
-            BackgroundExecution.dispatchAsyncToMain { self.onSourceError(source, error!) }
+            BackgroundExecution.dispatchAsyncToMain { self.onSourceFailure(source, error!) }
             continue
           }
         }
@@ -79,7 +83,7 @@ class VCardImporter {
         if !recordDiff.changes.isEmpty {
           let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
           if !isSuccess {
-            BackgroundExecution.dispatchAsyncToMain { self.onSourceError(source, error!) }
+            BackgroundExecution.dispatchAsyncToMain { self.onSourceFailure(source, error!) }
             continue
           }
         }
@@ -92,13 +96,19 @@ class VCardImporter {
             if abError != nil {
               error = Errors.fromCFError(abError!.takeRetainedValue())
             }
-            BackgroundExecution.dispatchAsyncToMain { self.onSourceError(source, error!) }
+            BackgroundExecution.dispatchAsyncToMain { self.onSourceFailure(source, error!) }
             continue
           }
 
+          BackgroundExecution.dispatchAsyncToMain {
+            self.onSourceSuccess(
+              source,
+              (recordDiff.additions.count, recordDiff.changes.count))
+          }
           NSLog("VCard source %@: added %d contact(s), updated %d contact(s)",
             source.name, recordDiff.additions.count, recordDiff.changes.count)
         } else {
+          BackgroundExecution.dispatchAsyncToMain { self.onSourceSuccess(source, (0, 0)) }
           NSLog("VCard source %@: no contacts to add or update", source.name)
         }
       }
@@ -239,12 +249,18 @@ class VCardImporter {
   }
 
   class Builder {
-    private var _onSourceError: OnSourceErrorCallback?
+    private var _onSourceFailure: OnSourceFailureCallback?
+    private var _onSourceSuccess: OnSourceSuccessCallback?
     private var _onFailure: OnFailureCallback?
     private var _onSuccess: OnSuccessCallback?
 
-    func onSourceError(callback: OnSourceErrorCallback) -> Builder {
-      _onSourceError = callback
+    func onSourceFailure(callback: OnSourceFailureCallback) -> Builder {
+      _onSourceFailure = callback
+      return self
+    }
+
+    func onSourceSuccess(callback: OnSourceSuccessCallback) -> Builder {
+      _onSourceSuccess = callback
       return self
     }
 
@@ -259,11 +275,15 @@ class VCardImporter {
     }
 
     func build() -> VCardImporter {
-      if _onSourceError == nil || _onFailure == nil || _onSuccess == nil {
+      if _onSourceFailure == nil ||
+        _onSourceSuccess == nil ||
+        _onFailure == nil ||
+        _onSuccess == nil {
         fatalError("all callbacks must be given")
       }
       return VCardImporter(
-        onSourceError: _onSourceError!,
+        onSourceFailure: _onSourceFailure!,
+        onSourceSuccess: _onSourceSuccess!,
         onFailure: _onFailure!,
         onSuccess: _onSuccess!)
     }
