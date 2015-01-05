@@ -5,12 +5,43 @@ class VCardSource {
   let connection: Connection
   let isEnabled: Bool
   let id: String
+  let lastSyncStatus: String?
+  let lastSyncedAt: NSDate?
 
-  init(name: String, connection: Connection, isEnabled: Bool, id: String = NSUUID().UUIDString) {
+  init(
+    name: String,
+    connection: Connection,
+    isEnabled: Bool,
+    id: String = NSUUID().UUIDString,
+    lastSyncStatus: String? = nil,
+    lastSyncedAt: NSDate? = nil)
+  {
     self.name = name
     self.connection = connection
     self.isEnabled = isEnabled
     self.id = id
+    self.lastSyncStatus = lastSyncStatus
+    self.lastSyncedAt = lastSyncedAt
+  }
+
+  func withName(name: String, connection: Connection, isEnabled: Bool) -> VCardSource {
+    return VCardSource(
+      name: name,
+      connection: connection,
+      isEnabled: isEnabled,
+      id: id,
+      lastSyncStatus: lastSyncStatus,
+      lastSyncedAt: lastSyncedAt)
+  }
+
+  func withSyncStatus(syncStatus: String, at syncedAt: NSDate) -> VCardSource {
+    return VCardSource(
+      name: name,
+      connection: connection,
+      isEnabled: isEnabled,
+      id: id,
+      lastSyncStatus: syncStatus,
+      lastSyncedAt: syncedAt)
   }
 
   class Connection {
@@ -25,21 +56,43 @@ class VCardSource {
 extension VCardSource: DictionaryConvertible {
   typealias DictionaryType = VCardSource
 
+  private func asAnyObject<T: AnyObject>(t: T?) -> T! {
+    if let tt = t {
+      return tt
+    } else {
+      return nil
+    }
+  }
+
   func toDictionary() -> [String: AnyObject] {
-    return [
+    var dict: [String: AnyObject] = [
       "name": name,
       "connection": connection.toDictionary(),
       "isEnabled": isEnabled,
       "id": id
     ]
+    if let ss = lastSyncStatus {
+      dict["lastSyncStatus"] = ss
+    }
+    if let sa = lastSyncedAt {
+      dict["lastSyncedAt"] = sa.ISOString
+    }
+    return dict
   }
 
   class func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
+    var lastSyncedAt: NSDate?
+    if let str = dictionary["lastSyncedAt"] as? String {
+      lastSyncedAt = NSDate.dateFromISOString(str)
+    }
+
     return DictionaryType(
-      name: dictionary["name"] as String,
-      connection: Connection.fromDictionary(dictionary["connection"] as [String: AnyObject]),
-      isEnabled: dictionary["isEnabled"] as Bool,
-      id: dictionary["id"] as String)
+      name: dictionary["name"] as String!,
+      connection: Connection.fromDictionary(dictionary["connection"] as [String: AnyObject]!),
+      isEnabled: dictionary["isEnabled"] as Bool!,
+      id: dictionary["id"] as String!,
+      lastSyncStatus: dictionary["lastSyncStatus"] as String?,
+      lastSyncedAt: lastSyncedAt)
   }
 }
 

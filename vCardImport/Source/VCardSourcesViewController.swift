@@ -2,8 +2,6 @@ import UIKit
 
 class VCardSourcesViewController: UITableViewController {
   private let dataSource: VCardSourcesDataSource
-  private let appContext: AppContext
-
   private var syncButton: UIBarButtonItem!
   private var vcardImporter: VCardImporter!
 
@@ -11,7 +9,6 @@ class VCardSourcesViewController: UITableViewController {
 
   init(appContext: AppContext) {
     self.dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
-    self.appContext = appContext
 
     super.init(nibName: nil, bundle: nil)
 
@@ -23,6 +20,9 @@ class VCardSourcesViewController: UITableViewController {
 
     self.vcardImporter = VCardImporter.builder()
       .onSourceError { source, error in
+        self.dataSource.setVCardSource(source, status: error.localizedDescription)
+        let indexPath = NSIndexPath(forRow: self.dataSource.rowForVCardSource(source), inSection: 0)
+        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         NSLog("VCard source error for %@: %@", source.name, error)
       }
       .onFailure { error in
@@ -56,21 +56,22 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   override func viewWillAppear(animated: Bool) {
-    syncButton.enabled = appContext.vcardSourceStore.countEnabled > 0
+    syncButton.enabled = dataSource.hasEnabledVCardSources
   }
 
   // MARK: Actions
 
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    let vc = VCardSourceDetailViewController(appContext: appContext, onIndex: indexPath.row) {
+    let oldSource = dataSource.vCardSourceForRow(indexPath.row)
+    let vc = VCardSourceDetailViewController(source: oldSource) { newSource in
+      self.dataSource.saveVCardSource(newSource)
       self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
     self.navigationController?.pushViewController(vc, animated: true)
   }
 
   func syncVCardSources(sender: AnyObject) {
-    let enabledSources = appContext.vcardSourceStore.filterEnabled
     syncButton.enabled = false
-    vcardImporter.importFrom(enabledSources)
+    vcardImporter.importFrom(dataSource.enabledVCardSources)
   }
 }

@@ -5,17 +5,13 @@ class VCardSourceDetailViewController: UIViewController {
   @IBOutlet weak var urlField: UITextField!
   @IBOutlet weak var isEnabledSwitch: UISwitch!
 
-  private let appContext: AppContext
-  private let sourceIndex: Int
   private let source: VCardSource
-  private let doneCallback: () -> Void
+  private let doneCallback: VCardSource -> Void
 
   // MARK: Controller Life Cycle
 
-  init(appContext: AppContext, onIndex: Int, doneCallback: () -> Void) {
-    self.appContext = appContext
-    self.sourceIndex = onIndex
-    self.source = appContext.vcardSourceStore[sourceIndex]
+  init(source: VCardSource, doneCallback: VCardSource -> Void) {
+    self.source = source
     self.doneCallback = doneCallback
     super.init(nibName: "VCardSourceDetailViewController", bundle: nil)
   }
@@ -39,16 +35,13 @@ class VCardSourceDetailViewController: UIViewController {
     let urlCandidate = NSURL(string: urlField.text)
     let newURL = urlCandidate != nil ? urlCandidate! : source.connection.url
 
-    let newSource = VCardSource(
-      name: nameField.text,
+    let newSource = source.withName(
+      nameField.text,
       connection: VCardSource.Connection(url: newURL),
       isEnabled: isEnabledSwitch.on
     )
 
-    appContext.vcardSourceStore[sourceIndex] = newSource
-    appContext.vcardSourceStore.save()
-
-    doneCallback()
+    doneCallback(newSource)
   }
 
   // MARK: Actions

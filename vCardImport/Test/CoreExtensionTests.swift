@@ -6,11 +6,6 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertFalse(["a", "b", "c"].any { $0 == $0.uppercaseString })
   }
 
-  func testArrayCountWhere() {
-    XCTAssert(["A", "b", "C"].countWhere { $0 == $0.uppercaseString } == 2)
-    XCTAssert(["a", "b", "c"].countWhere { $0 == $0.uppercaseString } == 0)
-  }
-
   func testArrayFind() {
     XCTAssert(["a", "B", "c"].find { $0 == $0.uppercaseString } == "B")
     XCTAssert(["a", "b", "c"].find { $0 == $0.uppercaseString } == nil)
@@ -34,6 +29,22 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertFalse(dict.hasKey("bar"))
   }
 
+  func testDateISOString() {
+    var date = NSDate(timeIntervalSinceReferenceDate: 0)
+    XCTAssertEqual(date.ISOString, "2001-01-01T00:00:00Z")
+  }
+
+  func testDateFromISOString() {
+    var date = NSDate.dateFromISOString("2001-01-01T00:00:00Z")!
+    XCTAssertEqual(date, NSDate(timeIntervalSinceReferenceDate: 0))
+  }
+
+  func testDateFromAndToISOString() {
+    let isoString = "2014-12-23T10:32:45Z"
+    var date = NSDate.dateFromISOString(isoString)!
+    XCTAssertEqual(date.ISOString as String, isoString)
+  }
+
   func test2TupleEquality() {
     XCTAssertTrue((0, "1") == (0, "1"))
     XCTAssertFalse((0, "1") == (0, "2"))
@@ -46,5 +57,16 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertTrue((0, "1") != (0, "2"))
     XCTAssertTrue((0, "1") != (1, "1"))
     XCTAssertTrue(("0", "1") != (0, "1"))
+  }
+
+  func testCountWhere() {
+    XCTAssertEqual(countWhere(["A", "b", "C"], { $0 == $0.uppercaseString }), 2)
+    XCTAssertEqual(countWhere(["a": 1, "b": 2, "c": 3], { (k, v) in v % 2 == 0 }), 1)
+  }
+
+  func testZipDictionary() {
+    XCTAssertEqual(zipDictionary(["a", "b"], [1, 2]), ["a": 1, "b": 2])
+    XCTAssertEqual(zipDictionary(["a"], [1, 2]), ["a": 1])
+    XCTAssertEqual(zipDictionary(["a", "b"], [1]), ["a": 1])
   }
 }

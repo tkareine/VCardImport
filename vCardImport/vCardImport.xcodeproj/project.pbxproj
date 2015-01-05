@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
+		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
 		E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E9375BC81A0ED1120065A042 /* example-contacts.vcf */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -96,6 +97,7 @@
 /* Begin PBXFileReference section */
 		E90684AB1A589F0700728D0B /* VCardSourceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceCell.swift; sourceTree = "<group>"; };
 		E90684B01A58B17900728D0B /* DictionaryConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryConvertible.swift; sourceTree = "<group>"; };
+		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
 		E9375BC81A0ED1120065A042 /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordName.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
 				E90684B01A58B17900728D0B /* DictionaryConvertible.swift */,
 				E9F31E111A0FD2570015509F /* Errors.swift */,
+				E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */,
 				E9EB13111A3EB4C2002BC521 /* Records.swift */,
 				E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */,
 				E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */,
@@ -388,6 +391,7 @@
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
 				E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
+				E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */,
 				E9F9D8601A361C1B0054DCB8 /* UIConfig.swift in Sources */,
 				E9C46E731A4A3C98004BD769 /* URLConnection.swift in Sources */,
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
