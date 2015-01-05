@@ -1,46 +1,48 @@
 import UIKit
 
 class VCardSourcesViewController: UITableViewController {
+  private typealias ProgressState = (VCardProgress, forSource: VCardSource) -> ()
+
   private let dataSource: VCardSourcesDataSource
-  private var syncButton: UIBarButtonItem!
+
+  private var toolbar: VCardToolbar
   private var vcardImporter: VCardImporter!
+  private var progressState: ProgressState!
 
   // MARK: Controller Life Cycle
 
   init(appContext: AppContext) {
     self.dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
+    self.toolbar = VCardToolbar()
 
     super.init(nibName: nil, bundle: nil)
 
-    self.syncButton = UIBarButtonItem(title: "Sync", style: .Plain, target: self, action: "syncVCardSources:")
+    toolbar.syncButton.addTarget(
+      self,
+      action: "syncVCardSources:",
+      forControlEvents: .TouchUpInside)
 
     self.navigationItem.title = "vCard Import"
-    self.toolbarItems = [syncButton]
     self.tableView.dataSource = dataSource
 
     self.vcardImporter = VCardImporter.builder()
-      .onSourceFailure { source, error in
-        self.dataSource.setVCardSourceFailureStatus(source, error: error)
+      .onSourceLoad { source in
+        self.progressState(.Load, forSource: source)
+      }
+      .onSourceComplete { source, changes, error in
+        if let err = error {
+          self.dataSource.setVCardSourceFailureStatus(source, error: err)
+        } else {
+          self.dataSource.setVCardSourceSuccessStatus(source, changes: changes!)
+        }
+        self.progressState(.Complete, forSource: source)
         self.reloadTableViewSourceRow(source)
       }
-      .onSourceSuccess { source, changes in
-        self.dataSource.setVCardSourceSuccessStatus(source, changes: changes)
-        self.reloadTableViewSourceRow(source)
-      }
-      .onFailure { error in
-        let alertController = UIAlertController(
-          title: error.localizedFailureReason,
-          message: error.localizedDescription,
-          preferredStyle: .Alert)
-        let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-
-        alertController.addAction(dismissAction)
-
-        self.presentViewController(alertController, animated: true, completion: nil)
-
-        self.refreshSyncButtonEnabledState()
-      }
-      .onSuccess {
+      .onComplete { error in
+        if let err = error {
+          self.presentAlertForError(err)
+        }
+        self.endProgress()
         self.refreshSyncButtonEnabledState()
       }
       .build()
@@ -54,13 +56,26 @@ class VCardSourcesViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.tableView.registerClass(VCardSourceCell.self, forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
+    tableView.registerClass(VCardSourceCell.self, forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
   }
 
   override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    addToolbarToNavigationController()
     refreshSyncButtonEnabledState()
   }
 
+  override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    removeToolbarFromNavigationController()
+  }
+
+  // MARK: Layout
+
+  override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 60.0
+  }
+  
   // MARK: Actions
 
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -73,18 +88,93 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   func syncVCardSources(sender: AnyObject) {
-    syncButton.enabled = false
-    vcardImporter.importFrom(dataSource.enabledVCardSources)
+    toolbar.syncButton.enabled = false
+    let sources = dataSource.enabledVCardSources
+    beginProgress(sources)
+    vcardImporter.importFrom(sources)
   }
 
   // MARK: Helpers
 
   private func refreshSyncButtonEnabledState() {
-    syncButton.enabled = dataSource.hasEnabledVCardSources
+    toolbar.syncButton.enabled = progressState == nil && dataSource.hasEnabledVCardSources
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {
     let indexPath = NSIndexPath(forRow: self.dataSource.rowForVCardSource(source), inSection: 0)
-    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+  }
+
+  private func presentAlertForError(error: NSError) {
+    let alertController = UIAlertController(
+      title: error.localizedFailureReason,
+      message: error.localizedDescription,
+      preferredStyle: .Alert)
+    let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+
+    alertController.addAction(dismissAction)
+
+    self.presentViewController(alertController, animated: true, completion: nil)
+  }
+
+  private enum VCardProgress {
+    case Complete
+    case Load
+  }
+
+  private func makeProgressState(vcardSources: [VCardSource]) -> ProgressState {
+    var lastProgress: Float = 0.0
+    let numSources = vcardSources.count
+    let sourcesToTrack = vcardSources.map { $0.id }
+
+    func set(type: VCardProgress, forSource source: VCardSource) {
+      if !contains(sourcesToTrack, source.id) {
+        return  // not tracked source
+      }
+
+      let nextProgress = lastProgress + (1.0 / Float(numSources)) * 0.5
+      let nextText = type == .Complete ? "Completed \(source.name)" : "Loaded \(source.name)"
+
+      NSLog("Progress: \(nextProgress) \(nextText)")
+
+      self.toolbar.inProgress(nextText, progress: nextProgress)
+
+      lastProgress = nextProgress
+    }
+
+    return set
+  }
+
+  private func beginProgress(sources: [VCardSource]) {
+    progressState = makeProgressState(sources)
+    self.toolbar.beginProgress("Loading...")
+  }
+
+  private func endProgress() {
+    progressState = nil
+    QueueExecution.toMainAfter(5000) {
+      self.toolbar.endProgress()
+    }
+  }
+
+  func addToolbarToNavigationController() {
+    if let nc = navigationController {
+      let frame = nc.view.frame
+      let toolbarHeight: CGFloat = 58.0
+
+      toolbar.frame = CGRect(
+        x: 0,
+        y: frame.size.height - toolbarHeight,
+        width: frame.width,
+        height: toolbarHeight)
+
+      nc.view.addSubview(toolbar)
+    }
+  }
+
+  func removeToolbarFromNavigationController() {
+    if navigationController != nil {
+      toolbar.removeFromSuperview()
+    }
   }
 }

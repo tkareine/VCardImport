@@ -12,7 +12,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let vcardSourcesController = VCardSourcesViewController(appContext: appContext)
 
     let navigationController = UINavigationController(rootViewController: vcardSourcesController)
-    navigationController.toolbarHidden = false
 
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
     window.backgroundColor = UIColor.whiteColor()
