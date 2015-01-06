@@ -26,6 +26,7 @@ class VCardSourcesViewController: UITableViewController {
     self.tableView.dataSource = dataSource
 
     self.vcardImporter = VCardImporter.builder()
+      .queue(QueueExecution.mainQueue)
       .onSourceLoad { source in
         self.progressState(.Load, forSource: source)
       }
@@ -152,7 +153,7 @@ class VCardSourcesViewController: UITableViewController {
 
   private func endProgress() {
     progressState = nil
-    QueueExecution.toMainAfter(5000) {
+    QueueExecution.after(5000, QueueExecution.mainQueue) {
       self.toolbar.endProgress()
     }
   }

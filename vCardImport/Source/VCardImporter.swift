@@ -9,6 +9,7 @@ class VCardImporter {
   private let onSourceLoad: OnSourceLoadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
+  private let queue: dispatch_queue_t
 
   class func builder() -> Builder {
     return Builder()
@@ -17,29 +18,31 @@ class VCardImporter {
   private init(
     onSourceLoad: OnSourceLoadCallback,
     onSourceComplete: OnSourceCompleteCallback,
-    onComplete: OnCompleteCallback)
+    onComplete: OnCompleteCallback,
+    queue: dispatch_queue_t)
   {
     self.onSourceLoad = onSourceLoad
     self.onSourceComplete = onSourceComplete
     self.onComplete = onComplete
+    self.queue = queue
   }
 
   // The implementation is long and ugly, but I prefer to keep dispatching calls
-  // to background jobs and back to the main thread in one place.
+  // to background jobs and back to the specified queue in one place.
   func importFrom(sources: [VCardSource]) {
-    QueueExecution.toBackgroundAsync {
+    QueueExecution.async(QueueExecution.backgroundQueue) {
       var error: NSError?
       var addressBookOpt: ABAddressBook? = self.newAddressBook(&error)
 
       if addressBookOpt == nil {
-        QueueExecution.toMainAsync { self.onComplete(error!) }
+        QueueExecution.async(self.queue) { self.onComplete(error!) }
         return
       }
 
       let addressBook: ABAddressBook = addressBookOpt!
 
       if !self.authorizeAddressBookAccess(addressBook, error: &error) {
-        QueueExecution.toMainAsync { self.onComplete(error!) }
+        QueueExecution.async(self.queue) { self.onComplete(error!) }
         return
       }
 
@@ -50,7 +53,7 @@ class VCardImporter {
 
       for (source, recordLoader) in recordLoaders {
         recordLoader.onComplete { _ in
-          QueueExecution.toMainAsync { self.onSourceLoad(source) }
+          QueueExecution.async(self.queue) { self.onSourceLoad(source) }
         }
       }
 
@@ -58,7 +61,7 @@ class VCardImporter {
         let loadingResult = recordLoader.get()
 
         if let failure = loadingResult as? Failure {
-          QueueExecution.toMainAsync {
+          QueueExecution.async(self.queue) {
             self.onSourceComplete(source, nil, Errors.addressBookFailedToLoadVCardSource(failure.desc))
           }
           continue
@@ -77,7 +80,7 @@ class VCardImporter {
             toAddressBook: addressBook,
             error: &error)
           if !isSuccess {
-            QueueExecution.toMainAsync { self.onSourceComplete(source, nil, error!) }
+            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, error!) }
             continue
           }
         }
@@ -85,7 +88,7 @@ class VCardImporter {
         if !recordDiff.changes.isEmpty {
           let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
           if !isSuccess {
-            QueueExecution.toMainAsync { self.onSourceComplete(source, nil, error!) }
+            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, error!) }
             continue
           }
         }
@@ -98,11 +101,11 @@ class VCardImporter {
             if abError != nil {
               error = Errors.fromCFError(abError!.takeRetainedValue())
             }
-            QueueExecution.toMainAsync { self.onSourceComplete(source, nil, error!) }
+            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, error!) }
             continue
           }
 
-          QueueExecution.toMainAsync {
+          QueueExecution.async(self.queue) {
             self.onSourceComplete(
               source,
               (recordDiff.additions.count, recordDiff.changes.count),
@@ -111,12 +114,12 @@ class VCardImporter {
           NSLog("VCard source %@: added %d contact(s), updated %d contact(s)",
             source.name, recordDiff.additions.count, recordDiff.changes.count)
         } else {
-          QueueExecution.toMainAsync { self.onSourceComplete(source, (0, 0), nil) }
+          QueueExecution.async(self.queue) { self.onSourceComplete(source, (0, 0), nil) }
           NSLog("VCard source %@: no contacts to add or update", source.name)
         }
       }
 
-      QueueExecution.toMainAsync { self.onComplete(nil) }
+      QueueExecution.async(self.queue) { self.onComplete(nil) }
     }
   }
 
@@ -255,6 +258,7 @@ class VCardImporter {
     private var _onSourceLoad: OnSourceLoadCallback?
     private var _onSourceComplete: OnSourceCompleteCallback?
     private var _onComplete: OnCompleteCallback?
+    private var _queue: dispatch_queue_t?
 
     func onSourceLoad(callback: OnSourceLoadCallback) -> Builder {
       _onSourceLoad = callback
@@ -271,14 +275,23 @@ class VCardImporter {
       return self
     }
 
+    func queue(queue: dispatch_queue_t) -> Builder {
+      _queue = queue
+      return self
+    }
+
     func build() -> VCardImporter {
-      if _onSourceLoad == nil || _onSourceComplete == nil || _onComplete == nil {
-        fatalError("all callbacks must be given")
+      if _onSourceLoad == nil ||
+        _onSourceComplete == nil ||
+        _onComplete == nil ||
+        _queue == nil {
+        fatalError("all parameters must be given")
       }
       return VCardImporter(
         onSourceLoad: _onSourceLoad!,
         onSourceComplete: _onSourceComplete!,
-        onComplete: _onComplete!)
+        onComplete: _onComplete!,
+        queue: _queue!)
     }
   }
 }
