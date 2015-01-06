@@ -50,7 +50,7 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   required init(coder decoder: NSCoder) {
-    fatalError("state restoration not supported")
+    fatalError("not implemented")
   }
 
   // MARK: View Life Cycle

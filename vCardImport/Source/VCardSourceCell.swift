@@ -6,6 +6,6 @@ class VCardSourceCell: UITableViewCell {
   }
 
   required init(coder decoder: NSCoder) {
-    fatalError("state restoration not supported")
+    fatalError("not implemented")
   }
 }
