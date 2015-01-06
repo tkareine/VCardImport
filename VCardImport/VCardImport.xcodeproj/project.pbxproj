@@ -77,7 +77,7 @@
 			containerPortal = E983F1CA19E9C76F00219305 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = E983F1D119E9C76F00219305;
-			remoteInfo = vCardImport;
+			remoteInfo = VCardImport;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -109,7 +109,7 @@
 		E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSource.swift; sourceTree = "<group>"; };
 		E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardImporter.swift; sourceTree = "<group>"; };
 		E97E1BEC1A4CA314000DA85F /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = ../Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
-		E983F1D219E9C76F00219305 /* vCardImport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vCardImport.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E983F1D219E9C76F00219305 /* VCardImport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VCardImport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCardSourcesViewController.swift; sourceTree = "<group>"; };
@@ -176,7 +176,7 @@
 		E983F1D319E9C76F00219305 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E983F1D219E9C76F00219305 /* vCardImport.app */,
+				E983F1D219E9C76F00219305 /* VCardImport.app */,
 				E983F1E719E9C76F00219305 /* Test.xctest */,
 			);
 			name = Products;
@@ -250,9 +250,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E983F1D119E9C76F00219305 /* vCardImport */ = {
+		E983F1D119E9C76F00219305 /* VCardImport */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCardImport" */;
+			buildConfigurationList = E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "VCardImport" */;
 			buildPhases = (
 				E983F1CE19E9C76F00219305 /* Sources */,
 				E983F1CF19E9C76F00219305 /* Frameworks */,
@@ -264,9 +264,9 @@
 			dependencies = (
 				E97E1BF61A4CA328000DA85F /* PBXTargetDependency */,
 			);
-			name = vCardImport;
-			productName = vCardImport;
-			productReference = E983F1D219E9C76F00219305 /* vCardImport.app */;
+			name = VCardImport;
+			productName = VCardImport;
+			productReference = E983F1D219E9C76F00219305 /* VCardImport.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E983F1E619E9C76F00219305 /* Test */ = {
@@ -308,7 +308,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E983F1CD19E9C76F00219305 /* Build configuration list for PBXProject "vCardImport" */;
+			buildConfigurationList = E983F1CD19E9C76F00219305 /* Build configuration list for PBXProject "VCardImport" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -327,7 +327,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E983F1D119E9C76F00219305 /* vCardImport */,
+				E983F1D119E9C76F00219305 /* VCardImport */,
 				E983F1E619E9C76F00219305 /* Test */,
 			);
 		};
@@ -432,7 +432,7 @@
 		};
 		E983F1E919E9C76F00219305 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E983F1D119E9C76F00219305 /* vCardImport */;
+			target = E983F1D119E9C76F00219305 /* VCardImport */;
 			targetProxy = E983F1E819E9C76F00219305 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -569,7 +569,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCardImport.app/vCardImport";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VCardImport.app/VCardImport";
 			};
 			name = Debug;
 		};
@@ -584,14 +584,14 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCardImport.app/vCardImport";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VCardImport.app/VCardImport";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E983F1CD19E9C76F00219305 /* Build configuration list for PBXProject "vCardImport" */ = {
+		E983F1CD19E9C76F00219305 /* Build configuration list for PBXProject "VCardImport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E983F1EF19E9C76F00219305 /* Debug */,
@@ -600,7 +600,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCardImport" */ = {
+		E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "VCardImport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E983F1F219E9C76F00219305 /* Debug */,

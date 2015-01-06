@@ -19,7 +19,7 @@ class VCardToolbar: UIView {
       }
     }
   }
-  
+
   override init() {
     super.init()
   }

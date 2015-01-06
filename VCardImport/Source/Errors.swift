@@ -2,7 +2,7 @@ import Foundation
 import AddressBook
 
 struct Errors {
-  static let domain = "org.tkareine.vCardImport.ErrorDomain"
+  static let domain = "org.tkareine.VCardImport.ErrorDomain"
   static let titleKey = "VCardErrorTitle"
 
   static func addressBookAccessDeniedOrResticted() -> NSError {
