@@ -255,43 +255,43 @@ class VCardImporter {
   }
 
   class Builder {
-    private var _onSourceLoad: OnSourceLoadCallback?
-    private var _onSourceComplete: OnSourceCompleteCallback?
-    private var _onComplete: OnCompleteCallback?
-    private var _queue: dispatch_queue_t?
+    private var onSourceLoad: OnSourceLoadCallback?
+    private var onSourceComplete: OnSourceCompleteCallback?
+    private var onComplete: OnCompleteCallback?
+    private var queue: dispatch_queue_t?
 
     func onSourceLoad(callback: OnSourceLoadCallback) -> Builder {
-      _onSourceLoad = callback
+      self.onSourceLoad = callback
       return self
     }
 
     func onSourceComplete(callback: OnSourceCompleteCallback) -> Builder {
-      _onSourceComplete = callback
+      self.onSourceComplete = callback
       return self
     }
 
     func onComplete(callback: OnCompleteCallback) -> Builder {
-      _onComplete = callback
+      self.onComplete = callback
       return self
     }
 
     func queue(queue: dispatch_queue_t) -> Builder {
-      _queue = queue
+      self.queue = queue
       return self
     }
 
     func build() -> VCardImporter {
-      if _onSourceLoad == nil ||
-        _onSourceComplete == nil ||
-        _onComplete == nil ||
-        _queue == nil {
+      if self.onSourceLoad == nil ||
+        self.onSourceComplete == nil ||
+        self.onComplete == nil ||
+        self.queue == nil {
         fatalError("all parameters must be given")
       }
       return VCardImporter(
-        onSourceLoad: _onSourceLoad!,
-        onSourceComplete: _onSourceComplete!,
-        onComplete: _onComplete!,
-        queue: _queue!)
+        onSourceLoad: self.onSourceLoad!,
+        onSourceComplete: self.onSourceComplete!,
+        onComplete: self.onComplete!,
+        queue: self.queue!)
     }
   }
 }
