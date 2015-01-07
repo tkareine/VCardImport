@@ -34,10 +34,13 @@ class VCardToolbar: UIView {
     border = makeBorderLayer(frame)
 
     addSubview(importButton)
-    addSubview(progressLabel)
-    addSubview(progressView)
     addSubview(backupButton)
+    addSubview(progressLabel)
+
+    // add before border sublayer before progressView so that the latter
+    // obscures the former when shown
     layer.addSublayer(border)
+    addSubview(progressView)
 
     backgroundColor = UIColor.whiteColor()
 
@@ -102,9 +105,12 @@ class VCardToolbar: UIView {
   private func makeProgressLabel() -> UILabel {
     let label = UILabel()
     label.textAlignment = .Center
+    label.textColor = UIColor(white: 0.3, alpha: 1.0)
     label.adjustsFontSizeToFitWidth = true
     label.font = label.font.fontWithSize(14.0)
-    label.minimumScaleFactor = 0.5
+    label.minimumScaleFactor = 0.7
+    label.lineBreakMode = .ByWordWrapping
+    label.numberOfLines = 2
     label.alpha = 0.0
     return label
   }
@@ -142,56 +148,73 @@ class VCardToolbar: UIView {
       "progressView": progressView
     ]
 
-    let constraintimportButtonCenterY = NSLayoutConstraint(
+    addConstraint(NSLayoutConstraint(
       item: importButton,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0)
+      constant: 0))
 
-    let constraintBackupButtonCenterY = NSLayoutConstraint(
+    addConstraint(NSLayoutConstraint(
       item: backupButton,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0)
+      constant: 0))
 
-    let constraintButtonsEqualWidth = NSLayoutConstraint(
+    addConstraint(NSLayoutConstraint(
       item: importButton,
       attribute: .Width,
       relatedBy: .Equal,
       toItem: backupButton,
       attribute: .Width,
       multiplier: 1,
-      constant: 0)
+      constant: 0))
 
-    let constraintHorizontalLayout = NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-[importButton(>=50)]-[progressLabel]-[backupButton(>=50)]-|",
+    addConstraint(NSLayoutConstraint(
+      item: progressLabel,
+      attribute: .CenterY,
+      relatedBy: .Equal,
+      toItem: self,
+      attribute: .CenterY,
+      multiplier: 1,
+      constant: 0))
+
+    addConstraint(NSLayoutConstraint(
+      item: progressView,
+      attribute: .Width,
+      relatedBy: .Equal,
+      toItem: self,
+      attribute: .Width,
+      multiplier: 1,
+      constant: 0))
+
+    addConstraint(NSLayoutConstraint(
+      item: progressView,
+      attribute: .Top,
+      relatedBy: .Equal,
+      toItem: self,
+      attribute: .Top,
+      multiplier: 1,
+      constant: 0))
+
+    addConstraint(NSLayoutConstraint(
+      item: progressView,
+      attribute: .Height,
+      relatedBy: .Equal,
+      toItem: nil,
+      attribute: .NotAnAttribute,
+      multiplier: 1,
+      constant: 4))
+
+    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "H:|-[importButton(>=50)]-10-[progressLabel]-10-[backupButton(>=50)]-|",
       options: nil,
       metrics: nil,
-      views: viewNamesToObjects)
-
-    let constraintProgressViewBetweenButtons = NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:[importButton]-[progressView]-[backupButton]",
-      options: nil,
-      metrics: nil,
-      views: viewNamesToObjects)
-
-    let constraintProgressLabelAndViewLayout = NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:|-2-[progressLabel]-2-[progressView]-20-|",
-      options: nil,
-      metrics: nil,
-      views: viewNamesToObjects)
-
-    addConstraint(constraintimportButtonCenterY)
-    addConstraint(constraintBackupButtonCenterY)
-    addConstraint(constraintButtonsEqualWidth)
-    addConstraints(constraintHorizontalLayout)
-    addConstraints(constraintProgressViewBetweenButtons)
-    addConstraints(constraintProgressLabelAndViewLayout)
+      views: viewNamesToObjects))
   }
 }
