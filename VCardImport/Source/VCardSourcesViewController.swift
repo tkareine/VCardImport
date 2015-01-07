@@ -17,9 +17,9 @@ class VCardSourcesViewController: UITableViewController {
 
     super.init(nibName: nil, bundle: nil)
 
-    toolbar.syncButton.addTarget(
+    toolbar.importButton.addTarget(
       self,
-      action: "syncVCardSources:",
+      action: "importVCardSources:",
       forControlEvents: .TouchUpInside)
 
     self.navigationItem.title = "vCard Import"
@@ -88,8 +88,8 @@ class VCardSourcesViewController: UITableViewController {
     self.navigationController?.pushViewController(vc, animated: true)
   }
 
-  func syncVCardSources(sender: AnyObject) {
-    toolbar.syncButton.enabled = false
+  func importVCardSources(sender: AnyObject) {
+    toolbar.importButton.enabled = false
     let sources = dataSource.enabledVCardSources
     beginProgress(sources)
     vcardImporter.importFrom(sources)
@@ -98,7 +98,7 @@ class VCardSourcesViewController: UITableViewController {
   // MARK: Helpers
 
   private func refreshSyncButtonEnabledState() {
-    toolbar.syncButton.enabled = progressState == nil && dataSource.hasEnabledVCardSources
+    toolbar.importButton.enabled = progressState == nil && dataSource.hasEnabledVCardSources
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {

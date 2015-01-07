@@ -1,7 +1,7 @@
 import UIKit
 
 class VCardToolbar: UIView {
-  let syncButton: UIButton!
+  let importButton: UIButton!
   let backupButton: UIButton!
   let progressLabel: UILabel!
   let progressView: UIProgressView!
@@ -27,13 +27,13 @@ class VCardToolbar: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    syncButton = makeButton("Sync", align: .Left)
+    importButton = makeButton("Import", align: .Left)
     backupButton = makeButton("Backup", align: .Right)
     progressLabel = makeProgressLabel()
     progressView = makeProgressView()
     border = makeBorderLayer(frame)
 
-    addSubview(syncButton)
+    addSubview(importButton)
     addSubview(progressLabel)
     addSubview(progressView)
     addSubview(backupButton)
@@ -127,8 +127,8 @@ class VCardToolbar: UIView {
   }
 
   private func setupLayout() {
-    syncButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-    syncButton.setContentHuggingPriority(251, forAxis: .Horizontal)
+    importButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+    importButton.setContentHuggingPriority(251, forAxis: .Horizontal)
     backupButton.setTranslatesAutoresizingMaskIntoConstraints(false)
     backupButton.setContentHuggingPriority(251, forAxis: .Horizontal)
     progressLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -136,14 +136,14 @@ class VCardToolbar: UIView {
     progressView.setTranslatesAutoresizingMaskIntoConstraints(false)
 
     let viewNamesToObjects = [
-      "syncButton": syncButton,
+      "importButton": importButton,
       "backupButton": backupButton,
       "progressLabel": progressLabel,
       "progressView": progressView
     ]
 
-    let constraintSyncButtonCenterY = NSLayoutConstraint(
-      item: syncButton,
+    let constraintimportButtonCenterY = NSLayoutConstraint(
+      item: importButton,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
@@ -161,7 +161,7 @@ class VCardToolbar: UIView {
       constant: 0)
 
     let constraintButtonsEqualWidth = NSLayoutConstraint(
-      item: syncButton,
+      item: importButton,
       attribute: .Width,
       relatedBy: .Equal,
       toItem: backupButton,
@@ -170,13 +170,13 @@ class VCardToolbar: UIView {
       constant: 0)
 
     let constraintHorizontalLayout = NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-[syncButton(>=50)]-[progressLabel]-[backupButton(>=50)]-|",
+      "H:|-[importButton(>=50)]-[progressLabel]-[backupButton(>=50)]-|",
       options: nil,
       metrics: nil,
       views: viewNamesToObjects)
 
     let constraintProgressViewBetweenButtons = NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:[syncButton]-[progressView]-[backupButton]",
+      "H:[importButton]-[progressView]-[backupButton]",
       options: nil,
       metrics: nil,
       views: viewNamesToObjects)
@@ -187,7 +187,7 @@ class VCardToolbar: UIView {
       metrics: nil,
       views: viewNamesToObjects)
 
-    addConstraint(constraintSyncButtonCenterY)
+    addConstraint(constraintimportButtonCenterY)
     addConstraint(constraintBackupButtonCenterY)
     addConstraint(constraintButtonsEqualWidth)
     addConstraints(constraintHorizontalLayout)
