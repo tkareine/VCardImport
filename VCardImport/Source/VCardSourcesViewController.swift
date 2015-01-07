@@ -134,7 +134,7 @@ class VCardSourcesViewController: UITableViewController {
       }
 
       let nextProgress = lastProgress + (1.0 / Float(numSources)) * 0.5
-      let nextText = type == .Complete ? "Completed \(source.name)" : "Loaded \(source.name)"
+      let nextText = type == .Complete ? "Completed \(source.name)" : "Downloaded \(source.name)"
 
       NSLog("Progress: \(nextProgress) \(nextText)")
 
@@ -148,7 +148,7 @@ class VCardSourcesViewController: UITableViewController {
 
   private func beginProgress(sources: [VCardSource]) {
     progressState = makeProgressState(sources)
-    self.toolbar.beginProgress("Loading...")
+    self.toolbar.beginProgress("Downloading...")
   }
 
   private func endProgress() {
