@@ -58,16 +58,18 @@ class VCardImporter {
       }
 
       for (source, recordLoader) in recordLoaders {
-        let loadingResult = recordLoader.get()
+        var loadedRecords: [ABRecord]
 
-        if let failure = loadingResult as? Failure {
+        switch recordLoader.get() {
+        case .Success(let records):
+          loadedRecords = records()
+        case .Failure(let desc):
           QueueExecution.async(self.queue) {
-            self.onSourceComplete(source, nil, Errors.addressBookFailedToLoadVCardSource(failure.desc))
+            self.onSourceComplete(source, nil, Errors.addressBookFailedToLoadVCardSource(desc))
           }
           continue
         }
 
-        let loadedRecords = loadingResult.value!
         let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
 
         let recordDiff = RecordDifferences.resolveBetween(
