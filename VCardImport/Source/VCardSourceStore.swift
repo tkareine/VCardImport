@@ -1,42 +1,50 @@
 import Foundation
 
 class VCardSourceStore {
-  private var store: [String: VCardSource] = [:]
+  private var sourceIds: [String] = []
+  private var sourcesByIds: [String: VCardSource] = [:]
 
-  var sourceIds: [String] {
-    return Array(store.keys)
+  var isEmpty: Bool {
+    return sourceIds.isEmpty
   }
 
   var countAll: Int {
-    return store.count
+    return sourceIds.count
   }
 
   var countEnabled: Int {
-    return countWhere(store, { $0.1.isEnabled })
+    return countWhere(sourcesByIds.values, { $0.isEnabled })
   }
 
   var filterEnabled: [VCardSource] {
-    return filter(store.values, { $0.isEnabled })
+    return filter(sourcesByIds.values, { $0.isEnabled })
   }
 
   init() {}
 
-  subscript(key: String) -> VCardSource {
+  subscript(index: Int) -> VCardSource {
     get {
-      return store[key]!
-    }
-
-    set {
-      store[key] = newValue
+      let sourceId = sourceIds[index]
+      return sourcesByIds[sourceId]!
     }
   }
 
-  func remove(id: String) {
-    store.removeValueForKey(id)
+  func indexOf(source: VCardSource) -> Int {
+    return find(sourceIds, source.id)!
+  }
+
+  func update(source: VCardSource) {
+    sourcesByIds[source.id] = source
+  }
+
+  func remove(index: Int) {
+    let sourceId = sourceIds[index]
+    sourceIds.removeAtIndex(index)
+    sourcesByIds.removeValueForKey(sourceId)
   }
 
   func save() {
-    let sourcesData = JSONSerialization.encode(Array(store.values).map { $0.toDictionary() })
+    let sourcesData = JSONSerialization.encode(snapshotStore().map { $0.toDictionary() })
     let defaults = NSUserDefaults.standardUserDefaults()
     defaults.setInteger(1, forKey: "VCardSourcesVersion")
     defaults.setObject(sourcesData, forKey: "VCardSources")
@@ -47,9 +55,9 @@ class VCardSourceStore {
     if let sourcesData = NSUserDefaults.standardUserDefaults().objectForKey("VCardSources") as? NSData {
       let sources = (JSONSerialization.decode(sourcesData) as [[String: AnyObject]])
         .map { VCardSource.fromDictionary($0) }
-      store = toDictionary(sources)
+      resetStore(sources)
     } else {
-      store = toDictionary([
+      resetStore([
         VCardSource(
           name: "Example: Body Corp",
           connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf")!),
@@ -64,7 +72,24 @@ class VCardSourceStore {
     }
   }
 
-  private func toDictionary(sources: [VCardSource]) -> [String: VCardSource] {
-    return mapDictionary(sources) { _, source in source.id }
+  private func snapshotStore() -> [VCardSource] {
+    var sources: [VCardSource] = []
+    for id in sourceIds {
+      sources.append(sourcesByIds[id]!)
+    }
+    return sources
+  }
+
+  private func resetStore(sources: [VCardSource]) {
+    var sourceIds: [String] = []
+    var sourcesByIds: [String: VCardSource] = [:]
+
+    for source in sources {
+      sourceIds.append(source.id)
+      sourcesByIds[source.id] = source
+    }
+
+    self.sourceIds = sourceIds
+    self.sourcesByIds = sourcesByIds
   }
 }

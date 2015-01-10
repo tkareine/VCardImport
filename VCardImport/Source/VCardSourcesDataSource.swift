@@ -2,22 +2,15 @@ import UIKit
 
 class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   private let vcardSourceStore: VCardSourceStore
-  private var vcardSourceIdsByTableRows: [Int: String] = [:]
-  private var tableRowsByVCardSourceIds: [String: Int] = [:]
 
   init(vcardSourceStore: VCardSourceStore) {
     self.vcardSourceStore = vcardSourceStore
-
-    for (index, sourceId) in enumerate(vcardSourceStore.sourceIds) {
-      vcardSourceIdsByTableRows[index] = sourceId
-      tableRowsByVCardSourceIds[sourceId] = index
-    }
   }
 
   // MARK: Our Data Source API
 
   var hasVCardSources: Bool {
-    return vcardSourceStore.countAll > 0
+    return !vcardSourceStore.isEmpty
   }
 
   var hasEnabledVCardSources: Bool {
@@ -66,16 +59,16 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   }
 
   func saveVCardSource(source: VCardSource) {
-    vcardSourceStore[source.id] = source
+    vcardSourceStore.update(source)
     vcardSourceStore.save()
   }
 
   func vCardSourceForRow(row: Int) -> VCardSource {
-    return vcardSourceStore[vcardSourceIdsByTableRows[row]!]
+    return vcardSourceStore[row]
   }
 
   func rowForVCardSource(source: VCardSource) -> Int {
-    return tableRowsByVCardSourceIds[source.id]!
+    return vcardSourceStore.indexOf(source)
   }
 
   // MARK: Table View Data Source Delegate
@@ -98,8 +91,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       }
     }
 
-    let vcardSourceId = vcardSourceIdsByTableRows[indexPath.row]!
-    let source = vcardSourceStore[vcardSourceId]
+    let source = vcardSourceStore[indexPath.row]
 
     cell.textLabel?.text = source.name
 
@@ -128,15 +120,12 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
 
   private func setVCardSourceStatus(status: String, to source: VCardSource) {
     let s = source.withSyncStatus(status, at: NSDate())
-    vcardSourceStore[s.id] = s
+    vcardSourceStore.update(s)
     vcardSourceStore.save()
   }
 
   private func removeVCardSource(row: Int) {
-    let vcardSourceId = vcardSourceIdsByTableRows[row]!
-    vcardSourceStore.remove(vcardSourceId)
-    vcardSourceIdsByTableRows.removeValueForKey(row)
-    tableRowsByVCardSourceIds.removeValueForKey(vcardSourceId)
+    vcardSourceStore.remove(row)
     vcardSourceStore.save()
   }
 }
