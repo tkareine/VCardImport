@@ -36,7 +36,7 @@ class VCardSourceStore {
   }
 
   func save() {
-    let sourcesData = JSONSerialization.encode(store.map { key, value in (key, value.toDictionary()) })
+    let sourcesData = JSONSerialization.encode(Array(store.values).map { $0.toDictionary() })
     let defaults = NSUserDefaults.standardUserDefaults()
     defaults.setInteger(1, forKey: "VCardSourcesVersion")
     defaults.setObject(sourcesData, forKey: "VCardSources")
@@ -45,10 +45,11 @@ class VCardSourceStore {
 
   func load() {
     if let sourcesData = NSUserDefaults.standardUserDefaults().objectForKey("VCardSources") as? NSData {
-      let obj = JSONSerialization.decode(sourcesData) as [String: [String: AnyObject]]
-      store = obj.map { key, value in (key, VCardSource.fromDictionary(value)) }
+      let sources = (JSONSerialization.decode(sourcesData) as [[String: AnyObject]])
+        .map { VCardSource.fromDictionary($0) }
+      store = toDictionary(sources)
     } else {
-      let sources = [
+      store = toDictionary([
         VCardSource(
           name: "Example: Body Corp",
           connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf")!),
@@ -59,9 +60,11 @@ class VCardSourceStore {
           connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf")!),
           isEnabled: true
         )
-      ]
-      let ids = sources.map { $0.id }
-      store = zipDictionary(ids, sources)
+      ])
     }
+  }
+
+  private func toDictionary(sources: [VCardSource]) -> [String: VCardSource] {
+    return mapDictionary(sources) { _, source in source.id }
   }
 }

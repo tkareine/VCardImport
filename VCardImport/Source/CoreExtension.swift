@@ -98,11 +98,14 @@ func countWhere<S: SequenceType>(seq: S, predicate: (S.Generator.Element -> Bool
   return c
 }
 
-func zipDictionary<S1: SequenceType, S2: SequenceType>(keys: S1, values: S2)
-  -> [S1.Generator.Element: S2.Generator.Element]
+func mapDictionary<S: SequenceType, K: Hashable>(
+  values: S,
+  valueToKey: (Int, S.Generator.Element) -> K)
+  -> [K: S.Generator.Element]
 {
-  var dict: [S1.Generator.Element: S2.Generator.Element] = [:]
-  for (key, value) in Zip2(keys, values) {
+  var dict: [K: S.Generator.Element] = [:]
+  for (index, value) in enumerate(values) {
+    let key = valueToKey(index, value)
     dict[key] = value
   }
   return dict

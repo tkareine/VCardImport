@@ -64,9 +64,8 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertEqual(countWhere(["a": 1, "b": 2, "c": 3], { (k, v) in v % 2 == 0 }), 1)
   }
 
-  func testZipDictionary() {
-    XCTAssertEqual(zipDictionary(["a", "b"], [1, 2]), ["a": 1, "b": 2])
-    XCTAssertEqual(zipDictionary(["a"], [1, 2]), ["a": 1])
-    XCTAssertEqual(zipDictionary(["a", "b"], [1]), ["a": 1])
+  func testMapDictionary() {
+    let dict: [String: String] = mapDictionary(["a", "b"]) { idx, val in "\(idx)\(val)" }
+    XCTAssertEqual(dict, ["0a": "a", "1b": "b"])
   }
 }
