@@ -14,6 +14,12 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     }
   }
 
+  // MARK: Our Data Source API
+
+  var hasVCardSources: Bool {
+    return vcardSourceStore.countAll > 0
+  }
+
   var hasEnabledVCardSources: Bool {
     return vcardSourceStore.countEnabled > 0
   }
@@ -59,12 +65,6 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     setVCardSourceStatus(status, to: source)
   }
 
-  func setVCardSourceStatus(status: String, to source: VCardSource) {
-    let s = source.withSyncStatus(status, at: NSDate())
-    vcardSourceStore[s.id] = s
-    vcardSourceStore.save()
-  }
-
   func saveVCardSource(source: VCardSource) {
     vcardSourceStore[source.id] = source
     vcardSourceStore.save()
@@ -78,13 +78,17 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     return tableRowsByVCardSourceIds[source.id]!
   }
 
-  // MARK: data source delegate
+  // MARK: Table View Data Source Delegate
 
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return vcardSourceStore.countAll
   }
 
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+  func tableView(
+    tableView: UITableView,
+    cellForRowAtIndexPath indexPath: NSIndexPath)
+    -> UITableViewCell
+  {
     let cell = tableView.dequeueReusableCellWithIdentifier(UIConfig.SourcesCellReuseIdentifier, forIndexPath: indexPath) as VCardSourceCell
 
     func setDetailText(text: String, color: UIColor) {
@@ -107,5 +111,23 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     }
 
     return cell
+  }
+
+  func tableView(
+    tableView: UITableView,
+    commitEditingStyle editingStyle: UITableViewCellEditingStyle,
+    forRowAtIndexPath indexPath: NSIndexPath)
+  {
+    if (editingStyle == .Delete) {
+      // TODO
+    }
+  }
+
+  // MARK: Helpers
+
+  private func setVCardSourceStatus(status: String, to source: VCardSource) {
+    let s = source.withSyncStatus(status, at: NSDate())
+    vcardSourceStore[s.id] = s
+    vcardSourceStore.save()
   }
 }

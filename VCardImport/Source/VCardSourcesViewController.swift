@@ -5,11 +5,13 @@ class VCardSourcesViewController: UITableViewController {
 
   private let dataSource: VCardSourcesDataSource
 
+  private var editButton: UIBarButtonItem!
+  private var addButton: UIBarButtonItem!
   private var toolbar: VCardToolbar
   private var vcardImporter: VCardImporter!
   private var progressState: ProgressState!
 
-  // MARK: Controller Life Cycle
+  // MARK: View Controller Life Cycle
 
   init(appContext: AppContext) {
     self.dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
@@ -17,12 +19,21 @@ class VCardSourcesViewController: UITableViewController {
 
     super.init(nibName: nil, bundle: nil)
 
+    self.editButton = editButtonItem()
+
+    self.addButton = UIBarButtonItem(
+      barButtonSystemItem: .Add,
+      target: self,
+      action: "addVCardSource:")
+
     toolbar.importButton.addTarget(
       self,
       action: "importVCardSources:",
       forControlEvents: .TouchUpInside)
 
     self.navigationItem.title = "vCard Import"
+    self.navigationItem.leftBarButtonItem = editButton
+    self.navigationItem.rightBarButtonItem = addButton
     self.tableView.dataSource = dataSource
 
     self.vcardImporter = VCardImporter.builder()
@@ -44,7 +55,7 @@ class VCardSourcesViewController: UITableViewController {
           self.presentAlertForError(err)
         }
         self.endProgress()
-        self.refreshSyncButtonEnabledState()
+        self.refreshButtonsEnabledStates()
       }
       .build()
   }
@@ -57,13 +68,15 @@ class VCardSourcesViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    tableView.registerClass(VCardSourceCell.self, forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
+    tableView.registerClass(
+      VCardSourceCell.self,
+      forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
   }
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     addToolbarToNavigationController()
-    refreshSyncButtonEnabledState()
+    refreshButtonsEnabledStates()
   }
 
   override func viewWillDisappear(animated: Bool) {
@@ -71,15 +84,28 @@ class VCardSourcesViewController: UITableViewController {
     removeToolbarFromNavigationController()
   }
 
-  // MARK: Layout
+  // MARK: Table View Customization
 
-  override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+  override func tableView(
+    tableView: UITableView,
+    heightForRowAtIndexPath indexPath: NSIndexPath)
+    -> CGFloat
+  {
     return 60.0
+  }
+
+  override func setEditing(editing: Bool, animated: Bool) {
+    super.setEditing(editing, animated: animated)
+    tableView.setEditing(editing, animated: animated)
+    refreshButtonsEnabledStates()
   }
 
   // MARK: Actions
 
-  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+  override func tableView(
+    tableView: UITableView,
+    didSelectRowAtIndexPath indexPath: NSIndexPath)
+  {
     let oldSource = dataSource.vCardSourceForRow(indexPath.row)
     let vc = VCardSourceDetailViewController(source: oldSource) { newSource in
       self.dataSource.saveVCardSource(newSource)
@@ -88,17 +114,30 @@ class VCardSourcesViewController: UITableViewController {
     self.navigationController?.pushViewController(vc, animated: true)
   }
 
+  func addVCardSource(sender: AnyObject) {
+    // TODO
+  }
+
   func importVCardSources(sender: AnyObject) {
-    toolbar.importButton.enabled = false
     let sources = dataSource.enabledVCardSources
     beginProgress(sources)
+    refreshButtonsEnabledStates()
     vcardImporter.importFrom(sources)
   }
 
   // MARK: Helpers
 
-  private func refreshSyncButtonEnabledState() {
-    toolbar.importButton.enabled = progressState == nil && dataSource.hasEnabledVCardSources
+  private func refreshButtonsEnabledStates() {
+    addButton.enabled = !editing && progressState == nil
+
+    editButton.enabled = dataSource.hasVCardSources && progressState == nil
+
+    toolbar.importButton.enabled =
+      !editing &&
+      progressState == nil &&
+      dataSource.hasEnabledVCardSources
+
+    toolbar.backupButton.enabled = false
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {
@@ -158,7 +197,7 @@ class VCardSourcesViewController: UITableViewController {
     }
   }
 
-  func addToolbarToNavigationController() {
+  private func addToolbarToNavigationController() {
     if let nc = navigationController {
       let frame = nc.view.frame
       let toolbarHeight: CGFloat = 58.0
@@ -173,7 +212,7 @@ class VCardSourcesViewController: UITableViewController {
     }
   }
 
-  func removeToolbarFromNavigationController() {
+  private func removeToolbarFromNavigationController() {
     if navigationController != nil {
       toolbar.removeFromSuperview()
     }
