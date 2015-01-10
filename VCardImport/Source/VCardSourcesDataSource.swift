@@ -99,7 +99,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       let status = source.lastSyncStatus ?? ""
       setDetailText("\(date.localeMediumString) - \(status)", UIColor.blackColor())
     } else {
-      setDetailText("Not synced", UIColor.grayColor())
+      setDetailText("Not imported yet", UIColor.grayColor())
     }
 
     return cell
