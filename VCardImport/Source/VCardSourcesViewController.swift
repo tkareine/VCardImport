@@ -96,7 +96,6 @@ class VCardSourcesViewController: UITableViewController {
 
   override func setEditing(editing: Bool, animated: Bool) {
     super.setEditing(editing, animated: animated)
-    tableView.setEditing(editing, animated: animated)
     refreshButtonsEnabledStates()
   }
 
