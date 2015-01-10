@@ -31,6 +31,10 @@ class VCardSourceStore {
     }
   }
 
+  func remove(id: String) {
+    store.removeValueForKey(id)
+  }
+
   func save() {
     let sourcesData = JSONSerialization.encode(store.map { key, value in (key, value.toDictionary()) })
     let defaults = NSUserDefaults.standardUserDefaults()

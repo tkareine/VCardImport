@@ -119,7 +119,8 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     forRowAtIndexPath indexPath: NSIndexPath)
   {
     if (editingStyle == .Delete) {
-      // TODO
+      removeVCardSource(indexPath.row)
+      tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:.Fade)
     }
   }
 
@@ -128,6 +129,14 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   private func setVCardSourceStatus(status: String, to source: VCardSource) {
     let s = source.withSyncStatus(status, at: NSDate())
     vcardSourceStore[s.id] = s
+    vcardSourceStore.save()
+  }
+
+  private func removeVCardSource(row: Int) {
+    let vcardSourceId = vcardSourceIdsByTableRows[row]!
+    vcardSourceStore.remove(vcardSourceId)
+    vcardSourceIdsByTableRows.removeValueForKey(row)
+    tableRowsByVCardSourceIds.removeValueForKey(vcardSourceId)
     vcardSourceStore.save()
   }
 }
