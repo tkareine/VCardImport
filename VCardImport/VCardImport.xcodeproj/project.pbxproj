@@ -38,6 +38,9 @@
 		E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */; };
 		E9CF04B51A3CE40E00A13EF6 /* CoreExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */; };
 		E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB13111A3EB4C2002BC521 /* Records.swift */; };
+		E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */; };
+		E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */; };
+		E9EF16511A61DFC400CDC1E8 /* InsertionOrderDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */; };
 		E9F2289C1A43819200A10190 /* RecordDifferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */; };
 		E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */; };
 		E9F2289F1A43934B00A10190 /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB13111A3EB4C2002BC521 /* Records.swift */; };
@@ -128,6 +131,8 @@
 		E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreExtension.swift; sourceTree = "<group>"; };
 		E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreExtensionTests.swift; sourceTree = "<group>"; };
 		E9EB13111A3EB4C2002BC521 /* Records.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Records.swift; sourceTree = "<group>"; };
+		E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertionOrderDictionary.swift; sourceTree = "<group>"; };
+		E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertionOrderDictionaryTests.swift; sourceTree = "<group>"; };
 		E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordDifferencesTests.swift; sourceTree = "<group>"; };
 		E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordDifferences.swift; sourceTree = "<group>"; };
 		E9F31E111A0FD2570015509F /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -186,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */,
+				E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */,
 				E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */,
 				E9C46E6A1A4A3C3F004BD769 /* Condition.swift */,
 				E9C46E6D1A4A3C3F004BD769 /* Try.swift */,
@@ -232,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */,
+				E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */,
 				E98FD3F31A508B5300A9DB27 /* FilesTests.swift */,
 				E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */,
 				E983F1EB19E9C76F00219305 /* Supporting Files */,
@@ -385,6 +392,7 @@
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
 				E9B9B9F41A5BF653004C53CA /* VCardToolbar.swift in Sources */,
+				E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
 				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
 				E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */,
@@ -410,12 +418,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9CF04B51A3CE40E00A13EF6 /* CoreExtension.swift in Sources */,
+				E9EF16511A61DFC400CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E9F228A21A43938E00A10190 /* Errors.swift in Sources */,
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
 				E9F2289F1A43934B00A10190 /* Records.swift in Sources */,
 				E94897411A47448C004BA838 /* RecordName.swift in Sources */,
 				E9F228A01A43934B00A10190 /* RecordChangeSet.swift in Sources */,
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
+				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,
 				E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */,
 				E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */,
 				E9F2289C1A43819200A10190 /* RecordDifferencesTests.swift in Sources */,
