@@ -165,13 +165,8 @@ class VCardSourcesViewController: UITableViewController {
   private func makeProgressState(vcardSources: [VCardSource]) -> ProgressState {
     var lastProgress: Float = 0.0
     let numSources = vcardSources.count
-    let sourcesToTrack = vcardSources.map { $0.id }
 
     func set(type: VCardProgress, forSource source: VCardSource) {
-      if !contains(sourcesToTrack, source.id) {
-        return  // not tracked source
-      }
-
       let nextProgress = lastProgress + (1.0 / Float(numSources)) * 0.5
       let nextText = type == .Complete ? "Completed \(source.name)" : "Downloaded \(source.name)"
 
