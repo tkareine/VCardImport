@@ -7,6 +7,7 @@ class InsertionOrderDictionaryTests: XCTestCase {
     XCTAssertTrue(dict.isEmpty)
     XCTAssertEqual(dict.count, 0)
     XCTAssertEqual(dict.description, "[]")
+    XCTAssertEqual(dict.debugDescription, "[]")
     XCTAssertEqual(dict.keys, [])
     XCTAssertEqual(dict.values, [])
   }
@@ -19,6 +20,7 @@ class InsertionOrderDictionaryTests: XCTestCase {
     XCTAssertFalse(dict.isEmpty)
     XCTAssertEqual(dict.count, 2)
     XCTAssertEqual(dict.description, "[a: 0, b: 1]")
+    XCTAssertEqual(dict.debugDescription, "[\"a\": 0, \"b\": 1]")
     XCTAssertEqual(dict.keys, ["a", "b"])
     XCTAssertEqual(dict.values, [0, 1])
     XCTAssertEqual(dict["a"]!, 0)

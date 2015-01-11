@@ -124,13 +124,29 @@ extension InsertionOrderDictionary: DictionaryLiteralConvertible {
   }
 }
 
-extension InsertionOrderDictionary: Printable {
+extension InsertionOrderDictionary: Printable, DebugPrintable {
   var description: String {
-    return join(map(self) { k, v in "\(k): \(v)" })
+    return describeWith(print)
   }
 
-  private func join(pairs: [String]) -> String {
-    let joined = ", ".join(pairs)
-    return "[" + joined + "]"
+  var debugDescription: String {
+    return describeWith(debugPrint)
+  }
+
+  private func describeWith(printFn: (Any, inout String) -> Void) -> String {
+    func join(pairs: [String]) -> String {
+      let joined = ", ".join(pairs)
+      return "[" + joined + "]"
+    }
+
+    func describeKeyAndValue(key: K, value: V) -> String {
+      var str = ""
+      printFn(key, &str)
+      print(": ", &str)
+      printFn(value, &str)
+      return str
+    }
+
+    return join(map(self, describeKeyAndValue))
   }
 }
