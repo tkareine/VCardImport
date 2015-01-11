@@ -1,22 +1,6 @@
 import XCTest
 
 class CoreExtensionTests: XCTestCase {
-  func testArrayAny() {
-    XCTAssertTrue(["a", "B", "c"].any { $0 == $0.uppercaseString })
-    XCTAssertFalse(["a", "b", "c"].any { $0 == $0.uppercaseString })
-  }
-
-  func testArrayFind() {
-    XCTAssert(["a", "B", "c"].find { $0 == $0.uppercaseString } == "B")
-    XCTAssert(["a", "b", "c"].find { $0 == $0.uppercaseString } == nil)
-  }
-
-  func testArrayPartition() {
-    let (first, second) = ["a", "B", "c"].partition { $0 == $0.uppercaseString }
-    XCTAssertEqual(first, ["B"])
-    XCTAssertEqual(second, ["a", "c"])
-  }
-
   func testDictionaryFirst() {
     let empty: [String: Int] = [:]
     XCTAssert(empty.first == nil)
@@ -62,10 +46,5 @@ class CoreExtensionTests: XCTestCase {
   func testCountWhere() {
     XCTAssertEqual(countWhere(["A", "b", "C"], { $0 == $0.uppercaseString }), 2)
     XCTAssertEqual(countWhere(["a": 1, "b": 2, "c": 3], { (k, v) in v % 2 == 0 }), 1)
-  }
-
-  func testMapDictionary() {
-    let dict: [String: String] = mapDictionary(["a", "b"]) { idx, val in "\(idx)\(val)" }
-    XCTAssertEqual(dict, ["0a": "a", "1b": "b"])
   }
 }

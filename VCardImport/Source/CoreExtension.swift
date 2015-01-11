@@ -1,37 +1,5 @@
 import Foundation
 
-extension Array {
-  typealias Predicate = T -> Bool
-
-  func find(predicate: Predicate) -> T? {
-    for e in self {
-      if predicate(e) {
-        return e
-      }
-    }
-    return nil
-  }
-
-  func any(predicate: Predicate) -> Bool {
-    return find(predicate) != nil
-  }
-
-  func partition(predicate: Predicate) -> ([T], [T]) {
-    var applicables: [T] = []
-    var nonApplicables:[T] = []
-
-    for e in self {
-      if predicate(e) {
-        applicables.append(e)
-      } else {
-        nonApplicables.append(e)
-      }
-    }
-
-    return (applicables, nonApplicables)
-  }
-}
-
 extension Dictionary {
   var first: (Key, Value)? {
     var gen = self.generate()
@@ -40,15 +8,6 @@ extension Dictionary {
 
   func hasKey(key: Key) -> Bool {
     return self[key] != nil
-  }
-
-  func map<T: Hashable, U>(transform: (Key, Value) -> (T, U)) -> Dictionary<T, U> {
-    var dict: [T: U] = [:]
-    for oldKeyAndValue in self {
-      let (key, value) = transform(oldKeyAndValue)
-      dict[key] = value
-    }
-    return dict
   }
 }
 
@@ -96,17 +55,4 @@ func countWhere<S: SequenceType>(seq: S, predicate: (S.Generator.Element -> Bool
     }
   }
   return c
-}
-
-func mapDictionary<S: SequenceType, K: Hashable>(
-  values: S,
-  valueToKey: (Int, S.Generator.Element) -> K)
-  -> [K: S.Generator.Element]
-{
-  var dict: [K: S.Generator.Element] = [:]
-  for (index, value) in enumerate(values) {
-    let key = valueToKey(index, value)
-    dict[key] = value
-  }
-  return dict
 }
