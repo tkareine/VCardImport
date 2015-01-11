@@ -65,16 +65,6 @@ class InsertionOrderDictionaryTests: XCTestCase {
     XCTAssert(dict["b"] == nil)
   }
 
-  func testIndexOf() {
-    var dict: InsertionOrderDictionary<String, Float> = InsertionOrderDictionary()
-    dict["a"] = 3.14
-    dict["b"] = 42.0
-
-    XCTAssertEqual(dict.indexOf("a")!, 0)
-    XCTAssertEqual(dict.indexOf("b")!, 1)
-    XCTAssert(dict.indexOf("c") == nil)
-  }
-
   func testGenerate() {
     var dict: InsertionOrderDictionary<String, Int> = InsertionOrderDictionary()
     dict["a"] = 0
@@ -117,5 +107,22 @@ class InsertionOrderDictionaryTests: XCTestCase {
   func testLiteral() {
     let dict: InsertionOrderDictionary<String, Int> = ["a": 0, "b": 1, "c": 2, "d": 3]
     XCTAssertEqual(dict.description, "[a: 0, b: 1, c: 2, d: 3]")
+  }
+
+  func testIndexOf() {
+    var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42.0]
+    XCTAssertEqual(dict.indexOf("a")!, 0)
+    XCTAssertEqual(dict.indexOf("b")!, 1)
+    XCTAssert(dict.indexOf("c") == nil)
+  }
+
+  func testMove() {
+    var dict0: InsertionOrderDictionary<String, Int> = ["a": 0, "b": 1]
+    dict0.move(fromIndex: 1, toIndex: 1)
+    XCTAssertEqual(dict0.description, "[a: 0, b: 1]")
+
+    var dict1: InsertionOrderDictionary<String, Int> = ["a": 0, "b": 1, "c": 2]
+    dict1.move(fromIndex: 2, toIndex: 0)
+    XCTAssertEqual(dict1.description, "[c: 2, a: 0, b: 1]")
   }
 }

@@ -116,6 +116,15 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     }
   }
 
+  func tableView(
+    tableView: UITableView,
+    moveRowAtIndexPath sourceIndexPath: NSIndexPath,
+    toIndexPath destinationIndexPath: NSIndexPath)
+  {
+    vcardSourceStore.move(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
+    vcardSourceStore.save()
+  }
+
   // MARK: Helpers
 
   private func setVCardSourceStatus(status: String, to source: VCardSource) {

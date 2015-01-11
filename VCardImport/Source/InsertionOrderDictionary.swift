@@ -70,6 +70,15 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     return dictionary.removeValueForKey(key)!
   }
 
+  mutating func move(#fromIndex: Int, toIndex: Int) {
+    if fromIndex == toIndex {
+      return
+    }
+
+    let key = keyOrder.removeAtIndex(fromIndex)
+    keyOrder.insert(key, atIndex: toIndex)
+  }
+
   func indexOf(key: K) -> Int? {
     return find(keyOrder, key)
   }

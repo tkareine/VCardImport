@@ -37,6 +37,10 @@ class VCardSourceStore {
     store.removeValueAtIndex(index)
   }
 
+  func move(#fromIndex: Int, toIndex: Int) {
+    store.move(fromIndex: fromIndex, toIndex: toIndex)
+  }
+
   func save() {
     let sourcesData = JSONSerialization.encode(store.values.map { $0.toDictionary() })
     let defaults = NSUserDefaults.standardUserDefaults()
