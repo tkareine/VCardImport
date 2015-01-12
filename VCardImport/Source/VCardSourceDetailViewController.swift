@@ -11,6 +11,8 @@ class VCardSourceDetailViewController: UIViewController {
   private let doneCallback: VCardSource -> Void
   private var shouldCallDoneCallbackOnViewDisappear: Bool
 
+  private var nameFieldValidator: TextFieldValidator!
+
   // MARK: Controller Life Cycle
 
   init(source: VCardSource, isNewSource: Bool, doneCallback: VCardSource -> Void) {
@@ -35,6 +37,17 @@ class VCardSourceDetailViewController: UIViewController {
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillDisappear(animated)
+
+    nameFieldValidator = TextFieldValidator(
+      textField: nameField,
+      validator: { !$0.isEmpty },
+      onValidated: { [unowned self] isValid in
+        self.navigationItem.rightBarButtonItem?.enabled = isValid
+        // Needed for Swift's type inferencer. Without explicit return, we get
+        // error: Cannot convert the expression's type '()' to type '$T14?'
+        return
+    })
+
     nameField.text = source.name
     urlField.text = source.connection.url.absoluteString
     isEnabledSwitch.on = source.isEnabled
@@ -43,6 +56,8 @@ class VCardSourceDetailViewController: UIViewController {
       isEnabledLabel.hidden = true
       isEnabledSwitch.hidden = true
     }
+
+    nameFieldValidator.validate(affectStyle: !isNewSource)
 }
 
   override func viewWillDisappear(animated: Bool) {

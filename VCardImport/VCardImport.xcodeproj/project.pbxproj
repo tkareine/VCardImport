@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
+		E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
 		E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E9375BC81A0ED1120065A042 /* example-contacts.vcf */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
@@ -101,6 +102,7 @@
 /* Begin PBXFileReference section */
 		E90684AB1A589F0700728D0B /* VCardSourceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceCell.swift; sourceTree = "<group>"; };
 		E90684B01A58B17900728D0B /* DictionaryConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryConvertible.swift; sourceTree = "<group>"; };
+		E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldValidator.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
 		E9375BC81A0ED1120065A042 /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */,
 				E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */,
 				E95E95AE19F43862002D864B /* VCardSourceDetailViewController.xib */,
+				E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */,
 				E983F1DE19E9C76F00219305 /* Images.xcassets */,
 				E983F1E019E9C76F00219305 /* LaunchScreen.xib */,
 				E983F1D519E9C76F00219305 /* Supporting Files */,
@@ -392,6 +395,7 @@
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
 				E9B9B9F41A5BF653004C53CA /* VCardToolbar.swift in Sources */,
+				E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */,
 				E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
 				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
