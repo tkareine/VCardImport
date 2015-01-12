@@ -41,7 +41,7 @@ class TextFieldValidator: NSObject, UITextFieldDelegate {
     replacementString string: NSString)
     -> Bool
   {
-    let newText = makeTextChange(textField.text, replacement: string, range: range)
+    let newText = changeText(textField.text, replacement: string, range: range)
     setValidationStyle(validate(newText))
     return true
   }
@@ -70,7 +70,7 @@ class TextFieldValidator: NSObject, UITextFieldDelegate {
     }
   }
 
-  private func makeTextChange(
+  private func changeText(
     text: NSString,
     replacement: NSString,
     range: NSRange)
