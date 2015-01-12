@@ -93,13 +93,17 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
 
     let source = vcardSourceStore[indexPath.row]
 
-    cell.textLabel?.text = source.name
+    if let textLabel = cell.textLabel {
+      textLabel.text = source.name
+      textLabel.textColor = source.isEnabled ? UIConfig.CellTextColorEnabled : UIConfig.CellTextColorDisabled
+    }
 
     if let date = source.lastSyncedAt {
       let status = source.lastSyncStatus ?? ""
-      setDetailText("\(date.localeMediumString) - \(status)", UIColor.blackColor())
+      let color = source.isEnabled ? UIConfig.CellTextColorEnabled : UIConfig.CellTextColorDisabled
+      setDetailText("\(date.localeMediumString) - \(status)", color)
     } else {
-      setDetailText("Not imported yet", UIColor.grayColor())
+      setDetailText("Not imported yet", UIConfig.CellTextColorDisabled)
     }
 
     return cell
