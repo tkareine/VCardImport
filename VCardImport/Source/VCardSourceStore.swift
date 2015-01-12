@@ -25,8 +25,8 @@ class VCardSourceStore {
     return store[index]
   }
 
-  func indexOf(source: VCardSource) -> Int {
-    return store.indexOf(source.id)!
+  func indexOf(source: VCardSource) -> Int? {
+    return store.indexOf(source.id)
   }
 
   func update(source: VCardSource) {

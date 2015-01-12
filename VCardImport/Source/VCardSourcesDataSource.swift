@@ -68,7 +68,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   }
 
   func rowForVCardSource(source: VCardSource) -> Int {
-    return vcardSourceStore.indexOf(source)
+    return vcardSourceStore.indexOf(source)!
   }
 
   // MARK: Table View Data Source Delegate
