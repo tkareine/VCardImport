@@ -52,15 +52,13 @@ class VCardImporter {
       }
 
       for (source, recordLoader) in recordLoaders {
-        recordLoader.onComplete { _ in
-          QueueExecution.async(self.queue) { self.onSourceLoad(source) }
-        }
-      }
+        let loadingResult = recordLoader.get()
 
-      for (source, recordLoader) in recordLoaders {
+        QueueExecution.async(self.queue) { self.onSourceLoad(source) }
+
         var loadedRecords: [ABRecord]
 
-        switch recordLoader.get() {
+        switch loadingResult {
         case .Success(let records):
           loadedRecords = records()
         case .Failure(let desc):
