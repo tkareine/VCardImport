@@ -272,7 +272,7 @@
 				E97E1BF61A4CA328000DA85F /* PBXTargetDependency */,
 			);
 			name = vCardImport;
-			productName = VCardImport;
+			productName = vCardImport;
 			productReference = E983F1D219E9C76F00219305 /* vCardImport.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -579,7 +579,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VCardImport.app/VCardImport";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCardImport.app/vCardImport";
 			};
 			name = Debug;
 		};
@@ -594,7 +594,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VCardImport.app/VCardImport";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCardImport.app/vCardImport";
 			};
 			name = Release;
 		};
