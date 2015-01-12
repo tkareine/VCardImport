@@ -106,15 +106,21 @@ class VCardSourcesViewController: UITableViewController {
     didSelectRowAtIndexPath indexPath: NSIndexPath)
   {
     let oldSource = dataSource.vCardSourceForRow(indexPath.row)
-    let vc = VCardSourceDetailViewController(source: oldSource) { newSource in
+    let vc = VCardSourceDetailViewController(source: oldSource, isNewSource: false) { newSource in
       self.dataSource.saveVCardSource(newSource)
       self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
-    self.navigationController?.pushViewController(vc, animated: true)
+    self.navigationController!.pushViewController(vc, animated: true)
   }
 
   func addVCardSource(sender: AnyObject) {
-    // TODO
+    let vc = VCardSourceDetailViewController(source: VCardSource(), isNewSource: true) { newSource in
+      self.dataSource.saveVCardSource(newSource)
+      self.tableView.reloadData()
+    }
+    let nc = UINavigationController(rootViewController: vc)
+    nc.modalPresentationStyle = .FormSheet
+    self.presentViewController(nc, animated: true, completion: nil)
   }
 
   func importVCardSources(sender: AnyObject) {

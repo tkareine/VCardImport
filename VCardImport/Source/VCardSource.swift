@@ -24,6 +24,13 @@ class VCardSource {
     self.lastSyncedAt = lastSyncedAt
   }
 
+  convenience init() {
+    self.init(
+      name: "",
+      connection: VCardSource.Connection(url: NSURL(string: "")!),
+      isEnabled: true)
+  }
+
   func withName(name: String, connection: Connection, isEnabled: Bool) -> VCardSource {
     return VCardSource(
       name: name,
