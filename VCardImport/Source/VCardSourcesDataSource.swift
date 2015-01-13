@@ -22,7 +22,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   }
 
   func setVCardSourceFailureStatus(source: VCardSource, error: NSError) {
-    setVCardSourceStatus(error.localizedDescription, to: source)
+    setVCardSourceStatus(false, message: error.localizedDescription, to: source)
   }
 
   func setVCardSourceSuccessStatus(source: VCardSource, changes: (Int, Int)) {
@@ -55,7 +55,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       status = "\(additionsStatus), \(updatesStatus)"
     }
 
-    setVCardSourceStatus(status, to: source)
+    setVCardSourceStatus(true, message: status, to: source)
   }
 
   func saveVCardSource(source: VCardSource) {
@@ -98,10 +98,12 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       textLabel.textColor = source.isEnabled ? UIConfig.CellTextColorEnabled : UIConfig.CellTextColorDisabled
     }
 
-    if let date = source.lastSyncedAt {
-      let status = source.lastSyncStatus ?? ""
+    if let importStatus = source.lastImportStatus {
+      let warningStr = importStatus.isSuccess ? "" : "⚠️ "
+      let message = importStatus.message
+      let dateStr = importStatus.importedAt.localeMediumString
       let color = source.isEnabled ? UIConfig.CellTextColorEnabled : UIConfig.CellTextColorDisabled
-      setDetailText("\(date.localeMediumString) - \(status)", color)
+      setDetailText("\(warningStr)\(dateStr) - \(message)", color)
     } else {
       setDetailText("Not imported yet", UIConfig.CellTextColorDisabled)
     }
@@ -131,8 +133,12 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
 
   // MARK: Helpers
 
-  private func setVCardSourceStatus(status: String, to source: VCardSource) {
-    let s = source.withSyncStatus(status, at: NSDate())
+  private func setVCardSourceStatus(
+    isSuccess: Bool,
+    message: String,
+    to source: VCardSource)
+  {
+    let s = source.withLastImportStatus(isSuccess, message: message, at: NSDate())
     vcardSourceStore.update(s)
     vcardSourceStore.save()
   }

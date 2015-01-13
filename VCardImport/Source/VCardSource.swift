@@ -1,75 +1,77 @@
 import Foundation
 
-class VCardSource {
+struct VCardSource {
   let name: String
   let connection: Connection
   let isEnabled: Bool
   let id: String
-  let lastSyncStatus: String?
-  let lastSyncedAt: NSDate?
+  let lastImportStatus: ImportStatus?
 
   init(
     name: String,
     connection: Connection,
     isEnabled: Bool,
     id: String = NSUUID().UUIDString,
-    lastSyncStatus: String? = nil,
-    lastSyncedAt: NSDate? = nil)
+    lastImportStatus: ImportStatus? = nil)
   {
     self.name = name
     self.connection = connection
     self.isEnabled = isEnabled
     self.id = id
-    self.lastSyncStatus = lastSyncStatus
-    self.lastSyncedAt = lastSyncedAt
+    self.lastImportStatus = lastImportStatus
   }
 
-  convenience init() {
-    self.init(
+  static func emptySource() -> VCardSource {
+    return VCardSource(
       name: "",
       connection: VCardSource.Connection(url: NSURL(string: "")!),
       isEnabled: true)
   }
 
-  func withName(name: String, connection: Connection, isEnabled: Bool) -> VCardSource {
+  func withName(
+    name: String,
+    connection: Connection,
+    isEnabled: Bool)
+    -> VCardSource
+  {
     return VCardSource(
       name: name,
       connection: connection,
       isEnabled: isEnabled,
       id: id,
-      lastSyncStatus: lastSyncStatus,
-      lastSyncedAt: lastSyncedAt)
+      lastImportStatus: lastImportStatus)
   }
 
-  func withSyncStatus(syncStatus: String, at syncedAt: NSDate) -> VCardSource {
+  func withLastImportStatus(
+    isSuccess: Bool,
+    message: String,
+    at importedAt: NSDate)
+    -> VCardSource
+  {
     return VCardSource(
       name: name,
       connection: connection,
       isEnabled: isEnabled,
       id: id,
-      lastSyncStatus: syncStatus,
-      lastSyncedAt: syncedAt)
+      lastImportStatus: VCardSource.ImportStatus(
+        isSuccess: isSuccess,
+        message: message,
+        importedAt: importedAt))
   }
 
-  class Connection {
+  struct Connection {
     let url: NSURL
+  }
 
-    init(url: NSURL) {
-      self.url = url
-    }
+  struct ImportStatus {
+    let isSuccess: Bool
+    let message: String
+    let importedAt: NSDate
   }
 }
 
 extension VCardSource: DictionaryConvertible {
   typealias DictionaryType = VCardSource
-
-  private func asAnyObject<T: AnyObject>(t: T?) -> T! {
-    if let tt = t {
-      return tt
-    } else {
-      return nil
-    }
-  }
 
   func toDictionary() -> [String: AnyObject] {
     var dict: [String: AnyObject] = [
@@ -78,19 +80,16 @@ extension VCardSource: DictionaryConvertible {
       "isEnabled": isEnabled,
       "id": id
     ]
-    if let ss = lastSyncStatus {
-      dict["lastSyncStatus"] = ss
-    }
-    if let sa = lastSyncedAt {
-      dict["lastSyncedAt"] = sa.ISOString
+    if let importStatus = lastImportStatus {
+      dict["lastImportStatus"] = importStatus.toDictionary()
     }
     return dict
   }
 
-  class func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
-    var lastSyncedAt: NSDate?
-    if let str = dictionary["lastSyncedAt"] as? String {
-      lastSyncedAt = NSDate.dateFromISOString(str)
+  static func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
+    var lastImportStatus: ImportStatus?
+    if let importStatus = dictionary["lastImportStatus"] as? [String: AnyObject] {
+       lastImportStatus = VCardSource.ImportStatus.fromDictionary(importStatus)
     }
 
     return DictionaryType(
@@ -98,8 +97,7 @@ extension VCardSource: DictionaryConvertible {
       connection: Connection.fromDictionary(dictionary["connection"] as [String: AnyObject]!),
       isEnabled: dictionary["isEnabled"] as Bool!,
       id: dictionary["id"] as String!,
-      lastSyncStatus: dictionary["lastSyncStatus"] as String?,
-      lastSyncedAt: lastSyncedAt)
+      lastImportStatus: lastImportStatus)
   }
 }
 
@@ -110,7 +108,26 @@ extension VCardSource.Connection: DictionaryConvertible {
     return ["url": url.absoluteString!]
   }
 
-  class func fromDictionary(dictionary: [String : AnyObject]) -> DictionaryType {
+  static func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
     return DictionaryType(url: NSURL(string: dictionary["url"] as String)!)
+  }
+}
+
+extension VCardSource.ImportStatus: DictionaryConvertible {
+  typealias DictionaryType = VCardSource.ImportStatus
+
+  func toDictionary() -> [String: AnyObject] {
+    return [
+      "isSuccess": isSuccess,
+      "message": message,
+      "importedAt": importedAt.ISOString
+    ]
+  }
+
+  static func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
+    return DictionaryType(
+      isSuccess: dictionary["isSuccess"] as Bool,
+      message: dictionary["message"] as String,
+      importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as String)!)
   }
 }
