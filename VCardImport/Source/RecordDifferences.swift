@@ -14,7 +14,7 @@ struct RecordDifferences {
       oldRecords,
       uniqueRecordsOf(newRecords))
     let changes = findChanges(matches)
-    return RecordDifferences(additions: additions, changes: changes)
+    return self(additions: additions, changes: changes)
   }
 
   private static func uniqueRecordsOf(records: [ABRecord]) -> [RecordName: ABRecord] {

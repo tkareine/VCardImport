@@ -22,7 +22,7 @@ struct VCardSource {
   }
 
   static func emptySource() -> VCardSource {
-    return VCardSource(
+    return self(
       name: "",
       connection: VCardSource.Connection(url: NSURL(string: "")!),
       isEnabled: true)
@@ -90,7 +90,7 @@ extension VCardSource: DictionaryConvertible {
        lastImportStatus = VCardSource.ImportStatus.fromDictionary(importStatus)
     }
 
-    return DictionaryType(
+    return self(
       name: dictionary["name"] as String!,
       connection: Connection.fromDictionary(dictionary["connection"] as [String: AnyObject]!),
       isEnabled: dictionary["isEnabled"] as Bool!,
@@ -105,7 +105,7 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return VCardSource.Connection(url: NSURL(string: dictionary["url"] as String)!)
+    return self(url: NSURL(string: dictionary["url"] as String)!)
   }
 }
 
@@ -119,7 +119,7 @@ extension VCardSource.ImportStatus: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.ImportStatus {
-    return VCardSource.ImportStatus(
+    return self(
       isSuccess: dictionary["isSuccess"] as Bool,
       message: dictionary["message"] as String,
       importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as String)!)
