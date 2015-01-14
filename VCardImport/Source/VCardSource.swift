@@ -71,8 +71,6 @@ struct VCardSource {
 }
 
 extension VCardSource: DictionaryConvertible {
-  typealias DictionaryType = VCardSource
-
   func toDictionary() -> [String: AnyObject] {
     var dict: [String: AnyObject] = [
       "name": name,
@@ -86,7 +84,7 @@ extension VCardSource: DictionaryConvertible {
     return dict
   }
 
-  static func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
+  static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource {
     var lastImportStatus: ImportStatus?
     if let importStatus = dictionary["lastImportStatus"] as? [String: AnyObject] {
        lastImportStatus = VCardSource.ImportStatus.fromDictionary(importStatus)
@@ -102,20 +100,16 @@ extension VCardSource: DictionaryConvertible {
 }
 
 extension VCardSource.Connection: DictionaryConvertible {
-  typealias DictionaryType = VCardSource.Connection
-
   func toDictionary() -> [String: AnyObject] {
     return ["url": url.absoluteString!]
   }
 
-  static func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
-    return DictionaryType(url: NSURL(string: dictionary["url"] as String)!)
+  static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
+    return VCardSource.Connection(url: NSURL(string: dictionary["url"] as String)!)
   }
 }
 
 extension VCardSource.ImportStatus: DictionaryConvertible {
-  typealias DictionaryType = VCardSource.ImportStatus
-
   func toDictionary() -> [String: AnyObject] {
     return [
       "isSuccess": isSuccess,
@@ -124,8 +118,8 @@ extension VCardSource.ImportStatus: DictionaryConvertible {
     ]
   }
 
-  static func fromDictionary(dictionary: [String: AnyObject]) -> DictionaryType {
-    return DictionaryType(
+  static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.ImportStatus {
+    return VCardSource.ImportStatus(
       isSuccess: dictionary["isSuccess"] as Bool,
       message: dictionary["message"] as String,
       importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as String)!)
