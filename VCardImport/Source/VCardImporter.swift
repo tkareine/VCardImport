@@ -9,6 +9,7 @@ class VCardImporter {
   private let onSourceLoad: OnSourceLoadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
+  private let urlConnection: URLConnection
   private let queue: dispatch_queue_t
 
   class func builder() -> Builder {
@@ -19,11 +20,13 @@ class VCardImporter {
     onSourceLoad: OnSourceLoadCallback,
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
+    urlConnection: URLConnection,
     queue: dispatch_queue_t)
   {
     self.onSourceLoad = onSourceLoad
     self.onSourceComplete = onSourceComplete
     self.onComplete = onComplete
+    self.urlConnection = urlConnection
     self.queue = queue
   }
 
@@ -238,7 +241,7 @@ class VCardImporter {
 
   private func loadRecordsFromURL(url: NSURL) -> Future<[ABRecord]> {
     let fileURL = Files.tempFile()
-    let future = URLConnection
+    let future = urlConnection
         .download(url, toDestination: fileURL)
         .flatMap(loadRecordsFromFile)
     future.onComplete { _ in Files.removeFile(fileURL) }
@@ -258,6 +261,7 @@ class VCardImporter {
     private var onSourceLoad: OnSourceLoadCallback?
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
+    private var urlConnection: URLConnection?
     private var queue: dispatch_queue_t?
 
     func onSourceLoad(callback: OnSourceLoadCallback) -> Builder {
@@ -275,6 +279,11 @@ class VCardImporter {
       return self
     }
 
+    func urlConnection(urlConnection: URLConnection) -> Builder {
+      self.urlConnection = urlConnection
+      return self
+    }
+
     func queue(queue: dispatch_queue_t) -> Builder {
       self.queue = queue
       return self
@@ -284,6 +293,7 @@ class VCardImporter {
       if self.onSourceLoad == nil ||
         self.onSourceComplete == nil ||
         self.onComplete == nil ||
+        self.urlConnection == nil ||
         self.queue == nil {
         fatalError("all parameters must be given")
       }
@@ -291,6 +301,7 @@ class VCardImporter {
         onSourceLoad: self.onSourceLoad!,
         onSourceComplete: self.onSourceComplete!,
         onComplete: self.onComplete!,
+        urlConnection: self.urlConnection!,
         queue: self.queue!)
     }
   }
