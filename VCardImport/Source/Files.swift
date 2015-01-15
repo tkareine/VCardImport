@@ -6,6 +6,16 @@ struct Files {
     return NSURL.fileURLWithPath(NSTemporaryDirectory().stringByAppendingPathComponent(fileName))!
   }
 
+  static func moveFile(from: NSURL, to: NSURL) {
+    var error: NSError?
+
+    NSFileManager.defaultManager().moveItemAtURL(from, toURL: to, error: &error)
+
+    if let err = error {
+      fatalError("Failed moving file: \(err)")
+    }
+  }
+
   static func removeFile(fileURL: NSURL) {
     let fileManager = NSFileManager.defaultManager()
 
@@ -14,9 +24,11 @@ struct Files {
     }
 
     var error: NSError?
-    let wasRemoved = fileManager.removeItemAtURL(fileURL, error: &error)
-    if !wasRemoved {
-      fatalError("Temp file could not be removed: \(error)")
+
+    fileManager.removeItemAtURL(fileURL, error: &error)
+
+    if let err = error {
+      fatalError("Failed removing file: \(err)")
     }
   }
 
