@@ -82,7 +82,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     cellForRowAtIndexPath indexPath: NSIndexPath)
     -> UITableViewCell
   {
-    let cell = tableView.dequeueReusableCellWithIdentifier(UIConfig.SourcesCellReuseIdentifier, forIndexPath: indexPath) as VCardSourceCell
+    let cell = tableView.dequeueReusableCellWithIdentifier(Config.UI.SourcesCellReuseIdentifier, forIndexPath: indexPath) as VCardSourceCell
 
     func setDetailText(text: String, color: UIColor) {
       if let dt = cell.detailTextLabel {
@@ -95,17 +95,17 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
 
     if let textLabel = cell.textLabel {
       textLabel.text = source.name
-      textLabel.textColor = source.isEnabled ? UIConfig.CellTextColorEnabled : UIConfig.CellTextColorDisabled
+      textLabel.textColor = source.isEnabled ? Config.UI.CellTextColorEnabled : Config.UI.CellTextColorDisabled
     }
 
     if let importStatus = source.lastImportStatus {
       let warningStr = importStatus.isSuccess ? "" : "⚠️ "
       let message = importStatus.message
       let dateStr = importStatus.importedAt.localeMediumString
-      let color = source.isEnabled ? UIConfig.CellTextColorEnabled : UIConfig.CellTextColorDisabled
+      let color = source.isEnabled ? Config.UI.CellTextColorEnabled : Config.UI.CellTextColorDisabled
       setDetailText("\(warningStr)\(dateStr) - \(message)", color)
     } else {
-      setDetailText("Not imported yet", UIConfig.CellTextColorDisabled)
+      setDetailText("Not imported yet", Config.UI.CellTextColorDisabled)
     }
 
     return cell

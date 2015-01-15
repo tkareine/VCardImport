@@ -31,7 +31,7 @@ class VCardSourcesViewController: UITableViewController {
       action: "importVCardSources:",
       forControlEvents: .TouchUpInside)
 
-    self.navigationItem.title = "vCard Import"
+    self.navigationItem.title = Config.AppTitle
     self.navigationItem.leftBarButtonItem = editButton
     self.navigationItem.rightBarButtonItem = addButton
     self.tableView.dataSource = dataSource
@@ -70,7 +70,7 @@ class VCardSourcesViewController: UITableViewController {
     super.viewDidLoad()
     tableView.registerClass(
       VCardSourceCell.self,
-      forCellReuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
+      forCellReuseIdentifier: Config.UI.SourcesCellReuseIdentifier)
   }
 
   override func viewWillAppear(animated: Bool) {

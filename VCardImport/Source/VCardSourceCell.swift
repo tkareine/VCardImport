@@ -2,7 +2,7 @@ import UIKit
 
 class VCardSourceCell: UITableViewCell {
   override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: .Subtitle, reuseIdentifier: UIConfig.SourcesCellReuseIdentifier)
+    super.init(style: .Subtitle, reuseIdentifier: Config.UI.SourcesCellReuseIdentifier)
     accessoryType = .DisclosureIndicator
   }
 
