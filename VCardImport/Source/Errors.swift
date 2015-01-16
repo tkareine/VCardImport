@@ -38,6 +38,15 @@ struct Errors {
       userInfo: CFErrorCopyUserInfo(error))
   }
 
+  static func rejectPromise<T>(promise: PromiseFuture<T>, _ error: NSError) {
+    promise.reject("\(error.localizedFailureReason): \(error.localizedDescription)")
+  }
+
+  static func rejectPromise<T>(promise: PromiseFuture<T>, _ response: NSHTTPURLResponse) {
+    let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)
+    promise.reject("(\(response.statusCode)) \(statusDesc)")
+  }
+
   private static func vcardError(#code: Int, failureReason: String, description: String) -> NSError {
     let userInfo = [
       NSLocalizedFailureReasonErrorKey: failureReason,

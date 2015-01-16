@@ -42,11 +42,14 @@ class VCardSourcesViewController: UITableViewController {
       .onSourceLoad { source in
         self.progressState(.Load, forSource: source)
       }
-      .onSourceComplete { source, changes, error in
+      .onSourceComplete { source, changes, modifiedHeaderStamp, error in
         if let err = error {
           self.dataSource.setVCardSourceFailureStatus(source, error: err)
         } else {
-          self.dataSource.setVCardSourceSuccessStatus(source, changes: changes!)
+          self.dataSource.setVCardSourceSuccessStatus(
+            source,
+            changes: changes!,
+            modifiedHeaderStamp: modifiedHeaderStamp)
         }
         self.progressState(.Complete, forSource: source)
         self.reloadTableViewSourceRow(source)

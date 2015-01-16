@@ -37,37 +37,83 @@ class URLConnection {
       delegateQueue: makeOperationQueue())
   }
 
-  func download(url: NSURL, to destination: NSURL, headers: Headers = [:]) -> Future<NSURL> {
-    let promise = Future<NSURL>.promise()
-    let request = makeURLRequest(url: url, headers: headers)
-    let task = session.downloadTaskWithRequest(request, completionHandler: { location, response, error in
-      if let err = error {
-        promise.reject("\(err.localizedFailureReason): \(err.localizedDescription)")
-      } else if let res = response as? NSHTTPURLResponse {
-        if self.isSuccessStatusCode(res.statusCode) {
-          Files.move(from: location, to: destination)
-          promise.resolve(destination)
+  func request(method: Method, url: NSURL, headers: Headers = [:]) -> Future<NSHTTPURLResponse> {
+    let request = makeURLRequest(url: url, method: method, headers: headers)
+    return promisifyTask { promise in
+      return self.session.dataTaskWithRequest(request) { data, response, error in
+        if let err = error {
+          Errors.rejectPromise(promise, err)
+        } else if let res = response as? NSHTTPURLResponse {
+          if self.isSuccessStatusCode(res.statusCode) {
+            promise.resolve(res)
+          } else {
+            Errors.rejectPromise(promise, res)
+          }
         } else {
-          let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
-          promise.reject("(\(res.statusCode)) \(statusDesc)")
+          promise.reject("Unknown request error for \(method) \(url)")
         }
-      } else {
-        promise.reject("Unknown download error")
       }
-    })
-    task.resume()
-    return promise
+    }
   }
 
-  private func makeURLRequest(#url: NSURL, headers: Headers) -> NSURLRequest {
+  func head(url: NSURL, headers: Headers = [:]) -> Future<NSHTTPURLResponse> {
+    return request(.Head, url: url, headers: headers)
+  }
+
+  func download(url: NSURL, to destination: NSURL, headers: Headers = [:]) -> Future<NSURL> {
+    let request = makeURLRequest(url: url, headers: headers)
+    return promisifyTask { promise in
+      return self.session.downloadTaskWithRequest(request) { location, response, error in
+        if let err = error {
+          Errors.rejectPromise(promise, err)
+        } else if let res = response as? NSHTTPURLResponse {
+          if self.isSuccessStatusCode(res.statusCode) {
+            Files.move(from: location, to: destination)
+            promise.resolve(destination)
+          } else {
+            Errors.rejectPromise(promise, res)
+          }
+        } else {
+          promise.reject("Unknown download error for \(url)")
+        }
+      }
+    }
+  }
+
+  private func makeURLRequest(#url: NSURL, method: Method = .Get, headers: Headers = [:]) -> NSURLRequest {
     let request = NSMutableURLRequest(URL: url)
+    request.HTTPMethod = method.description
     for (headerName, headerValue) in headers {
       request.setValue(headerValue, forHTTPHeaderField: headerName)
     }
     return request
   }
 
+  private func promisifyTask<T>(
+    block: PromiseFuture<T> -> NSURLSessionTask)
+    -> Future<T>
+  {
+    let promise = Future<T>.promise()
+    let task = block(promise)
+    task.resume()
+    return promise
+  }
+
   private func isSuccessStatusCode(code: Int) -> Bool {
     return contains(SuccessStatusCodes, code)
+  }
+
+  enum Method: Printable {
+    case Head
+    case Get
+
+    var description: String {
+      switch self {
+      case Head:
+        return "HEAD"
+      case Get:
+        return "GET"
+      }
+    }
   }
 }

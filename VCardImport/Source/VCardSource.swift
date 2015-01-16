@@ -5,20 +5,20 @@ struct VCardSource {
   let connection: Connection
   let isEnabled: Bool
   let id: String
-  let lastImportStatus: ImportStatus?
+  let lastImportResult: ImportResult?
 
   init(
     name: String,
     connection: Connection,
     isEnabled: Bool,
     id: String = NSUUID().UUIDString,
-    lastImportStatus: ImportStatus? = nil)
+    lastImportResult: ImportResult? = nil)
   {
     self.name = name
     self.connection = connection
     self.isEnabled = isEnabled
     self.id = id
-    self.lastImportStatus = lastImportStatus
+    self.lastImportResult = lastImportResult
   }
 
   static func empty() -> VCardSource {
@@ -39,34 +39,40 @@ struct VCardSource {
       connection: connection,
       isEnabled: isEnabled,
       id: id,
-      lastImportStatus: lastImportStatus)
+      lastImportResult: lastImportResult)
   }
 
-  func withLastImportStatus(
+  func withLastImportResult(
     isSuccess: Bool,
     message: String,
-    at importedAt: NSDate)
+    at importedAt: NSDate,
+    modifiedHeaderStamp newModifiedHeaderStamp: ModifiedHeaderStamp?)
     -> VCardSource
   {
+    // if no new modified header stamp, preserve the old one (if any)
+    let stamp = newModifiedHeaderStamp ?? lastImportResult?.modifiedHeaderStamp
+
     return VCardSource(
       name: name,
       connection: connection,
       isEnabled: isEnabled,
       id: id,
-      lastImportStatus: VCardSource.ImportStatus(
+      lastImportResult: VCardSource.ImportResult(
         isSuccess: isSuccess,
         message: message,
-        importedAt: importedAt))
+        importedAt: importedAt,
+        modifiedHeaderStamp: stamp))
   }
 
   struct Connection {
     let url: NSURL
   }
 
-  struct ImportStatus {
+  struct ImportResult {
     let isSuccess: Bool
     let message: String
     let importedAt: NSDate
+    let modifiedHeaderStamp: ModifiedHeaderStamp?
   }
 }
 
@@ -78,16 +84,16 @@ extension VCardSource: DictionaryConvertible {
       "isEnabled": isEnabled,
       "id": id
     ]
-    if let importStatus = lastImportStatus {
-      dict["lastImportStatus"] = importStatus.toDictionary()
+    if let importResult = lastImportResult {
+      dict["lastImportResult"] = importResult.toDictionary()
     }
     return dict
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource {
-    var lastImportStatus: ImportStatus?
-    if let importStatus = dictionary["lastImportStatus"] as? [String: AnyObject] {
-       lastImportStatus = VCardSource.ImportStatus.fromDictionary(importStatus)
+    var lastImportResult: ImportResult?
+    if let importResult = dictionary["lastImportResult"] as? [String: AnyObject] {
+       lastImportResult = VCardSource.ImportResult.fromDictionary(importResult)
     }
 
     return self(
@@ -95,7 +101,7 @@ extension VCardSource: DictionaryConvertible {
       connection: Connection.fromDictionary(dictionary["connection"] as [String: AnyObject]!),
       isEnabled: dictionary["isEnabled"] as Bool!,
       id: dictionary["id"] as String!,
-      lastImportStatus: lastImportStatus)
+      lastImportResult: lastImportResult)
   }
 }
 
@@ -109,19 +115,29 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 }
 
-extension VCardSource.ImportStatus: DictionaryConvertible {
+extension VCardSource.ImportResult: DictionaryConvertible {
   func toDictionary() -> [String: AnyObject] {
-    return [
+    var dict: [String: AnyObject] = [
       "isSuccess": isSuccess,
       "message": message,
       "importedAt": importedAt.ISOString
     ]
+    if let stamp = modifiedHeaderStamp {
+      dict["modifiedHeaderStamp"] = stamp.toDictionary()
+    }
+    return dict
   }
 
-  static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.ImportStatus {
+  static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.ImportResult {
+    var modifiedHeaderStamp: ModifiedHeaderStamp?
+    if let stamp = dictionary["modifiedHeaderStamp"] as? [String: AnyObject] {
+      modifiedHeaderStamp = ModifiedHeaderStamp.fromDictionary(stamp)
+    }
+
     return self(
       isSuccess: dictionary["isSuccess"] as Bool,
       message: dictionary["message"] as String,
-      importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as String)!)
+      importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as String)!,
+      modifiedHeaderStamp: modifiedHeaderStamp)
   }
 }

@@ -22,10 +22,18 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   }
 
   func setVCardSourceFailureStatus(source: VCardSource, error: NSError) {
-    setVCardSourceStatus(false, message: error.localizedDescription, to: source)
+    setVCardSourceStatus(
+      false,
+      message: error.localizedDescription,
+      modifiedHeaderStamp: nil,
+      to: source)
   }
 
-  func setVCardSourceSuccessStatus(source: VCardSource, changes: (Int, Int)) {
+  func setVCardSourceSuccessStatus(
+    source: VCardSource,
+    changes: (Int, Int),
+    modifiedHeaderStamp: ModifiedHeaderStamp?)
+  {
     var status: String
 
     let (additions, updates) = changes
@@ -55,7 +63,11 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       status = "\(additionsStatus), \(updatesStatus)"
     }
 
-    setVCardSourceStatus(true, message: status, to: source)
+    setVCardSourceStatus(
+      true,
+      message: status,
+      modifiedHeaderStamp: modifiedHeaderStamp,
+      to: source)
   }
 
   func saveVCardSource(source: VCardSource) {
@@ -98,10 +110,10 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       textLabel.textColor = source.isEnabled ? Config.UI.CellTextColorEnabled : Config.UI.CellTextColorDisabled
     }
 
-    if let importStatus = source.lastImportStatus {
-      let warningStr = importStatus.isSuccess ? "" : "⚠️ "
-      let message = importStatus.message
-      let dateStr = importStatus.importedAt.localeMediumString
+    if let importResult = source.lastImportResult {
+      let warningStr = importResult.isSuccess ? "" : "⚠️ "
+      let message = importResult.message
+      let dateStr = importResult.importedAt.localeMediumString
       let color = source.isEnabled ? Config.UI.CellTextColorEnabled : Config.UI.CellTextColorDisabled
       setDetailText("\(warningStr)\(dateStr) - \(message)", color)
     } else {
@@ -136,9 +148,14 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   private func setVCardSourceStatus(
     isSuccess: Bool,
     message: String,
+    modifiedHeaderStamp: ModifiedHeaderStamp?,
     to source: VCardSource)
   {
-    let s = source.withLastImportStatus(isSuccess, message: message, at: NSDate())
+    let s = source.withLastImportResult(
+      isSuccess,
+      message: message,
+      at: NSDate(),
+      modifiedHeaderStamp: modifiedHeaderStamp)
     vcardSourceStore.update(s)
     vcardSourceStore.save()
   }

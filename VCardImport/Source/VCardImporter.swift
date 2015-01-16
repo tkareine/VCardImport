@@ -3,7 +3,7 @@ import AddressBook
 
 class VCardImporter {
   typealias OnSourceLoadCallback = VCardSource -> Void
-  typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, NSError?) -> Void
+  typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, ModifiedHeaderStamp?, NSError?) -> Void
   typealias OnCompleteCallback = NSError? -> Void
 
   private let AdditionalHeaders = [
@@ -35,7 +35,7 @@ class VCardImporter {
   }
 
   // The implementation is long and ugly, but I prefer to keep dispatching calls
-  // to background jobs and back to the specified queue in one place.
+  // to background jobs and back to the user-specified queue in one place.
   func importFrom(sources: [VCardSource]) {
     QueueExecution.async(QueueExecution.backgroundQueue) {
       var error: NSError?
@@ -53,24 +53,33 @@ class VCardImporter {
         return
       }
 
-      let recordLoaders: [(VCardSource, Future<[ABRecord]>)] = sources.map { source in
-        let recordLoader = self.loadRecordsFromURL(source.connection.url)
-        return (source, recordLoader)
+      let sourceImports: [(VCardSource, Future<SourceImportResult>)] = sources.map { source in
+        (source, self.checkAndLoadSource(source))
       }
 
-      for (source, recordLoader) in recordLoaders {
-        let loadingResult = recordLoader.get()
+      for (source, sourceImport) in sourceImports {
+        let importResult = sourceImport.get()
 
         QueueExecution.async(self.queue) { self.onSourceLoad(source) }
 
         var loadedRecords: [ABRecord]
+        var modifiedHeaderStamp: ModifiedHeaderStamp?
 
-        switch loadingResult {
-        case .Success(let records):
-          loadedRecords = records()
+        switch importResult {
+        case .Success(let res):
+          switch res() {
+          case .Unchanged:
+            QueueExecution.async(self.queue) {
+              self.onSourceComplete(source, (0, 0), nil, nil)
+            }
+            continue
+          case .Updated(let records, let stamp):
+            loadedRecords = records
+            modifiedHeaderStamp = stamp
+          }
         case .Failure(let desc):
           QueueExecution.async(self.queue) {
-            self.onSourceComplete(source, nil, Errors.addressBookFailedToLoadVCardSource(desc))
+            self.onSourceComplete(source, nil, nil, Errors.addressBookFailedToLoadVCardSource(desc))
           }
           continue
         }
@@ -87,7 +96,7 @@ class VCardImporter {
             toAddressBook: addressBook,
             error: &error)
           if !isSuccess {
-            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, error!) }
+            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
         }
@@ -95,7 +104,7 @@ class VCardImporter {
         if !recordDiff.changes.isEmpty {
           let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
           if !isSuccess {
-            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, error!) }
+            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
         }
@@ -108,21 +117,24 @@ class VCardImporter {
             if abError != nil {
               error = Errors.fromCFError(abError!.takeRetainedValue())
             }
-            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, error!) }
+            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
 
+          NSLog("vCard source %@: added %d contact(s), updated %d contact(s)",
+            source.name, recordDiff.additions.count, recordDiff.changes.count)
           QueueExecution.async(self.queue) {
             self.onSourceComplete(
               source,
               (recordDiff.additions.count, recordDiff.changes.count),
+              modifiedHeaderStamp,
               nil)
           }
-          NSLog("VCard source %@: added %d contact(s), updated %d contact(s)",
-            source.name, recordDiff.additions.count, recordDiff.changes.count)
         } else {
-          QueueExecution.async(self.queue) { self.onSourceComplete(source, (0, 0), nil) }
-          NSLog("VCard source %@: no contacts to add or update", source.name)
+          NSLog("vCard source %@: no contacts to add or update", source.name)
+          QueueExecution.async(self.queue) {
+            self.onSourceComplete(source, (0, 0), modifiedHeaderStamp, nil)
+          }
         }
       }
 
@@ -243,7 +255,24 @@ class VCardImporter {
       property: property)
   }
 
-  private func loadRecordsFromURL(url: NSURL) -> Future<[ABRecord]> {
+  private func checkAndLoadSource(source: VCardSource) -> Future<SourceImportResult> {
+    NSLog("vCard source %@: checking if remote has changed…", source.name)
+    return urlConnection.head(source.connection.url, headers: AdditionalHeaders).flatMap { response in
+      let newStamp = ModifiedHeaderStamp(headers: response.allHeaderFields)
+
+      if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
+        if oldStamp == newStamp {
+          NSLog("vCard source %@: remote hasn't changed (\(oldStamp))", source.name)
+          return Future.succeeded(.Unchanged)
+        }
+      }
+
+      NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
+      return self.loadSourceFromURL(source.connection.url).map { records in .Updated(records, newStamp) }
+    }
+  }
+
+  private func loadSourceFromURL(url: NSURL) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
     let future = urlConnection
         .download(url, to: fileURL, headers: AdditionalHeaders)
@@ -257,8 +286,13 @@ class VCardImporter {
     if let records = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData) {
       return Future.succeeded(records.takeRetainedValue())
     } else {
-      return Future.failed("invalid VCard file")
+      return Future.failed("invalid vCard file")
     }
+  }
+
+  private enum SourceImportResult {
+    case Unchanged
+    case Updated([ABRecord], ModifiedHeaderStamp?)
   }
 
   class Builder {
