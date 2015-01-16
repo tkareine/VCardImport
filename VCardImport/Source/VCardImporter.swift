@@ -6,6 +6,10 @@ class VCardImporter {
   typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, NSError?) -> Void
   typealias OnCompleteCallback = NSError? -> Void
 
+  private let AdditionalHeaders = [
+    "Accept": "text/vcard,text/x-vcard,text/directory;profile=vCard;q=0.9,text/directory;q=0.8,*/*;q=0.7"
+  ]
+
   private let onSourceLoad: OnSourceLoadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
@@ -242,7 +246,7 @@ class VCardImporter {
   private func loadRecordsFromURL(url: NSURL) -> Future<[ABRecord]> {
     let fileURL = Files.tempFile()
     let future = urlConnection
-        .download(url, toDestination: fileURL)
+        .download(url, toDestination: fileURL, headers: AdditionalHeaders)
         .flatMap(loadRecordsFromFile)
     future.onComplete { _ in Files.removeFile(fileURL) }
     return future

@@ -1,55 +1,52 @@
 import Foundation
 
 class URLConnection {
+  typealias Headers = [String: String]
+
+  private let SuccessStatusCodes = 200..<300
+
   private let session: NSURLSession
 
   init() {
-    func makeUserAgentHeader() -> String {
-      if let info = NSBundle.mainBundle().infoDictionary {
-        let executable: AnyObject = info[kCFBundleExecutableKey] ?? "Unknown"
-        let bundle: AnyObject = info[kCFBundleIdentifierKey] ?? "Unknown"
-        let version: AnyObject = info[kCFBundleVersionKey] ?? "Unknown"
-        let os: AnyObject = NSProcessInfo.processInfo().operatingSystemVersionString ?? "Unknown"
-        var mutableUserAgent = NSMutableString(string: "\(executable)/\(bundle) (\(version); OS \(os))") as CFMutableString
-        let transform = NSString(string: "Any-Latin; Latin-ASCII; [:^ASCII:] Remove") as CFString
-        if CFStringTransform(mutableUserAgent, nil, transform, 0) == 1 {
-          return mutableUserAgent as String
-        }
-      }
-      return "vCardImport"
-    }
-
     func makeHeaders() -> [String: String] {
       return [
-        "Accept": "text/vcard,text/x-vcard,text/directory;profile=vCard;q=0.9,text/directory;q=0.8,*/*;q=0.7",
         "Accept-Encoding": "gzip,compress;q=0.9",
-        "User-Agent": makeUserAgentHeader()
+        "User-Agent": Config.AppInfo
       ]
     }
 
-    let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
-    config.allowsCellularAccess = true
-    config.timeoutIntervalForRequest = 60
-    config.timeoutIntervalForResource = 60 * 60 * 10
-    config.HTTPAdditionalHeaders = makeHeaders()
+    func makeConfig() -> NSURLSessionConfiguration {
+      let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+      config.allowsCellularAccess = true
+      config.timeoutIntervalForRequest = 60
+      config.timeoutIntervalForResource = 60 * 60 * 10
+      config.HTTPAdditionalHeaders = makeHeaders()
+      return config
+    }
 
-    let operationQueue = NSOperationQueue()
-    operationQueue.qualityOfService = .UserInitiated
-    operationQueue.maxConcurrentOperationCount = 6
+    func makeOperationQueue() -> NSOperationQueue {
+      let operationQueue = NSOperationQueue()
+      operationQueue.qualityOfService = .UserInitiated
+      operationQueue.maxConcurrentOperationCount = 6
+      return operationQueue
+    }
 
-    session = NSURLSession(configuration: config, delegate: nil, delegateQueue: operationQueue)
+    session = NSURLSession(
+      configuration: makeConfig(),
+      delegate: nil,
+      delegateQueue: makeOperationQueue())
   }
 
-  func download(url: NSURL, toDestination destinationURL: NSURL) -> Future<NSURL> {
+  func download(url: NSURL, toDestination destination: NSURL, headers: Headers = [:]) -> Future<NSURL> {
     let promise = Future<NSURL>.promise()
-    let request = NSURLRequest(URL: url)
+    let request = makeURLRequest(url: url, headers: headers)
     let task = session.downloadTaskWithRequest(request, completionHandler: { location, response, error in
       if let err = error {
         promise.reject("\(err.localizedFailureReason): \(err.localizedDescription)")
       } else if let res = response as? NSHTTPURLResponse {
-        if res.statusCode == 200 {
-          Files.moveFile(location, to: destinationURL)
-          promise.resolve(destinationURL)
+        if self.isSuccessStatusCode(res.statusCode) {
+          Files.moveFile(location, to: destination)
+          promise.resolve(destination)
         } else {
           let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
           promise.reject("(\(res.statusCode)) \(statusDesc)")
@@ -60,5 +57,17 @@ class URLConnection {
     })
     task.resume()
     return promise
+  }
+
+  private func makeURLRequest(#url: NSURL, headers: Headers) -> NSURLRequest {
+    let request = NSMutableURLRequest(URL: url)
+    for (headerName, headerValue) in headers {
+      request.setValue(headerValue, forHTTPHeaderField: headerName)
+    }
+    return request
+  }
+
+  private func isSuccessStatusCode(code: Int) -> Bool {
+    return contains(SuccessStatusCodes, code)
   }
 }
