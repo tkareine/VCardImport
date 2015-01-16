@@ -5,7 +5,7 @@ struct FutureExecution {
 
   typealias Group = dispatch_group_t
 
-  static func newGroup() -> Group {
+  static func makeGroup() -> Group {
     return dispatch_group_create()
   }
 
@@ -110,7 +110,7 @@ public class ImmediateFuture<T>: Future<T> {
 }
 
 public class AsyncFuture<T>: Future<T> {
-  private let Group = FutureExecution.newGroup()
+  private let Group = FutureExecution.makeGroup()
 
   override private var futureName: String {
     return "AsyncFuture"
@@ -158,7 +158,8 @@ public class PromiseFuture<T>: Future<T> {
   public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
       if self.result != nil {
-        fatalError("PromiseFuture is already completed, don't complete me more than once")
+        fatalError("Tried to complete PromiseFuture with \(value.value), but " +
+          "the future is already completed with \(self.result!.value)")
       }
 
       self.result = value
