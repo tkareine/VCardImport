@@ -211,7 +211,7 @@ class VCardImporter {
   private func changeRecords(changeSets: [RecordChangeSet], error: NSErrorPointer) -> Bool {
     for changeSet in changeSets {
       for (property, value) in changeSet.singleValueChanges {
-        let isChanged = Records.setValue(value, toProperty: property, ofRecord: changeSet.record)
+        let isChanged = Records.setValue(value, toSingleValueProperty: property, of: changeSet.record)
         if !isChanged {
           setRecordChangeError(property: property, record: changeSet.record, error: error)
           return false
@@ -222,7 +222,7 @@ class VCardImporter {
         let isChanged = Records.addValues(
           changes,
           toMultiValueProperty: property,
-          ofRecord: changeSet.record)
+          of: changeSet.record)
         if !isChanged {
           setRecordChangeError(property: property, record: changeSet.record, error: error)
           return false
@@ -244,11 +244,11 @@ class VCardImporter {
   }
 
   private func loadRecordsFromURL(url: NSURL) -> Future<[ABRecord]> {
-    let fileURL = Files.tempFile()
+    let fileURL = Files.tempURL()
     let future = urlConnection
-        .download(url, toDestination: fileURL, headers: AdditionalHeaders)
+        .download(url, to: fileURL, headers: AdditionalHeaders)
         .flatMap(loadRecordsFromFile)
-    future.onComplete { _ in Files.removeFile(fileURL) }
+    future.onComplete { _ in Files.remove(fileURL) }
     return future
   }
 

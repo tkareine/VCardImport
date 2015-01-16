@@ -41,9 +41,9 @@ struct RecordChangeSet {
     var changes: [ABPropertyID: NSObject] = [:]
 
     for prop in TrackedSingleValueProperties {
-      let oldVal = Records.getSingleValueProperty(prop, ofRecord: oldRecord)
+      let oldVal = Records.getSingleValueProperty(prop, of: oldRecord)
       if oldVal == nil {
-        let newVal = Records.getSingleValueProperty(prop, ofRecord: newRecord)
+        let newVal = Records.getSingleValueProperty(prop, of: newRecord)
         if let nv = newVal {
           changes[prop] = nv
         }
@@ -61,8 +61,8 @@ struct RecordChangeSet {
     var changes: [ABPropertyID: [(NSString, NSObject)]] = [:]
 
     for prop in TrackedMultiValueProperties {
-      let oldMultiVals = Records.getMultiValueProperty(prop, ofRecord: oldRecord)
-      let newMultiVals = Records.getMultiValueProperty(prop, ofRecord: newRecord)
+      let oldMultiVals = Records.getMultiValueProperty(prop, of: oldRecord)
+      let newMultiVals = Records.getMultiValueProperty(prop, of: newRecord)
 
       if let newMV = newMultiVals {
         let oldValues = oldMultiVals != nil ? oldMultiVals!.map { $0.1 } : []

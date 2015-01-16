@@ -4,7 +4,7 @@ import AddressBook
 struct Records {
   static func getSingleValueProperty(
     property: ABPropertyID,
-    ofRecord record: ABRecord)
+    of record: ABRecord)
     -> NSObject?
   {
     if let val = ABRecordCopyValue(record, property) {
@@ -16,7 +16,7 @@ struct Records {
 
   static func getMultiValueProperty(
     property: ABPropertyID,
-    ofRecord record: ABRecord)
+    of record: ABRecord)
     -> [(NSString, NSObject)]?
   {
     if let val = ABRecordCopyValue(record, property) {
@@ -35,8 +35,8 @@ struct Records {
 
   static func setValue(
     value: AnyObject,
-    toProperty property: ABPropertyID,
-    ofRecord record: ABRecord)
+    toSingleValueProperty property: ABPropertyID,
+    of record: ABRecord)
     -> Bool
   {
     var abError: Unmanaged<CFError>?
@@ -54,7 +54,7 @@ struct Records {
   static func addValues<T: AnyObject>(
     values: [(NSString, T)],
     toMultiValueProperty property: ABPropertyID,
-    ofRecord record: ABRecord)
+    of record: ABRecord)
     -> Bool
   {
     let val = ABRecordCopyValue(record, property)
@@ -76,6 +76,6 @@ struct Records {
       }
     }
 
-    return setValue(mutableMultiVal, toProperty: property, ofRecord: record)
+    return setValue(mutableMultiVal, toSingleValueProperty: property, of: record)
   }
 }

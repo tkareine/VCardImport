@@ -2,32 +2,32 @@ import XCTest
 
 class FilesTests: XCTestCase {
   func testWithTempFile() {
-    let tempPath: NSURL = Files.withTempFile { path in
-      self.touchFile(path)
+    let tempPath: NSURL = Files.withTempURL { path in
+      self.touch(path)
       return path
     }
 
-    XCTAssertFalse(fileExists(tempPath))
+    XCTAssertFalse(exists(tempPath))
   }
 
   func testMove() {
-    Files.withTempFile { source -> Void in
-      self.touchFile(source)
-      XCTAssertTrue(self.fileExists(source))
+    Files.withTempURL { source -> Void in
+      self.touch(source)
+      XCTAssertTrue(self.exists(source))
 
-      Files.withTempFile { destination -> Void in
-        Files.moveFile(source, to: destination)
-        XCTAssertFalse(self.fileExists(source))
-        XCTAssertTrue(self.fileExists(destination))
+      Files.withTempURL { destination -> Void in
+        Files.move(from: source, to: destination)
+        XCTAssertFalse(self.exists(source))
+        XCTAssertTrue(self.exists(destination))
       }
     }
   }
 
-  private func fileExists(path: NSURL) -> Bool {
+  private func exists(path: NSURL) -> Bool {
     return NSFileManager.defaultManager().fileExistsAtPath(path.path!)
   }
 
-  private func touchFile(path: NSURL) {
+  private func touch(path: NSURL) {
     var error: NSError?
     "".writeToURL(path, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
     if let err = error {

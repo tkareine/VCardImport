@@ -115,7 +115,7 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   func addVCardSource(sender: AnyObject) {
-    let vc = VCardSourceDetailViewController(source: VCardSource.emptySource(), isNewSource: true) { newSource in
+    let vc = VCardSourceDetailViewController(source: VCardSource.empty(), isNewSource: true) { newSource in
       self.dataSource.saveVCardSource(newSource)
       self.tableView.reloadData()
     }

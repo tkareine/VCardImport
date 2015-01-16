@@ -37,7 +37,7 @@ class URLConnection {
       delegateQueue: makeOperationQueue())
   }
 
-  func download(url: NSURL, toDestination destination: NSURL, headers: Headers = [:]) -> Future<NSURL> {
+  func download(url: NSURL, to destination: NSURL, headers: Headers = [:]) -> Future<NSURL> {
     let promise = Future<NSURL>.promise()
     let request = makeURLRequest(url: url, headers: headers)
     let task = session.downloadTaskWithRequest(request, completionHandler: { location, response, error in
@@ -45,7 +45,7 @@ class URLConnection {
         promise.reject("\(err.localizedFailureReason): \(err.localizedDescription)")
       } else if let res = response as? NSHTTPURLResponse {
         if self.isSuccessStatusCode(res.statusCode) {
-          Files.moveFile(location, to: destination)
+          Files.move(from: location, to: destination)
           promise.resolve(destination)
         } else {
           let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)

@@ -67,8 +67,8 @@ class VCardSourceDetailViewController: UIViewController {
       let urlCandidate = NSURL(string: urlField.text)
       let newURL = urlCandidate != nil ? urlCandidate! : source.connection.url
 
-      let newSource = source.withName(
-        nameField.text,
+      let newSource = source.with(
+        name: nameField.text,
         connection: VCardSource.Connection(url: newURL),
         isEnabled: isEnabledSwitch.on
       )

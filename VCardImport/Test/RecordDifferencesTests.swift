@@ -3,7 +3,7 @@ import XCTest
 
 class RecordDifferencesTests: XCTestCase {
   func testSetsRecordAddition() {
-    let newRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let newRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
     let recordDiff = RecordDifferences.resolveBetween(oldRecords: [], newRecords: [newRecord])
 
     XCTAssertEqual(recordDiff.additions.count, 1)
@@ -11,13 +11,13 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testSetsRecordChangesForFieldValues() {
-    let oldRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
-    let newRecordHomeAddress = newAddress(
+    let oldRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let newRecordHomeAddress = makeAddress(
       street: "Suite 1173",
       zip: "95814",
       city: "Sacramento",
       state: "CA")
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       middleName: "Big",
       lastName: "Alpha",
@@ -86,9 +86,9 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testDoesNotSetRecordChangeForNonTrackedFieldValue() {
-    let oldRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
-    let newRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
-    Records.setValue("a note", toProperty: kABPersonNoteProperty, ofRecord: newRecord)
+    let oldRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let newRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
+    Records.setValue("a note", toSingleValueProperty: kABPersonNoteProperty, of: newRecord)
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
       newRecords: [newRecord])
@@ -99,13 +99,13 @@ class RecordDifferencesTests: XCTestCase {
 
   func testDeterminesExistingRecordsByFirstAndLastName() {
     let oldRecords = [
-      newPersonRecord(firstName: "Arnold Alpha"),
-      newPersonRecord(lastName: "Arnold Alpha"),
-      newPersonRecord(lastName: "Alpha", organization: "Arnold"),
-      newPersonRecord(lastName: "Alpha", department: "Arnold"),
-      newPersonRecord(middleName: "Arnold", lastName: "Alpha")
+      makePersonRecord(firstName: "Arnold Alpha"),
+      makePersonRecord(lastName: "Arnold Alpha"),
+      makePersonRecord(lastName: "Alpha", organization: "Arnold"),
+      makePersonRecord(lastName: "Alpha", department: "Arnold"),
+      makePersonRecord(middleName: "Arnold", lastName: "Alpha")
     ]
-    let newRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let newRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
       newRecords: [newRecord])
@@ -115,7 +115,7 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testSkipsRecordAdditionForNewRecordWithEmptyFirstAndLastName() {
-    let newRecord: ABRecord = newPersonRecord(firstName: "", lastName: "")
+    let newRecord: ABRecord = makePersonRecord(firstName: "", lastName: "")
     let recordDiff = RecordDifferences.resolveBetween(oldRecords: [], newRecords: [newRecord])
 
     XCTAssertEqual(recordDiff.additions.count, 0)
@@ -124,8 +124,8 @@ class RecordDifferencesTests: XCTestCase {
 
   func testSkipsRecordAdditionForMultipleNewRecordsWithSameName() {
     let newRecords = [
-      newPersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
-      newPersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [],
@@ -136,8 +136,8 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testSkipsRecordChangeForOldRecordWithEmptyFirstAndLastName() {
-    let oldRecord: ABRecord = newPersonRecord(firstName: "", lastName: "")
-    let newRecord: ABRecord = newPersonRecord(firstName: "", lastName: "", jobTitle: "worker")
+    let oldRecord: ABRecord = makePersonRecord(firstName: "", lastName: "")
+    let newRecord: ABRecord = makePersonRecord(firstName: "", lastName: "", jobTitle: "worker")
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
       newRecords: [newRecord])
@@ -148,10 +148,10 @@ class RecordDifferencesTests: XCTestCase {
 
   func testSkipsRecordChangeForMultipleOldRecordsHavingSameName() {
     let oldRecords = [
-      newPersonRecord(firstName: "Arnold", lastName: "Alpha"),
-      newPersonRecord(firstName: "Arnold", lastName: "Alpha")
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha"),
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha")
     ]
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       jobTitle: "worker")
@@ -164,10 +164,10 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testSkipsRecordChangeForMultipleNewRecordsHavingSameName() {
-    let oldRecord: ABRecord = newPersonRecord(firstName: "Arnold", lastName: "Alpha")
+    let oldRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
     let newRecords = [
-      newPersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
-      newPersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
@@ -178,11 +178,11 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testDoesNotSetRecordChangeForExistingValueOfSingleValueField() {
-    let oldRecord: ABRecord = newPersonRecord(
+    let oldRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       jobTitle: "Manager")
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       jobTitle: "Governor")
@@ -195,11 +195,11 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testDoesNotSetRecordChangeForExistingValueOfMultiStringValueField() {
-    let oldRecord: ABRecord = newPersonRecord(
+    let oldRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       phones: [(kABPersonPhoneMobileLabel, "5551001001")])
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       phones: [(kABPersonPhoneMainLabel, "5551001001")])
@@ -212,11 +212,11 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testSetsRecordChangeForNewValueForMultiStringValueField() {
-    let oldRecord: ABRecord = newPersonRecord(
+    let oldRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       phones: [(kABPersonPhoneMobileLabel, "5551001001")])
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       phones: [(kABPersonPhoneMainLabel, "5551001002")])
@@ -240,12 +240,12 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testDoesNotSetRecordChangeForExistingValueOfMultiDictionaryValueField() {
-    let addr = newAddress(street: "Street 1", zip: "00001", city: "City", state: "CA")
-    let oldRecord: ABRecord = newPersonRecord(
+    let addr = makeAddress(street: "Street 1", zip: "00001", city: "City", state: "CA")
+    let oldRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       addresses: [("Home", addr)])
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       addresses: [("Work", addr)])
@@ -258,13 +258,13 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   func testSetsRecordChangeForNewValueOfMultiDictionaryValueField() {
-    let oldAddr = newAddress(street: "Street 1", zip: "00001", city: "City", state: "CA")
-    let newAddr = newAddress(street: "Street 2", zip: "00001", city: "City", state: "CA")
-    let oldRecord: ABRecord = newPersonRecord(
+    let oldAddr = makeAddress(street: "Street 1", zip: "00001", city: "City", state: "CA")
+    let newAddr = makeAddress(street: "Street 2", zip: "00001", city: "City", state: "CA")
+    let oldRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       addresses: [("Home", oldAddr)])
-    let newRecord: ABRecord = newPersonRecord(
+    let newRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
       lastName: "Alpha",
       addresses: [("Work", newAddr)])
@@ -287,7 +287,7 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(valueChanges.first!.1, newAddr)
   }
 
-  private func newPersonRecord(
+  private func makePersonRecord(
     firstName: NSString? = nil,
     middleName: NSString? = nil,
     lastName: NSString? = nil,
@@ -302,39 +302,39 @@ class RecordDifferencesTests: XCTestCase {
   {
     let record: ABRecord = ABPersonCreate().takeRetainedValue()
     if let val = firstName {
-      Records.setValue(val, toProperty: kABPersonFirstNameProperty, ofRecord: record)
+      Records.setValue(val, toSingleValueProperty: kABPersonFirstNameProperty, of: record)
     }
     if let val = middleName {
-      Records.setValue(val, toProperty: kABPersonMiddleNameProperty, ofRecord: record)
+      Records.setValue(val, toSingleValueProperty: kABPersonMiddleNameProperty, of: record)
     }
     if let val = lastName {
-      Records.setValue(val, toProperty: kABPersonLastNameProperty, ofRecord: record)
+      Records.setValue(val, toSingleValueProperty: kABPersonLastNameProperty, of: record)
     }
     if let val = jobTitle {
-      Records.setValue(val, toProperty: kABPersonJobTitleProperty, ofRecord: record)
+      Records.setValue(val, toSingleValueProperty: kABPersonJobTitleProperty, of: record)
     }
     if let val = department {
-      Records.setValue(val, toProperty: kABPersonDepartmentProperty, ofRecord: record)
+      Records.setValue(val, toSingleValueProperty: kABPersonDepartmentProperty, of: record)
     }
     if let val = organization {
-      Records.setValue(val, toProperty: kABPersonOrganizationProperty, ofRecord: record)
+      Records.setValue(val, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
     }
     if let vals = phones {
-      Records.addValues(vals, toMultiValueProperty: kABPersonPhoneProperty, ofRecord: record)
+      Records.addValues(vals, toMultiValueProperty: kABPersonPhoneProperty, of: record)
     }
     if let vals = emails {
-      Records.addValues(vals, toMultiValueProperty: kABPersonEmailProperty, ofRecord: record)
+      Records.addValues(vals, toMultiValueProperty: kABPersonEmailProperty, of: record)
     }
     if let vals = urls {
-      Records.addValues(vals, toMultiValueProperty: kABPersonURLProperty, ofRecord: record)
+      Records.addValues(vals, toMultiValueProperty: kABPersonURLProperty, of: record)
     }
     if let vals = addresses {
-      Records.addValues(vals, toMultiValueProperty: kABPersonAddressProperty, ofRecord: record)
+      Records.addValues(vals, toMultiValueProperty: kABPersonAddressProperty, of: record)
     }
     return record
   }
 
-  private func newAddress(
+  private func makeAddress(
     #street: String,
     zip: String,
     city: String,

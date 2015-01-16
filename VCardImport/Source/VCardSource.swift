@@ -21,15 +21,15 @@ struct VCardSource {
     self.lastImportStatus = lastImportStatus
   }
 
-  static func emptySource() -> VCardSource {
+  static func empty() -> VCardSource {
     return self(
       name: "",
       connection: VCardSource.Connection(url: NSURL(string: "")!),
       isEnabled: true)
   }
 
-  func withName(
-    name: String,
+  func with(
+    #name: String,
     connection: Connection,
     isEnabled: Bool)
     -> VCardSource

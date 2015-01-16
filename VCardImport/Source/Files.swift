@@ -1,12 +1,12 @@
 import Foundation
 
 struct Files {
-  static func tempFile() -> NSURL {
+  static func tempURL() -> NSURL {
     let fileName = NSProcessInfo.processInfo().globallyUniqueString
     return NSURL.fileURLWithPath(NSTemporaryDirectory().stringByAppendingPathComponent(fileName))!
   }
 
-  static func moveFile(from: NSURL, to: NSURL) {
+  static func move(#from: NSURL, to: NSURL) {
     var error: NSError?
 
     NSFileManager.defaultManager().moveItemAtURL(from, toURL: to, error: &error)
@@ -16,7 +16,7 @@ struct Files {
     }
   }
 
-  static func removeFile(fileURL: NSURL) {
+  static func remove(fileURL: NSURL) {
     let fileManager = NSFileManager.defaultManager()
 
     if !fileManager.fileExistsAtPath(fileURL.path!) {
@@ -32,10 +32,10 @@ struct Files {
     }
   }
 
-  static func withTempFile<T>(block: (NSURL) -> T) -> T {
-    let fileURL = tempFile()
+  static func withTempURL<T>(block: (NSURL) -> T) -> T {
+    let fileURL = tempURL()
     let result = block(fileURL)
-    removeFile(fileURL)
+    remove(fileURL)
     return result
   }
 }

@@ -22,8 +22,8 @@ class RecordName: Hashable, Equatable, Printable {
   }
 
   convenience init?(ofRecord record: ABRecord) {
-    let fn = (Records.getSingleValueProperty(kABPersonFirstNameProperty, ofRecord: record) as String?) ?? ""
-    let ln = (Records.getSingleValueProperty(kABPersonLastNameProperty, ofRecord: record) as String?) ?? ""
+    let fn = (Records.getSingleValueProperty(kABPersonFirstNameProperty, of: record) as String?) ?? ""
+    let ln = (Records.getSingleValueProperty(kABPersonLastNameProperty, of: record) as String?) ?? ""
 
     self.init(firstName: fn, lastName: ln)
 
