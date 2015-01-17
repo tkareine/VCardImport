@@ -10,10 +10,7 @@ class TextFieldValidator: NSObject, UITextFieldDelegate {
   private let onValidated: OnValidatedCallback
 
   private let validBorderWidth: CGFloat
-  private let invalidBorderWidth: CGFloat = 2.0
-
   private let validBorderColor: CGColor
-  private let invalidBorderColor = UIColor.redColor().CGColor
 
   init(
     textField: UITextField,
@@ -65,9 +62,10 @@ class TextFieldValidator: NSObject, UITextFieldDelegate {
       textField.layer.borderWidth = validBorderWidth
       textField.layer.borderColor = validBorderColor
     } else {
-      textField.layer.borderWidth = invalidBorderWidth
-      textField.layer.borderColor = invalidBorderColor
+      textField.layer.borderWidth = Config.UI.ValidationBorderWidth
+      textField.layer.borderColor = Config.UI.ValidationBorderColor
     }
+    textField.layer.cornerRadius = Config.UI.ValidationCornerRadius
   }
 
   private func change(

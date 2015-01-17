@@ -19,5 +19,8 @@ struct Config {
     static let SourcesCellReuseIdentifier = "SourcesCellReuseIdentifier"
     static let CellTextColorEnabled = UIColor.blackColor()
     static let CellTextColorDisabled = UIColor.grayColor()
+    static let ValidationBorderColor = UIColor(red: 1.0, green: 0, blue: 0, alpha: 0.6).CGColor
+    static let ValidationBorderWidth: CGFloat = 2.0
+    static let ValidationCornerRadius: CGFloat = 5.0
   }
 }
