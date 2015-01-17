@@ -169,15 +169,14 @@ class VCardImporter {
     -> ABAuthorizationStatus
   {
     var authResolution = false
-    let semaphore = dispatch_semaphore_create(0)
+    let semaphore = Semaphore()
 
     ABAddressBookRequestAccessWithCompletion(addressBook) { isGranted, _error in
       authResolution = isGranted
-      dispatch_semaphore_signal(semaphore)
+      semaphore.signal()
     }
 
-    let timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC) * Int64(30))
-    dispatch_semaphore_wait(semaphore, timeout)
+    semaphore.wait(timeout: 30_000)
 
     return authResolution ? .Authorized : .Denied
   }
