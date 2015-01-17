@@ -36,9 +36,9 @@ class VCardSourcesViewController: UITableViewController {
     self.navigationItem.rightBarButtonItem = addButton
     self.tableView.dataSource = dataSource
 
-    self.vcardImporter = VCardImporter.builder()
-      .urlConnection(appContext.urlConnection)
-      .queue(QueueExecution.mainQueue)
+    vcardImporter = VCardImporter.builder()
+      .connectWith(appContext.urlConnection)
+      .queueTo(QueueExecution.mainQueue)
       .onSourceLoad { source in
         self.progressState(.Load, forSource: source)
       }

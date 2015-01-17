@@ -312,12 +312,12 @@ class VCardImporter {
       return self
     }
 
-    func urlConnection(urlConnection: URLConnection) -> Builder {
+    func connectWith(urlConnection: URLConnection) -> Builder {
       self.urlConnection = urlConnection
       return self
     }
 
-    func queue(queue: dispatch_queue_t) -> Builder {
+    func queueTo(queue: dispatch_queue_t) -> Builder {
       self.queue = queue
       return self
     }
