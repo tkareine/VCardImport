@@ -39,7 +39,7 @@ class VCardImporter {
   func importFrom(sources: [VCardSource]) {
     QueueExecution.async(QueueExecution.backgroundQueue) {
       var error: NSError?
-      var addressBookOpt: ABAddressBook? = self.newAddressBook(&error)
+      var addressBookOpt: ABAddressBook? = self.makeAddressBook(&error)
 
       if addressBookOpt == nil {
         QueueExecution.async(self.queue) { self.onComplete(error!) }
@@ -182,7 +182,7 @@ class VCardImporter {
     return authResolution ? .Authorized : .Denied
   }
 
-  private func newAddressBook(error: NSErrorPointer) -> ABAddressBook? {
+  private func makeAddressBook(error: NSErrorPointer) -> ABAddressBook? {
     var abError: Unmanaged<CFError>?
     let ab: Unmanaged<ABAddressBook>? = ABAddressBookCreateWithOptions(nil, &abError)
 
