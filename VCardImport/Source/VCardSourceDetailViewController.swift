@@ -87,8 +87,4 @@ class VCardSourceDetailViewController: UIViewController {
     shouldCallDoneCallbackOnViewDisappear = true
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
-
-  @IBAction func testConnection(sender: UIButton) {
-    NSLog("Test connection")
-  }
 }
