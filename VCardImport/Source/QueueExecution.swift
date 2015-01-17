@@ -4,6 +4,10 @@ struct QueueExecution {
   static let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
   static let mainQueue = dispatch_get_main_queue()
 
+  static func sync(queue: dispatch_queue_t, block: () -> Void) {
+    dispatch_sync(queue, block)
+  }
+
   static func async(queue: dispatch_queue_t, block: () -> Void) {
     dispatch_async(queue, block)
   }

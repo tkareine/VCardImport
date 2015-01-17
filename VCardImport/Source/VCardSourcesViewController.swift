@@ -4,24 +4,26 @@ class VCardSourcesViewController: UITableViewController {
   private typealias ProgressState = (VCardProgress, forSource: VCardSource) -> ()
 
   private let dataSource: VCardSourcesDataSource
+  private let toolbar: VCardToolbar
+  private let urlConnection: URLConnection
 
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
-  private var toolbar: VCardToolbar
   private var vcardImporter: VCardImporter!
   private var progressState: ProgressState!
 
   // MARK: View Controller Life Cycle
 
   init(appContext: AppContext) {
-    self.dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
-    self.toolbar = VCardToolbar()
+    dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
+    toolbar = VCardToolbar()
+    urlConnection = appContext.urlConnection
 
     super.init(nibName: nil, bundle: nil)
 
-    self.editButton = editButtonItem()
+    editButton = editButtonItem()
 
-    self.addButton = UIBarButtonItem(
+    addButton = UIBarButtonItem(
       barButtonSystemItem: .Add,
       target: self,
       action: "addVCardSource:")
@@ -37,7 +39,7 @@ class VCardSourcesViewController: UITableViewController {
     self.tableView.dataSource = dataSource
 
     vcardImporter = VCardImporter.builder()
-      .connectWith(appContext.urlConnection)
+      .connectWith(urlConnection)
       .queueTo(QueueExecution.mainQueue)
       .onSourceLoad { source in
         self.progressState(.Load, forSource: source)
@@ -110,18 +112,24 @@ class VCardSourcesViewController: UITableViewController {
     didSelectRowAtIndexPath indexPath: NSIndexPath)
   {
     let oldSource = dataSource.vCardSourceForRow(indexPath.row)
-    let vc = VCardSourceDetailViewController(source: oldSource, isNewSource: false) { newSource in
-      self.dataSource.saveVCardSource(newSource)
-      self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-    }
+    let vc = VCardSourceDetailViewController(
+      source: oldSource,
+      isNewSource: false,
+      urlConnection: urlConnection) { newSource in
+        self.dataSource.saveVCardSource(newSource)
+        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+      }
     self.navigationController!.pushViewController(vc, animated: true)
   }
 
   func addVCardSource(sender: AnyObject) {
-    let vc = VCardSourceDetailViewController(source: VCardSource.empty(), isNewSource: true) { newSource in
-      self.dataSource.saveVCardSource(newSource)
-      self.tableView.reloadData()
-    }
+    let vc = VCardSourceDetailViewController(
+      source: VCardSource.empty(),
+      isNewSource: true,
+      urlConnection: urlConnection) { newSource in
+        self.dataSource.saveVCardSource(newSource)
+        self.tableView.reloadData()
+      }
     let nc = UINavigationController(rootViewController: vc)
     nc.modalPresentationStyle = .FormSheet
     self.presentViewController(nc, animated: true, completion: nil)

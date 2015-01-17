@@ -1,71 +1,96 @@
 import UIKit
 
-class TextFieldValidator: NSObject, UITextFieldDelegate {
-  typealias Validator = String -> Bool
-  typealias OnValidatedCallback = Bool -> Void
+// TODO: Implement throttling so that only the most recent event is waiting for
+// the queue
+class TextFieldValidator<T> {
+  typealias SyncValidator = String -> Try<T>
+  typealias AsyncValidator = String -> Future<T>
+  typealias OnValidatedCallback = Try<T> -> Void
 
-  private weak var textField: UITextField!
-
-  private let validator: Validator
+  private let validator: AsyncValidator
   private let onValidated: OnValidatedCallback
+  private let queue = dispatch_queue_create(
+    Config.BundleIdentifier + ".TextFieldValidator",
+    DISPATCH_QUEUE_SERIAL)
 
   private let validBorderWidth: CGFloat
   private let validBorderColor: CGColor
 
+  private var lastValidationResult: Try<T>?
+  private var delegate: OnTextChangeTextFieldDelegate!
+  private weak var textField: UITextField!
+
   init(
     textField: UITextField,
-    validator: Validator,
+    asyncValidator: AsyncValidator,
     onValidated: OnValidatedCallback)
   {
     self.textField = textField
-    self.validator = validator
+    self.validator = asyncValidator
     self.onValidated = onValidated
+
     validBorderWidth = textField.layer.borderWidth
     validBorderColor = textField.layer.borderColor
 
-    super.init()
+    delegate = OnTextChangeTextFieldDelegate() { text, replacement, range in
+      QueueExecution.async(self.queue) {
+        let newText = self.change(text: text, replacement: replacement, range: range)
+        let result = self.validate(newText)
+        self.setValidationStyle(result)
+      }
+    }
 
-    textField.delegate = self
+    textField.delegate = delegate
   }
 
-  var isValid: Bool {
-    return validator(textField.text)
-  }
-
-  func textField(
+  convenience init(
     textField: UITextField,
-    shouldChangeCharactersInRange range: NSRange,
-    replacementString string: NSString)
-    -> Bool
+    syncValidator: SyncValidator,
+    onValidated: OnValidatedCallback)
   {
-    let newText = change(text: textField.text, replacement: string, range: range)
-    setValidationStyle(validate(newText))
-    return true
+    self.init(
+      textField: textField,
+      asyncValidator: { Future.fromTry(syncValidator($0)) },
+      onValidated: onValidated)
   }
 
-  func validate(affectStyle setStyle: Bool = true) -> Bool {
-    let isValid = validate(textField.text)
-    if setStyle {
-      setValidationStyle(isValid)
+  var lastResult: Try<T>? {
+    var result: Try<T>?
+    QueueExecution.sync(queue) { result = self.lastValidationResult }
+    return result
+  }
+
+  func validate(affectStyle setStyle: Bool = true) {
+    let text = textField.text
+    QueueExecution.async(queue) {
+      let result = self.validate(text)
+      if setStyle {
+        self.setValidationStyle(result)
+      }
     }
-    return isValid
   }
 
-  private func validate(text: NSString) -> Bool {
-    let isValid = validator(text)
-    onValidated(isValid)
-    return isValid
+  private func validate(text: NSString) -> Try<T> {
+    let result = validator(text).get()
+    lastValidationResult = result
+    QueueExecution.async(QueueExecution.mainQueue) { self.onValidated(result) }
+    return result
   }
 
-  private func setValidationStyle(isValid: Bool) {
-    if isValid {
-      textField.layer.borderWidth = validBorderWidth
-      textField.layer.borderColor = validBorderColor
-    } else {
-      textField.layer.borderWidth = Config.UI.ValidationBorderWidth
-      textField.layer.borderColor = Config.UI.ValidationBorderColor
+  private func setValidationStyle(result: Try<T>) {
+    QueueExecution.async(QueueExecution.mainQueue) {
+      if let field = self.textField {
+        switch result {
+        case .Success:
+          field.layer.borderWidth = self.validBorderWidth
+          field.layer.borderColor = self.validBorderColor
+        case .Failure:
+          field.layer.borderWidth = Config.UI.ValidationBorderWidth
+          field.layer.borderColor = Config.UI.ValidationBorderColor
+        }
+        field.layer.cornerRadius = Config.UI.ValidationCornerRadius
+      }
     }
-    textField.layer.cornerRadius = Config.UI.ValidationCornerRadius
   }
 
   private func change(
