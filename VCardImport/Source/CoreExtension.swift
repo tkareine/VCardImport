@@ -11,6 +11,14 @@ extension Dictionary {
   }
 }
 
+private let WhiteSpaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+
+extension String {
+  func trim() -> String {
+    return stringByTrimmingCharactersInSet(WhiteSpaceAndNewlineCharacterSet)
+  }
+}
+
 private let ISODateFormatter: NSDateFormatter = {
   let formatter = NSDateFormatter()
   formatter.timeZone = NSTimeZone(abbreviation: "GMT")

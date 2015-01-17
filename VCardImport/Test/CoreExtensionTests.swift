@@ -13,6 +13,13 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertFalse(dict.hasKey("bar"))
   }
 
+  func testStringTrim() {
+    XCTAssertEqual("a \n \tb".trim(), "a \n \tb")
+    XCTAssertEqual(" \n ab \t".trim(), "ab")
+    XCTAssertEqual(" \n \t".trim(), "")
+    XCTAssertEqual("".trim(), "")
+  }
+
   func testDateISOString() {
     var date = NSDate(timeIntervalSinceReferenceDate: 0)
     XCTAssertEqual(date.ISOString, "2001-01-01T00:00:00Z")
