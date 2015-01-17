@@ -2,8 +2,7 @@ import Foundation
 import AddressBook
 
 struct Errors {
-  static let domain = "org.tkareine.VCardImport.ErrorDomain"
-  static let titleKey = "VCardErrorTitle"
+  private static let Domain = Config.BundleIdentifier + ".Error"
 
   static func addressBookAccessDeniedOrResticted() -> NSError {
     return vcardError(
@@ -52,7 +51,7 @@ struct Errors {
       NSLocalizedFailureReasonErrorKey: failureReason,
       NSLocalizedDescriptionKey: description
     ]
-    return NSError(domain: domain, code: code, userInfo: userInfo)
+    return NSError(domain: Domain, code: code, userInfo: userInfo)
   }
 
   private static func describeAddressBookProperty(property: ABPropertyID) -> String {

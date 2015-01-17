@@ -1,19 +1,47 @@
 import UIKit
 
+private func getBundleInfo()
+  -> (executable: String, bundleId: String, version: String)
+{
+  var executable: String?
+  var bundleId: String?
+  var version: String?
+
+  if let info = NSBundle.mainBundle().infoDictionary {
+    if let data = info[kCFBundleExecutableKey] as? String {
+      executable = data
+    }
+    if let data = info[kCFBundleIdentifierKey] as? String {
+      bundleId = data
+    }
+    if let data = info[kCFBundleVersionKey] as? String {
+      version = data
+    }
+  }
+
+  return (
+    executable ?? "Unknown",
+    bundleId   ?? "org.tkareine.VCardImport",
+    version    ?? "Unknown"
+  )
+}
+
+private let BundleInfo = getBundleInfo()
+
 struct Config {
   static let AppTitle = "vCard Import"
 
-  static let AppInfo: String = {
-    if let info = NSBundle.mainBundle().infoDictionary {
-      let executable: AnyObject = info[kCFBundleExecutableKey] ?? "Unknown"
-      let bundle: AnyObject = info[kCFBundleIdentifierKey] ?? "Unknown"
-      let version: AnyObject = info[kCFBundleVersionKey] ?? "Unknown"
-      let os: AnyObject = NSProcessInfo.processInfo().operatingSystemVersionString ?? "Unknown"
-      return "\(executable)/\(bundle) (\(version); OS \(os))"
-    } else {
-      return AppTitle
-    }
-  }()
+  static let Executable = BundleInfo.executable
+
+  static let BundleIdentifier = BundleInfo.bundleId
+
+  static let Version = BundleInfo.version
+
+  static let OS = NSProcessInfo.processInfo().operatingSystemVersionString
+
+  static let VCardHTTPHeaders = [
+    "Accept": "text/vcard,text/x-vcard,text/directory;profile=vCard;q=0.9,text/directory;q=0.8,*/*;q=0.7"
+  ]
 
   struct UI {
     static let SourcesCellReuseIdentifier = "SourcesCellReuseIdentifier"

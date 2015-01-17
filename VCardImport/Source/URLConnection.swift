@@ -11,7 +11,7 @@ class URLConnection {
     func makeHeaders() -> [String: String] {
       return [
         "Accept-Encoding": "gzip,compress;q=0.9",
-        "User-Agent": Config.AppInfo
+        "User-Agent": "\(Config.Executable)/\(Config.BundleIdentifier) (\(Config.Version); OS \(Config.OS))"
       ]
     }
 
