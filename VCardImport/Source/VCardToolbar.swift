@@ -53,15 +53,15 @@ class VCardToolbar: UIView {
 
   func beginProgress(text: String) {
     progressLabel.text = text
-    progressView.setProgress(0.0, animated: false)
+    progressView.setProgress(0, animated: false)
 
     UIView.animateWithDuration(
       0.5,
       delay: 0,
       options: .CurveEaseIn,
       animations: {
-        self.progressLabel.alpha = 1.0
-        self.progressView.alpha = 1.0
+        self.progressLabel.alpha = 1
+        self.progressView.alpha = 1
       },
       completion: nil)
   }
@@ -72,12 +72,12 @@ class VCardToolbar: UIView {
       delay: 0,
       options: .CurveEaseOut,
       animations: {
-        self.progressLabel.alpha = 0.0
-        self.progressView.alpha = 0.0
+        self.progressLabel.alpha = 0
+        self.progressView.alpha = 0
       },
       completion: { _ in
         self.progressLabel.text = nil
-        self.progressView.setProgress(0.0, animated: false)
+        self.progressView.setProgress(0, animated: false)
       })
   }
 
@@ -96,7 +96,7 @@ class VCardToolbar: UIView {
     let button = UIButton.buttonWithType(.System) as UIButton
     button.setTitle(title, forState: .Normal)
     if let label = button.titleLabel {
-      label.font = label.font.fontWithSize(16.0)
+      label.font = label.font.fontWithSize(16)
     }
     button.contentHorizontalAlignment = labelAlignment
     return button
@@ -105,26 +105,26 @@ class VCardToolbar: UIView {
   private func makeProgressLabel() -> UILabel {
     let label = UILabel()
     label.textAlignment = .Center
-    label.textColor = UIColor(white: 0.3, alpha: 1.0)
+    label.textColor = UIColor(white: 0.3, alpha: 1)
     label.adjustsFontSizeToFitWidth = true
-    label.font = label.font.fontWithSize(14.0)
+    label.font = label.font.fontWithSize(14)
     label.minimumScaleFactor = 0.7
     label.lineBreakMode = .ByWordWrapping
     label.numberOfLines = 2
-    label.alpha = 0.0
+    label.alpha = 0
     return label
   }
 
   private func makeProgressView() -> UIProgressView {
     let view = UIProgressView(progressViewStyle: .Bar)
-    view.alpha = 0.0
+    view.alpha = 0
     return view
   }
 
   private func makeBorderLayer(frame: CGRect) -> CALayer {
     let layer = CALayer()
     layer.frame = getBorderLayerRect(frame)
-    layer.backgroundColor = UIColor(white: 0.8, alpha: 1.0).CGColor
+    layer.backgroundColor = UIColor(white: 0.8, alpha: 1).CGColor
     return layer
   }
 

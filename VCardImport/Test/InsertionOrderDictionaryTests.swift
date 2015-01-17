@@ -112,7 +112,7 @@ class InsertionOrderDictionaryTests: XCTestCase {
   }
 
   func testIndexOf() {
-    var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42.0]
+    var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42]
     XCTAssertEqual(dict.indexOf("a")!, 0)
     XCTAssertEqual(dict.indexOf("b")!, 1)
     XCTAssert(dict.indexOf("c") == nil)

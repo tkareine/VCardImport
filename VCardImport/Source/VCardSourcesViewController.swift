@@ -95,7 +95,7 @@ class VCardSourcesViewController: UITableViewController {
     heightForRowAtIndexPath indexPath: NSIndexPath)
     -> CGFloat
   {
-    return 60.0
+    return 60
   }
 
   override func setEditing(editing: Bool, animated: Bool) {
@@ -172,11 +172,11 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   private func makeProgressState(vcardSources: [VCardSource]) -> ProgressState {
-    var lastProgress: Float = 0.0
+    var lastProgress: Float = 0
     let numSources = vcardSources.count
 
     func set(type: VCardProgress, forSource source: VCardSource) {
-      let nextProgress = lastProgress + (1.0 / Float(numSources)) * 0.5
+      let nextProgress = lastProgress + (1 / Float(numSources)) * 0.5
       let nextText = type == .Complete ? "Completed \(source.name)" : "Downloaded \(source.name)"
 
       NSLog("Progress: \(nextProgress) \(nextText)")
@@ -204,7 +204,7 @@ class VCardSourcesViewController: UITableViewController {
   private func addToolbarToNavigationController() {
     if let nc = navigationController {
       let frame = nc.view.frame
-      let toolbarHeight: CGFloat = 58.0
+      let toolbarHeight: CGFloat = 58
 
       toolbar.frame = CGRect(
         x: 0,
