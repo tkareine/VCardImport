@@ -66,7 +66,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="URL Validation Result" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qUS-1f-eyi">
-                    <rect key="frame" x="8" y="148" width="304" height="48"/>
+                    <rect key="frame" x="36" y="148" width="248" height="48"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="48" id="psu-Mi-u9i"/>
                     </constraints>
@@ -99,8 +99,9 @@
                 <constraint firstItem="Lrn-LY-24h" firstAttribute="top" secondItem="fLb-Ji-VKL" secondAttribute="bottom" constant="17.5" id="4Ro-B2-Vwd"/>
                 <constraint firstItem="fLb-Ji-VKL" firstAttribute="top" secondItem="o4r-Pt-0I5" secondAttribute="top" constant="76" id="5U3-oR-KYP"/>
                 <constraint firstItem="w4Q-Av-MiB" firstAttribute="leading" secondItem="fLb-Ji-VKL" secondAttribute="trailing" constant="8" id="5VZ-My-QLi"/>
-                <constraint firstItem="qUS-1f-eyi" firstAttribute="leading" secondItem="o4r-Pt-0I5" secondAttribute="leading" constant="8" id="DJc-KG-PbF"/>
+                <constraint firstItem="qUS-1f-eyi" firstAttribute="leading" secondItem="o4r-Pt-0I5" secondAttribute="leading" constant="36" id="DJc-KG-PbF"/>
                 <constraint firstItem="4ip-B5-OgZ" firstAttribute="top" secondItem="qUS-1f-eyi" secondAttribute="bottom" constant="13" id="G4E-wC-FD5"/>
+                <constraint firstItem="B7b-vD-kIO" firstAttribute="top" secondItem="K1K-lX-4oR" secondAttribute="bottom" constant="22" id="GB8-NB-rDM"/>
                 <constraint firstItem="Lrn-LY-24h" firstAttribute="top" secondItem="fLb-Ji-VKL" secondAttribute="bottom" constant="23" id="HGq-MT-t9N"/>
                 <constraint firstAttribute="trailing" secondItem="K1K-lX-4oR" secondAttribute="trailing" constant="8" id="JZ1-7m-0Ut"/>
                 <constraint firstItem="qUS-1f-eyi" firstAttribute="top" secondItem="K1K-lX-4oR" secondAttribute="bottom" constant="8" id="Mnt-fO-82W"/>
@@ -117,7 +118,7 @@
                 <constraint firstItem="Lrn-LY-24h" firstAttribute="leading" secondItem="o4r-Pt-0I5" secondAttribute="leading" constant="8" id="mfA-eb-jjg"/>
                 <constraint firstItem="fLb-Ji-VKL" firstAttribute="leading" secondItem="o4r-Pt-0I5" secondAttribute="leading" constant="8" id="pXG-cV-5xv"/>
                 <constraint firstItem="fLb-Ji-VKL" firstAttribute="width" secondItem="Lrn-LY-24h" secondAttribute="width" id="y3g-19-Esd"/>
-                <constraint firstAttribute="trailing" secondItem="qUS-1f-eyi" secondAttribute="trailing" constant="8" id="yZt-4C-cTV"/>
+                <constraint firstAttribute="trailing" secondItem="qUS-1f-eyi" secondAttribute="trailing" constant="36" id="yZt-4C-cTV"/>
                 <constraint firstItem="B7b-vD-kIO" firstAttribute="centerY" secondItem="qUS-1f-eyi" secondAttribute="centerY" id="zIO-wB-TKp"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -128,6 +129,7 @@
                     <exclude reference="HGq-MT-t9N"/>
                     <exclude reference="ksf-RX-Udr"/>
                     <exclude reference="eWG-Yp-8rZ"/>
+                    <exclude reference="zIO-wB-TKp"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="-44" y="178"/>
