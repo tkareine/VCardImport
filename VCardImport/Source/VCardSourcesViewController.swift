@@ -199,7 +199,7 @@ class VCardSourcesViewController: UITableViewController {
 
   private func beginProgress(sources: [VCardSource]) {
     progressState = makeProgressState(sources)
-    toolbar.beginProgress("Downloading…")
+    toolbar.beginProgress("Checking for changes…")
   }
 
   private func endProgress() {
