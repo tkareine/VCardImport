@@ -34,12 +34,15 @@ struct VCardSource {
     isEnabled: Bool)
     -> VCardSource
   {
+    // if url has changed, ditch last import result
+    let stamp = connection.url == self.connection.url ? lastImportResult : nil
+
     return VCardSource(
       name: name,
       connection: connection,
       isEnabled: isEnabled,
       id: id,
-      lastImportResult: lastImportResult)
+      lastImportResult: stamp)
   }
 
   func withLastImportResult(
