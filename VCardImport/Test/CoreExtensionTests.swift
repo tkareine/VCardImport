@@ -13,6 +13,12 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertFalse(dict.hasKey("bar"))
   }
 
+  func testStringCapitalized() {
+    XCTAssertEqual("a".capitalized, "A")
+    XCTAssertEqual("foo bar".capitalized, "Foo bar")
+    XCTAssertEqual("".capitalized, "")
+  }
+
   func testStringTrimmed() {
     XCTAssertEqual("a \n \tb".trimmed, "a \n \tb")
     XCTAssertEqual(" \n ab \t".trimmed, "ab")

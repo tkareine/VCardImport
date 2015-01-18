@@ -14,6 +14,15 @@ extension Dictionary {
 private let WhiteSpaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
 
 extension String {
+  var capitalized: String {
+    if let head = first(self) {
+      let tail = dropFirst(self)
+      return String(head).uppercaseString + tail
+    } else {
+      return self
+    }
+  }
+
   var trimmed: String {
     return stringByTrimmingCharactersInSet(WhiteSpaceAndNewlineCharacterSet)
   }
