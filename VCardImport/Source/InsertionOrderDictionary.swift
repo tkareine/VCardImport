@@ -79,6 +79,10 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     keyOrder.insert(key, atIndex: toIndex)
   }
 
+  func hasKey(key: K) -> Bool {
+    return self[key] != nil
+  }
+
   func indexOf(key: K) -> Int? {
     return find(keyOrder, key)
   }

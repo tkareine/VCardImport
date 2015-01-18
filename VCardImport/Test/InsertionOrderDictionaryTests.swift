@@ -111,6 +111,12 @@ class InsertionOrderDictionaryTests: XCTestCase {
     XCTAssertEqual(dict.description, "[a: 0, b: 1, c: 2, d: 3]")
   }
 
+  func testHasKey() {
+    var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14]
+    XCTAssertTrue(dict.hasKey("a"))
+    XCTAssertFalse(dict.hasKey("b"))
+  }
+
   func testIndexOf() {
     var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42]
     XCTAssertEqual(dict.indexOf("a")!, 0)
