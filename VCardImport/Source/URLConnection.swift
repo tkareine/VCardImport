@@ -41,8 +41,8 @@ class URLConnection {
     let request = makeURLRequest(url: url, method: method, headers: headers)
     return promisifyTask { promise in
       return self.session.dataTaskWithRequest(request) { data, response, error in
-        if let err = error {
-          Errors.rejectPromise(promise, err)
+        if error != nil {
+          promise.reject(Config.Net.GenericErrorDescription)
         } else if let res = response as? NSHTTPURLResponse {
           if self.isSuccessStatusCode(res.statusCode) {
             promise.resolve(res)
@@ -64,8 +64,8 @@ class URLConnection {
     let request = makeURLRequest(url: url, headers: headers)
     return promisifyTask { promise in
       return self.session.downloadTaskWithRequest(request) { location, response, error in
-        if let err = error {
-          Errors.rejectPromise(promise, err)
+        if error != nil {
+          promise.reject(Config.Net.GenericErrorDescription)
         } else if let res = response as? NSHTTPURLResponse {
           if self.isSuccessStatusCode(res.statusCode) {
             Files.move(from: location, to: destination)

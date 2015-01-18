@@ -252,7 +252,7 @@ class VCardImporter {
 
   private func checkAndLoadSource(source: VCardSource) -> Future<SourceImportResult> {
     NSLog("vCard source %@: checking if remote has changed…", source.name)
-    return urlConnection.head(source.connection.url, headers: Config.VCardHTTPHeaders).flatMap { response in
+    return urlConnection.head(source.connection.url, headers: Config.Net.VCardHTTPHeaders).flatMap { response in
       let newStamp = ModifiedHeaderStamp(headers: response.allHeaderFields)
 
       if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
@@ -270,7 +270,7 @@ class VCardImporter {
   private func loadSourceFromURL(url: NSURL) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
     let future = urlConnection
-        .download(url, to: fileURL, headers: Config.VCardHTTPHeaders)
+        .download(url, to: fileURL, headers: Config.Net.VCardHTTPHeaders)
         .flatMap(loadRecordsFromFile)
     future.onComplete { _ in Files.remove(fileURL) }
     return future
