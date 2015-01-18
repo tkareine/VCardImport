@@ -145,9 +145,9 @@ class VCardSourcesViewController: UITableViewController {
   // MARK: Helpers
 
   private func refreshButtonsEnabledStates() {
-    addButton.enabled = !editing && progressState == nil
+    addButton.enabled = !editing
 
-    editButton.enabled = dataSource.hasVCardSources && progressState == nil
+    editButton.enabled = dataSource.hasVCardSources
 
     toolbar.importButton.enabled =
       !editing &&
@@ -158,8 +158,10 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {
-    let indexPath = NSIndexPath(forRow: self.dataSource.rowForVCardSource(source), inSection: 0)
-    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+    if let row = self.dataSource.rowForVCardSource(source) {
+      let indexPath = NSIndexPath(forRow: row, inSection: 0)
+      tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+    }
   }
 
   private func presentAlertForError(error: NSError) {

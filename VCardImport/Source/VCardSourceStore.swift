@@ -25,6 +25,10 @@ class VCardSourceStore {
     return store[index]
   }
 
+  func hasSource(source: VCardSource) -> Bool {
+    return store[source.id] != nil
+  }
+
   func indexOf(source: VCardSource) -> Int? {
     return store.indexOf(source.id)
   }

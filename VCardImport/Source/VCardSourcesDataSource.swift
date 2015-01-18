@@ -79,8 +79,8 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     return vcardSourceStore[row]
   }
 
-  func rowForVCardSource(source: VCardSource) -> Int {
-    return vcardSourceStore.indexOf(source)!
+  func rowForVCardSource(source: VCardSource) -> Int? {
+    return vcardSourceStore.indexOf(source)
   }
 
   // MARK: Table View Data Source Delegate
@@ -158,13 +158,15 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     modifiedHeaderStamp: ModifiedHeaderStamp?,
     to source: VCardSource)
   {
-    let s = source.withLastImportResult(
-      isSuccess,
-      message: message,
-      at: NSDate(),
-      modifiedHeaderStamp: modifiedHeaderStamp)
-    vcardSourceStore.update(s)
-    vcardSourceStore.save()
+    if vcardSourceStore.hasSource(source) {
+      let s = source.withLastImportResult(
+        isSuccess,
+        message: message,
+        at: NSDate(),
+        modifiedHeaderStamp: modifiedHeaderStamp)
+      vcardSourceStore.update(s)
+      vcardSourceStore.save()
+    }
   }
 
   private func removeVCardSource(row: Int) {
