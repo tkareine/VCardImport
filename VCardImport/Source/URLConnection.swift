@@ -47,7 +47,7 @@ class URLConnection {
           if self.isSuccessStatusCode(res.statusCode) {
             promise.resolve(res)
           } else {
-            Errors.rejectPromise(promise, res)
+            promise.reject(res)
           }
         } else {
           promise.reject("Unknown request error for \(method) \(url)")
@@ -71,7 +71,7 @@ class URLConnection {
             Files.move(from: location, to: destination)
             promise.resolve(destination)
           } else {
-            Errors.rejectPromise(promise, res)
+            promise.reject(res)
           }
         } else {
           promise.reject("Unknown download error for \(url)")
