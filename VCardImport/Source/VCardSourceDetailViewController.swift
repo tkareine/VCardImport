@@ -79,6 +79,7 @@ class VCardSourceDetailViewController: UIViewController {
     urlField.text = source.connection.url.absoluteString
     isEnabledSwitch.on = source.isEnabled
     urlValidationLabel.alpha = 0
+    isValidatingURLIndicator.hidesWhenStopped = true
 
     if isNewSource {
       isEnabledLabel.hidden = true
