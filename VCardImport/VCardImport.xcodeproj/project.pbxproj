@@ -11,6 +11,8 @@
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
 		E907C6A91A6B382700612C90 /* FutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* FutureExtension.swift */; };
 		E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */; };
+		E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */; };
+		E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = E969253F1A4F7CF000B6427A /* QueueExecution.swift */; };
 		E9198D791A6B16950000A767 /* OnTextChangeTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9198D781A6B16950000A767 /* OnTextChangeTextFieldDelegate.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
@@ -92,6 +94,7 @@
 		E90684B01A58B17900728D0B /* DictionaryConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryConvertible.swift; sourceTree = "<group>"; };
 		E907C6A81A6B382700612C90 /* FutureExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureExtension.swift; sourceTree = "<group>"; };
 		E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldValidator.swift; sourceTree = "<group>"; };
+		E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueExecutionTests.swift; sourceTree = "<group>"; };
 		E9198D781A6B16950000A767 /* OnTextChangeTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnTextChangeTextFieldDelegate.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
 		E9375BC81A0ED1120065A042 /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
@@ -226,6 +229,7 @@
 			children = (
 				E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */,
 				E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */,
+				E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */,
 				E98FD3F31A508B5300A9DB27 /* FilesTests.swift */,
 				E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */,
 				E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */,
@@ -395,10 +399,12 @@
 				E9AF051F1A69BFD1003860EF /* Try.swift in Sources */,
 				E9AF051E1A69BFCF003860EF /* Future.swift in Sources */,
 				E9AD7D101A69F4DC00F1B668 /* ModifiedHeaderStamp.swift in Sources */,
+				E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */,
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
 				E9F2289F1A43934B00A10190 /* Records.swift in Sources */,
 				E94897411A47448C004BA838 /* RecordName.swift in Sources */,
 				E9F228A01A43934B00A10190 /* RecordChangeSet.swift in Sources */,
+				E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */,
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
 				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,
 				E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */,
