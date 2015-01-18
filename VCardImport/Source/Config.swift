@@ -59,5 +59,6 @@ struct Config {
     static let ValidationBorderColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.6).CGColor
     static let ValidationBorderWidth: CGFloat = 2
     static let ValidationCornerRadius: CGFloat = 5
+    static let ValidationThrottleInMS = 300
   }
 }

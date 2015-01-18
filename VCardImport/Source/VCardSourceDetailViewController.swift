@@ -14,8 +14,14 @@ class VCardSourceDetailViewController: UIViewController {
   private let doneCallback: VCardSource -> Void
 
   private var shouldCallDoneCallbackOnViewDisappear: Bool
-  private var nameFieldValidator: TextFieldValidator<Bool>!
-  private var urlFieldValidator: TextFieldValidator<Bool>!
+  private var nameFieldValidator: TextFieldValidator<String>!
+  private var urlFieldValidator: TextFieldValidator<NSURL>!
+
+  private var lastValidName: String?
+  private var lastValidURL: NSURL?
+
+  private var isValidCurrentName = false
+  private var isValidCurrentURL = false
 
   // MARK: Controller Life Cycle
 
@@ -51,9 +57,16 @@ class VCardSourceDetailViewController: UIViewController {
 
     nameFieldValidator = TextFieldValidator(
       textField: nameField,
-      syncValidator: { !$0.isEmpty ? .Success(true) : .Failure("empty") },
-      onValidated: { [weak self] _ in
+      syncValidator: { [weak self] text in
+        self?.isValidCurrentName = false
+        return !text.isEmpty ? .Success(text) : .Failure("empty")
+      },
+      onValidated: { [weak self] result in
         if let s = self {
+          if result.isSuccess {
+            s.lastValidName = result.value!
+            s.isValidCurrentName = true
+          }
           s.refreshDoneButtonState()
         }
       })
@@ -62,15 +75,20 @@ class VCardSourceDetailViewController: UIViewController {
       textField: urlField,
       asyncValidator: { [weak self] url in
         if let s = self {
-          s.beginURLValidation()
-          return s.checkIsReachable(url)
+          s.isValidCurrentURL = false
+          s.beginURLValidationProgress()
+          return s.checkIsReachableURL(url)
         } else {
           return Future.failed("view disappeared")
         }
       },
       onValidated: { [weak self] result in
         if let s = self {
-          s.endURLValidation(result)
+          if result.isSuccess {
+            s.lastValidURL = result.value!
+            s.isValidCurrentURL = true
+          }
+          s.endURLValidationProgress(result)
           s.refreshDoneButtonState()
         }
       })
@@ -86,8 +104,8 @@ class VCardSourceDetailViewController: UIViewController {
       isEnabledSwitch.hidden = true
       refreshDoneButtonState()
     } else {
-      nameFieldValidator.validate(affectStyle: true)
-      urlFieldValidator.validate(affectStyle: true)
+      nameFieldValidator.validate()
+      urlFieldValidator.validate()
     }
   }
 
@@ -95,11 +113,11 @@ class VCardSourceDetailViewController: UIViewController {
     super.viewWillDisappear(animated)
 
     if shouldCallDoneCallbackOnViewDisappear {
-      let urlCandidate = NSURL(string: urlField.text)
-      let newURL = urlCandidate != nil ? urlCandidate! : source.connection.url
+      let newName = lastValidName ?? source.name
+      let newURL = lastValidURL ?? source.connection.url
 
       let newSource = source.with(
-        name: nameField.text,
+        name: newName,
         connection: VCardSource.Connection(url: newURL),
         isEnabled: isEnabledSwitch.on
       )
@@ -123,16 +141,11 @@ class VCardSourceDetailViewController: UIViewController {
 
   private func refreshDoneButtonState() {
     if let button = navigationItem.rightBarButtonItem {
-      switch (nameFieldValidator.lastResult, urlFieldValidator.lastResult) {
-      case (.Some(.Success), .Some(.Success)):
-        button.enabled = true
-      default:
-        button.enabled = false
-      }
+      button.enabled = isValidCurrentName && isValidCurrentURL
     }
   }
 
-  private func beginURLValidation() {
+  private func beginURLValidationProgress() {
     urlValidationLabel.text = "Validating URL…"
 
     UIView.animateWithDuration(
@@ -147,13 +160,13 @@ class VCardSourceDetailViewController: UIViewController {
     isValidatingURLIndicator.startAnimating()
   }
 
-  private func endURLValidation(result: Try<Bool>) {
+  private func endURLValidationProgress(result: Try<NSURL>) {
     switch result {
     case .Success:
       urlValidationLabel.text = "URL is valid"
       UIView.animateWithDuration(
         0.5,
-        delay: 0.5,
+        delay: 0,
         options: .CurveEaseOut,
         animations: {
           self.urlValidationLabel.alpha = 0
@@ -166,12 +179,12 @@ class VCardSourceDetailViewController: UIViewController {
     isValidatingURLIndicator.stopAnimating()
   }
 
-  private func checkIsReachable(urlString: String) -> Future<Bool> {
+  private func checkIsReachableURL(urlString: String) -> Future<NSURL> {
     if let url = NSURL(string: urlString) {
       if url.isValidHTTPURL {
         return self.urlConnection
           .head(url, headers: Config.Net.VCardHTTPHeaders)
-          .map { _ in true }
+          .map { _ in url }
       }
     }
     return Future.failed("Invalid URL")
