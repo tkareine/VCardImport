@@ -36,6 +36,21 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertEqual(date.ISOString as String, isoString)
   }
 
+  func testURLHTTPURLValidation() {
+    XCTAssertTrue(NSURL(string: "http://192.168.0.1/")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "http://0.0.0.0/")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "http://localhost/")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "http://localhost:8080/")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "http://www.example.com/foo/?bar=baz&ans=42&quux")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "http://example.com/?q=Test%20URL-encoded%20query")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "https://example.com/ev/#&test=true")!.isValidHTTPURL)
+    XCTAssertTrue(NSURL(string: "https://EXAMPLE.com/EV/#&TEST=TRue")!.isValidHTTPURL)
+
+    XCTAssertFalse(NSURL(string: "ftp://www.example.com/")!.isValidHTTPURL)
+    XCTAssertFalse(NSURL(string: "http://")!.isValidHTTPURL)
+    XCTAssertFalse(NSURL(string: "http://#")!.isValidHTTPURL)
+  }
+
   func test2TupleEquality() {
     XCTAssertTrue((0, "1") == (0, "1"))
     XCTAssertFalse((0, "1") == (0, "2"))
