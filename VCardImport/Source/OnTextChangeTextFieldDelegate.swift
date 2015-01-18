@@ -1,6 +1,7 @@
 import UIKit
 
-/* This helper class must reside at top level with at least internal visibility.
+/**
+ * This helper class must reside at top level with at least internal visibility.
  * Otherwise, the UITextField does not call the delegate methods.
  *
  * The name of the class is ugly, because it deserves to be so.

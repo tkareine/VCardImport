@@ -40,7 +40,8 @@ struct Config {
   static let OS = NSProcessInfo.processInfo().operatingSystemVersionString
 
   struct Net {
-    /* On failure, NSURLSession reports an NSError with description "The
+    /**
+     * On failure, NSURLSession reports an NSError with description "The
      * operation couldn’t be completed". (NSURLErrorDomain error -1001.) It's
      * not helpful, so let's so a generic error description then.
      */

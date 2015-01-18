@@ -30,9 +30,11 @@ class VCardImporter {
     self.queue = queue
   }
 
-  // The implementation is long and ugly, but I prefer to keep dispatching calls
-  // to background jobs and back to the user-specified queue in one place.
   func importFrom(sources: [VCardSource]) {
+    // The implementation is long and ugly, but I prefer to keep dispatching
+    // calls to background jobs and back to the user-specified queue in one
+    // place.
+
     QueueExecution.async(QueueExecution.backgroundQueue) {
       var error: NSError?
       var addressBookOpt: ABAddressBook? = self.makeAddressBook(&error)
