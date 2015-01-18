@@ -153,7 +153,7 @@ class VCardSourceDetailViewController: UIViewController {
     urlValidationLabel.text = "Validating URL…"
 
     UIView.animateWithDuration(
-      0.5,
+      Config.UI.AnimationDurationFadeMessage,
       delay: 0,
       options: .CurveEaseIn,
       animations: {
@@ -169,8 +169,8 @@ class VCardSourceDetailViewController: UIViewController {
     case .Success:
       urlValidationLabel.text = "URL is valid"
       UIView.animateWithDuration(
-        1,
-        delay: 0,
+        Config.UI.AnimationDurationFadeMessage,
+        delay: Config.UI.AnimationDelayFadeOutMessage,
         options: .CurveEaseOut,
         animations: {
           self.urlValidationLabel.alpha = 0

@@ -53,6 +53,8 @@ struct Config {
   }
 
   struct UI {
+    static let AnimationDurationFadeMessage: NSTimeInterval = 0.5
+    static let AnimationDelayFadeOutMessage: NSTimeInterval = 5
     static let SourcesCellReuseIdentifier = "SourcesCellReuseIdentifier"
     static let CellTextColorEnabled = UIColor.blackColor()
     static let CellTextColorDisabled = UIColor.grayColor()

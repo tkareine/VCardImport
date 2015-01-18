@@ -56,7 +56,7 @@ class VCardToolbar: UIView {
     progressView.setProgress(0, animated: false)
 
     UIView.animateWithDuration(
-      0.5,
+      Config.UI.AnimationDurationFadeMessage,
       delay: 0,
       options: .CurveEaseIn,
       animations: {
@@ -68,8 +68,8 @@ class VCardToolbar: UIView {
 
   func endProgress() {
     UIView.animateWithDuration(
-      0.5,
-      delay: 0,
+      Config.UI.AnimationDurationFadeMessage,
+      delay: Config.UI.AnimationDelayFadeOutMessage,
       options: .CurveEaseOut,
       animations: {
         self.progressLabel.alpha = 0

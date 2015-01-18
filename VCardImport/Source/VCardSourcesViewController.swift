@@ -206,9 +206,7 @@ class VCardSourcesViewController: UITableViewController {
 
   private func endProgress() {
     progressState = nil
-    QueueExecution.after(5000, QueueExecution.mainQueue) {
-      self.toolbar.endProgress()
-    }
+    toolbar.endProgress()
   }
 
   private func addToolbarToNavigationController() {
