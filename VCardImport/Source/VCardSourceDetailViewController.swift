@@ -137,6 +137,10 @@ class VCardSourceDetailViewController: UIViewController {
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
 
+  @IBAction func backgroundTapped(sender: AnyObject) {
+    view.endEditing(true)
+  }
+
   // MARK: Helpers
 
   private func refreshDoneButtonState() {

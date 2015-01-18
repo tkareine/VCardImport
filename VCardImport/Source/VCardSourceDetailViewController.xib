@@ -132,6 +132,9 @@
                     <exclude reference="zIO-wB-TKp"/>
                 </mask>
             </variation>
+            <connections>
+                <action selector="backgroundTapped:" destination="-1" eventType="touchUpInside" id="MXa-9y-n4b"/>
+            </connections>
             <point key="canvasLocation" x="-44" y="178"/>
         </view>
     </objects>
