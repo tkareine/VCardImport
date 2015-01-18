@@ -14,7 +14,7 @@ extension Dictionary {
 private let WhiteSpaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
 
 extension String {
-  func trim() -> String {
+  var trimmed: String {
     return stringByTrimmingCharactersInSet(WhiteSpaceAndNewlineCharacterSet)
   }
 }

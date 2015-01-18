@@ -13,11 +13,11 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertFalse(dict.hasKey("bar"))
   }
 
-  func testStringTrim() {
-    XCTAssertEqual("a \n \tb".trim(), "a \n \tb")
-    XCTAssertEqual(" \n ab \t".trim(), "ab")
-    XCTAssertEqual(" \n \t".trim(), "")
-    XCTAssertEqual("".trim(), "")
+  func testStringTrimmed() {
+    XCTAssertEqual("a \n \tb".trimmed, "a \n \tb")
+    XCTAssertEqual(" \n ab \t".trimmed, "ab")
+    XCTAssertEqual(" \n \t".trimmed, "")
+    XCTAssertEqual("".trimmed, "")
   }
 
   func testDateISOString() {
