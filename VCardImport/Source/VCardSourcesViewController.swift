@@ -97,7 +97,7 @@ class VCardSourcesViewController: UITableViewController {
     heightForRowAtIndexPath indexPath: NSIndexPath)
     -> CGFloat
   {
-    return 60
+    return 68
   }
 
   override func setEditing(editing: Bool, animated: Bool) {
