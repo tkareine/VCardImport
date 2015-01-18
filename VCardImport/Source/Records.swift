@@ -23,9 +23,13 @@ struct Records {
       let multiVal: ABMultiValue = val.takeRetainedValue() as ABMultiValue
       var result: [(NSString, NSObject)] = []
       for i in 0..<ABMultiValueGetCount(multiVal) {
-        let label = ABMultiValueCopyLabelAtIndex(multiVal, i).takeRetainedValue() as NSString
-        let value = ABMultiValueCopyValueAtIndex(multiVal, i).takeRetainedValue() as NSObject
-        result.append((label, value))
+        if let labelPtr = ABMultiValueCopyLabelAtIndex(multiVal, i) {
+          let label = labelPtr.takeRetainedValue() as NSString
+          if let valuePtr = ABMultiValueCopyValueAtIndex(multiVal, i) {
+            let value = valuePtr.takeRetainedValue() as NSObject
+            result.append((label, value))
+          }
+        }
       }
       return result
     } else {
