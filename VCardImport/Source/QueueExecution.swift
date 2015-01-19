@@ -34,10 +34,10 @@ struct QueueExecution {
     var lastDelayId: UInt64 = 0
 
     func later(input: T) {
-      let delayId = lastDelayId + 1
-      lastDelayId = delayId
+      lastDelayId = lastDelayId &+ 1
+      let currentDelayId = lastDelayId
       after(waitInMS, queue) {
-        if lastDelayId == delayId {
+        if lastDelayId == currentDelayId {
           block(input)
         }
       }
