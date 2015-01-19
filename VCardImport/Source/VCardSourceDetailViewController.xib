@@ -39,7 +39,7 @@
                     <textInputTraits key="textInputTraits" keyboardType="URL"/>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fLb-Ji-VKL" userLabel="Name">
-                    <rect key="frame" x="8" y="76" width="60" height="20.5"/>
+                    <rect key="frame" x="8" y="76" width="60" height="21"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="8h9-2d-20v"/>
                     </constraints>

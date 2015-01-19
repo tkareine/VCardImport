@@ -76,7 +76,9 @@ class VCardSourceDetailViewController: UIViewController {
       asyncValidator: { [weak self] url in
         if let s = self {
           s.isValidCurrentURL = false
-          s.beginURLValidationProgress()
+          QueueExecution.async(QueueExecution.mainQueue) {
+            s.beginURLValidationProgress()
+          }
           return s.checkIsReachableURL(url)
         } else {
           return Future.failed("view disappeared")
@@ -155,7 +157,7 @@ class VCardSourceDetailViewController: UIViewController {
     UIView.animateWithDuration(
       Config.UI.AnimationDurationFadeMessage,
       delay: 0,
-      options: .CurveEaseIn,
+      options: .CurveEaseIn | .BeginFromCurrentState,
       animations: {
         self.urlValidationLabel.alpha = 1
       },
@@ -171,7 +173,7 @@ class VCardSourceDetailViewController: UIViewController {
       UIView.animateWithDuration(
         Config.UI.AnimationDurationFadeMessage,
         delay: Config.UI.AnimationDelayFadeOutMessage,
-        options: .CurveEaseOut,
+        options: .CurveEaseOut | .BeginFromCurrentState,
         animations: {
           self.urlValidationLabel.alpha = 0
         },
