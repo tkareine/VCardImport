@@ -5,7 +5,8 @@ class VCardToolbar: UIView {
   let backupButton: UIButton!
   let progressLabel: UILabel!
   let progressView: UIProgressView!
-  let border: CALayer!
+
+  private let border: CALayer!
 
   override var frame: CGRect {
     get {
