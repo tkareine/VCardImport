@@ -9,15 +9,19 @@ struct FutureExecution {
     return dispatch_group_create()
   }
 
-  static func dispatchAsync(block: () -> Void) {
+  static func async(block: () -> Void) {
     dispatch_async(sharedQueue, block)
   }
 
-  static func dispatchAsync(group: Group, block: () -> Void) {
+  static func async(group: Group, block: () -> Void) {
     dispatch_group_async(group, sharedQueue, block)
   }
 
-  static func dispatchNotify(group: Group, block: () -> Void) {
+  static func sync(block: () -> Void) {
+    dispatch_sync(sharedQueue, block)
+  }
+
+  static func notify(group: Group, block: () -> Void) {
     dispatch_group_notify(group, sharedQueue, block)
   }
 
@@ -52,7 +56,7 @@ public class Future<T> {
   private var result: Try<T>?
 
   public var isCompleted: Bool {
-    return result != nil
+    fatalError("must be overridden")
   }
 
   private var futureName: String {
@@ -92,6 +96,10 @@ public class Future<T> {
 }
 
 public class ImmediateFuture<T>: Future<T> {
+  override public var isCompleted: Bool {
+    return result != nil
+  }
+
   override private var futureName: String {
     return "ImmediateFuture"
   }
@@ -106,12 +114,20 @@ public class ImmediateFuture<T>: Future<T> {
 
   override public func onComplete(block: CompletionCallback) {
     let res = result!
-    FutureExecution.dispatchAsync { block(res) }
+    FutureExecution.async { block(res) }
   }
 }
 
 public class AsyncFuture<T>: Future<T> {
   private let Group = FutureExecution.makeGroup()
+
+  override public var isCompleted: Bool {
+    var res = false
+    FutureExecution.sync {
+      res = self.result != nil
+    }
+    return res
+  }
 
   override private var futureName: String {
     return "AsyncFuture"
@@ -119,7 +135,7 @@ public class AsyncFuture<T>: Future<T> {
 
   private init(_ block: () -> Try<T>) {
     super.init(nil)
-    FutureExecution.dispatchAsync(Group) {
+    FutureExecution.async(Group) {
       self.result = block()
     }
   }
@@ -130,7 +146,7 @@ public class AsyncFuture<T>: Future<T> {
   }
 
   override public func onComplete(block: CompletionCallback) {
-    FutureExecution.dispatchNotify(Group) {
+    FutureExecution.notify(Group) {
       block(self.result!)
     }
   }
@@ -139,6 +155,12 @@ public class AsyncFuture<T>: Future<T> {
 public class PromiseFuture<T>: Future<T> {
   private let condition = Condition()
   private var completionCallbacks: [CompletionCallback] = []
+
+  override public var isCompleted: Bool {
+    return condition.synchronized { _ in
+      self.result != nil
+    }
+  }
 
   override private var futureName: String {
     return "PromiseFuture"
@@ -174,7 +196,7 @@ public class PromiseFuture<T>: Future<T> {
     }
 
     for block in callbacks {
-      FutureExecution.dispatchAsync { block(value) }
+      FutureExecution.async { block(value) }
     }
   }
 
@@ -200,7 +222,7 @@ public class PromiseFuture<T>: Future<T> {
     }
 
     if let r = res {
-      FutureExecution.dispatchAsync { block(r) }
+      FutureExecution.async { block(r) }
     }
   }
 }
