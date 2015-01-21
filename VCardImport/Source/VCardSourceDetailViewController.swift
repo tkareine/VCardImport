@@ -65,7 +65,7 @@ class VCardSourceDetailViewController: UIViewController {
   // MARK: View Life Cycle
 
   override func viewWillAppear(animated: Bool) {
-    super.viewWillDisappear(animated)
+    super.viewWillAppear(animated)
 
     nameFieldValidator = TextFieldValidator(
       textField: nameField,
