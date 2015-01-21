@@ -1,7 +1,9 @@
 import UIKit
 
 class VCardSourceDetailViewController: UIViewController {
+  @IBOutlet weak var nameLabel: UILabel!
   @IBOutlet weak var nameField: UITextField!
+  @IBOutlet weak var urlLabel: UILabel!
   @IBOutlet weak var urlField: UITextField!
   @IBOutlet weak var urlValidationLabel: UILabel!
   @IBOutlet weak var isValidatingURLIndicator: UIActivityIndicatorView!
@@ -44,10 +46,20 @@ class VCardSourceDetailViewController: UIViewController {
       navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancel:")
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
     }
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "resetFontSizes",
+      name: UIContentSizeCategoryDidChangeNotification,
+      object: nil)
   }
 
   required init(coder decoder: NSCoder) {
     fatalError("not implemented")
+  }
+
+  deinit {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
   // MARK: View Life Cycle
@@ -109,6 +121,8 @@ class VCardSourceDetailViewController: UIViewController {
       nameFieldValidator.validate()
       urlFieldValidator.validate()
     }
+
+    resetFontSizes()
   }
 
   override func viewWillDisappear(animated: Bool) {
@@ -144,6 +158,16 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   // MARK: Helpers
+
+  func resetFontSizes() {
+    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    nameLabel.font = bodyFont
+    nameField.font = bodyFont
+    urlLabel.font = bodyFont
+    urlField.font = bodyFont
+    urlValidationLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 2)
+    isEnabledLabel.font = bodyFont
+  }
 
   private func refreshDoneButtonState() {
     if let button = navigationItem.rightBarButtonItem {
