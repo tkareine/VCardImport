@@ -61,6 +61,7 @@
 		E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */; };
 		E9F228A21A43938E00A10190 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F31E111A0FD2570015509F /* Errors.swift */; };
 		E9F31E121A0FD2570015509F /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F31E111A0FD2570015509F /* Errors.swift */; };
+		E9F850351A6EFE6C0051669A /* VCardSourceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9F850341A6EFE6C0051669A /* VCardSourceCell.xib */; };
 		E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */; };
 		E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */; };
 		E9F9D8601A361C1B0054DCB8 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
@@ -132,6 +133,7 @@
 		E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordDifferencesTests.swift; sourceTree = "<group>"; };
 		E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordDifferences.swift; sourceTree = "<group>"; };
 		E9F31E111A0FD2570015509F /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		E9F850341A6EFE6C0051669A /* VCardSourceCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VCardSourceCell.xib; sourceTree = "<group>"; };
 		E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourcesDataSource.swift; sourceTree = "<group>"; };
 		E9F9D85F1A361C1B0054DCB8 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */,
 				E9B9B9F31A5BF653004C53CA /* VCardToolbar.swift */,
 				E90684AB1A589F0700728D0B /* VCardSourceCell.swift */,
+				E9F850341A6EFE6C0051669A /* VCardSourceCell.xib */,
 				E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */,
 				E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */,
 				E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */,
@@ -333,6 +336,7 @@
 				E983F1E219E9C76F00219305 /* LaunchScreen.xib in Resources */,
 				E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */,
 				E95E95AF19F43862002D864B /* VCardSourceDetailViewController.xib in Resources */,
+				E9F850351A6EFE6C0051669A /* VCardSourceCell.xib in Resources */,
 				E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

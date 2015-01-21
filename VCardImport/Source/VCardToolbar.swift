@@ -97,18 +97,19 @@ class VCardToolbar: UIView {
     let button = UIButton.buttonWithType(.System) as UIButton
     button.setTitle(title, forState: .Normal)
     if let label = button.titleLabel {
-      label.font = label.font.fontWithSize(16)
+      label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
     }
     button.contentHorizontalAlignment = labelAlignment
     return button
   }
 
   private func makeProgressLabel() -> UILabel {
+    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
     let label = UILabel()
     label.textAlignment = .Center
-    label.textColor = UIColor(white: 0.3, alpha: 1)
+    label.textColor = Config.UI.ToolbarProgressTextColor
     label.adjustsFontSizeToFitWidth = true
-    label.font = label.font.fontWithSize(14)
+    label.font = label.font.fontWithSize(bodyFont.pointSize - 4)
     label.minimumScaleFactor = 0.7
     label.lineBreakMode = .ByWordWrapping
     label.numberOfLines = 2

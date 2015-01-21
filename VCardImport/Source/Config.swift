@@ -55,9 +55,11 @@ struct Config {
   struct UI {
     static let AnimationDurationFadeMessage: NSTimeInterval = 0.5
     static let AnimationDelayFadeOutMessage: NSTimeInterval = 5
-    static let SourcesCellReuseIdentifier = "SourcesCellReuseIdentifier"
-    static let CellTextColorEnabled = UIColor.blackColor()
-    static let CellTextColorDisabled = UIColor.grayColor()
+    static let TableCellReuseIdentifier = "TableCellReuseIdentifier"
+    static let TableCellHeaderTextColor = UIColor.blackColor()
+    static let TableCellDescriptionTextColor = UIColor(white: 0.3, alpha: 1)
+    static let TableCellDisabledTextColor = UIColor.grayColor()
+    static let ToolbarProgressTextColor = TableCellDescriptionTextColor
     static let ValidationBorderColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.6).CGColor
     static let ValidationBorderWidth: CGFloat = 2
     static let ValidationCornerRadius: CGFloat = 5

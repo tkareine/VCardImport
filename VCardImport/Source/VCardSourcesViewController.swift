@@ -74,13 +74,14 @@ class VCardSourcesViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    tableView.registerClass(
-      VCardSourceCell.self,
-      forCellReuseIdentifier: Config.UI.SourcesCellReuseIdentifier)
+    let cellNib = UINib(nibName: "VCardSourceCell", bundle: nil)
+    tableView.registerNib(cellNib, forCellReuseIdentifier: Config.UI.TableCellReuseIdentifier)
   }
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+    tableView.estimatedRowHeight = 95
+    tableView.rowHeight = UITableViewAutomaticDimension
     addToolbarToNavigationController()
     refreshButtonsEnabledStates()
   }
@@ -91,14 +92,6 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   // MARK: Table View Customization
-
-  override func tableView(
-    tableView: UITableView,
-    heightForRowAtIndexPath indexPath: NSIndexPath)
-    -> CGFloat
-  {
-    return 68
-  }
 
   override func setEditing(editing: Bool, animated: Bool) {
     super.setEditing(editing, animated: animated)

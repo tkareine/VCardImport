@@ -94,39 +94,9 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     cellForRowAtIndexPath indexPath: NSIndexPath)
     -> UITableViewCell
   {
-    let cell = tableView.dequeueReusableCellWithIdentifier(Config.UI.SourcesCellReuseIdentifier, forIndexPath: indexPath) as VCardSourceCell
-
-    func setMainText(text: String, color: UIColor) {
-      if let dt = cell.textLabel {
-        dt.text = text
-        dt.textColor = color
-      }
-    }
-
-    func setDetailText(text: String, color: UIColor) {
-      if let dt = cell.detailTextLabel {
-        dt.text = text
-        dt.textColor = color
-      }
-    }
-
-    let source = vcardSourceStore[indexPath.row]
-    let textColor = source.isEnabled
-      ? Config.UI.CellTextColorEnabled
-      : Config.UI.CellTextColorDisabled
-
-    if let importResult = source.lastImportResult {
-      let warningStr = importResult.isSuccess ? "" : "⚠️ "
-      let message = importResult.message
-      let dateStr = importResult.importedAt.localeMediumString
-
-      setMainText("\(warningStr)\(source.name)", textColor)
-      setDetailText("\(dateStr) - \(message)", textColor)
-    } else {
-      setMainText(source.name, textColor)
-      setDetailText("Not imported yet", Config.UI.CellTextColorDisabled)
-    }
-
+    let cell = tableView.dequeueReusableCellWithIdentifier(
+      Config.UI.TableCellReuseIdentifier, forIndexPath: indexPath) as VCardSourceCell
+    cell.setContents(vcardSourceStore[indexPath.row])
     return cell
   }
 

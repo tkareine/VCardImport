@@ -1,17 +1,51 @@
 import UIKit
 
 class VCardSourceCell: UITableViewCell {
-  override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: .Subtitle, reuseIdentifier: Config.UI.SourcesCellReuseIdentifier)
-    accessoryType = .DisclosureIndicator
-    if let label = detailTextLabel {
-      label.numberOfLines = 2
-      label.lineBreakMode = .ByWordWrapping
-      label.font = UIFont.systemFontOfSize(12.0)
+  @IBOutlet weak var headerLabel: UILabel!
+  @IBOutlet weak var descriptionLabel: UILabel!
+  @IBOutlet weak var iconLabel: UILabel!
+
+  // MARK: View Life Cycle
+
+  override func awakeFromNib() {
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "resetFontSizes",
+      name: UIContentSizeCategoryDidChangeNotification,
+      object: nil)
+
+    resetFontSizes()
+  }
+
+  deinit {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+  }
+
+  // MARK: Helpers
+
+  func setContents(source: VCardSource) {
+    headerLabel.text = source.name
+    headerLabel.textColor = source.isEnabled
+      ? Config.UI.TableCellHeaderTextColor
+      : Config.UI.TableCellDisabledTextColor
+
+    descriptionLabel.textColor = source.isEnabled
+      ? Config.UI.TableCellDescriptionTextColor
+      : Config.UI.TableCellDisabledTextColor
+
+    if let res = source.lastImportResult {
+      descriptionLabel.text = "\(res.importedAt.localeMediumString) - \(res.message)"
+      iconLabel.text = res.isSuccess ? nil : "⚠️"
+    } else {
+      descriptionLabel.text = "Not imported yet"
+      iconLabel.text = nil
     }
   }
 
-  required init(coder decoder: NSCoder) {
-    fatalError("not implemented")
+  func resetFontSizes() {
+    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    headerLabel.font = bodyFont
+    iconLabel.font = bodyFont
+    descriptionLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 4)
   }
 }
