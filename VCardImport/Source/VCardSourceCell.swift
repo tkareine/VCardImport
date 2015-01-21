@@ -21,7 +21,7 @@ class VCardSourceCell: UITableViewCell {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
-  // MARK: Helpers
+  // MARK: Public API
 
   func setContents(source: VCardSource) {
     headerLabel.text = source.name
@@ -41,6 +41,8 @@ class VCardSourceCell: UITableViewCell {
       iconLabel.text = nil
     }
   }
+
+  // MARK: Notification Handlers
 
   func resetFontSizes() {
     let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)

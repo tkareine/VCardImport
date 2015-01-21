@@ -1,15 +1,6 @@
 import UIKit
 
 class VCardSourceDetailViewController: UIViewController {
-  @IBOutlet weak var nameLabel: UILabel!
-  @IBOutlet weak var nameField: UITextField!
-  @IBOutlet weak var urlLabel: UILabel!
-  @IBOutlet weak var urlField: UITextField!
-  @IBOutlet weak var urlValidationLabel: UILabel!
-  @IBOutlet weak var isValidatingURLIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var isEnabledLabel: UILabel!
-  @IBOutlet weak var isEnabledSwitch: UISwitch!
-
   private let source: VCardSource
   private let isNewSource: Bool
   private let urlConnection: URLConnection
@@ -24,6 +15,8 @@ class VCardSourceDetailViewController: UIViewController {
 
   private var isValidCurrentName = false
   private var isValidCurrentURL = false
+
+  private var detailViewOwner: VCardSourceDetailViewOwner!
 
   // MARK: Controller Life Cycle
 
@@ -40,36 +33,28 @@ class VCardSourceDetailViewController: UIViewController {
 
     shouldCallDoneCallbackOnViewDisappear = !isNewSource
 
-    super.init(nibName: "VCardSourceDetailViewController", bundle: nil)
+    super.init(nibName: nil, bundle: nil)
 
     if isNewSource {
       navigationItem.title = "Add vCard Source"
       navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancel:")
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
     }
-
-    NSNotificationCenter.defaultCenter().addObserver(
-      self,
-      selector: "resetFontSizes",
-      name: UIContentSizeCategoryDidChangeNotification,
-      object: nil)
   }
 
   required init(coder decoder: NSCoder) {
     fatalError("not implemented")
   }
 
-  deinit {
-    NSNotificationCenter.defaultCenter().removeObserver(self)
-  }
-
   // MARK: View Life Cycle
 
-  override func viewWillAppear(animated: Bool) {
-    super.viewWillAppear(animated)
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    setupView()
 
     nameFieldValidator = TextFieldValidator(
-      textField: nameField,
+      textField: detailViewOwner.nameField,
       syncValidator: { [weak self] text in
         self?.isValidCurrentName = false
         return !text.isEmpty ? .Success(text) : .Failure("empty")
@@ -85,12 +70,12 @@ class VCardSourceDetailViewController: UIViewController {
       })
 
     urlFieldValidator = TextFieldValidator(
-      textField: urlField,
+      textField: detailViewOwner.urlField,
       asyncValidator: { [weak self] url in
         if let s = self {
           s.isValidCurrentURL = false
           QueueExecution.async(QueueExecution.mainQueue) {
-            s.beginURLValidationProgress()
+            s.detailViewOwner.beginURLValidationProgress()
           }
           return s.checkIsReachableURL(url)
         } else {
@@ -103,27 +88,21 @@ class VCardSourceDetailViewController: UIViewController {
             s.lastValidURL = result.value!
             s.isValidCurrentURL = true
           }
-          s.endURLValidationProgress(result)
+          s.detailViewOwner.endURLValidationProgress(result)
           s.refreshDoneButtonState()
         }
       })
+  }
 
-    nameField.text = source.name
-    urlField.text = source.connection.url.absoluteString
-    isEnabledSwitch.on = source.isEnabled
-    urlValidationLabel.alpha = 0
-    isValidatingURLIndicator.hidesWhenStopped = true
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
 
     if isNewSource {
-      isEnabledLabel.hidden = true
-      isEnabledSwitch.hidden = true
       refreshDoneButtonState()
     } else {
       nameFieldValidator.validate()
       urlFieldValidator.validate()
     }
-
-    resetFontSizes()
   }
 
   override func viewWillDisappear(animated: Bool) {
@@ -136,7 +115,7 @@ class VCardSourceDetailViewController: UIViewController {
       let newSource = source.with(
         name: newName,
         connection: VCardSource.Connection(url: newURL),
-        isEnabled: isEnabledSwitch.on
+        isEnabled: detailViewOwner.isEnabledSwitch.on
       )
 
       doneCallback(newSource)
@@ -154,60 +133,84 @@ class VCardSourceDetailViewController: UIViewController {
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
 
-  @IBAction func backgroundTapped(sender: AnyObject) {
-    view.endEditing(true)
-  }
-
   // MARK: Helpers
 
-  func resetFontSizes() {
-    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-    nameLabel.font = bodyFont
-    nameField.font = bodyFont
-    urlLabel.font = bodyFont
-    urlField.font = bodyFont
-    urlValidationLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 2)
-    isEnabledLabel.font = bodyFont
+  private func makeScrollView() -> UIScrollView {
+    let sv = UIScrollView()
+    sv.backgroundColor = UIColor.whiteColor()
+    sv.setTranslatesAutoresizingMaskIntoConstraints(false)
+    return sv
+  }
+
+  private func makeDetailViewOwner() -> VCardSourceDetailViewOwner {
+    let owner = VCardSourceDetailViewOwner()
+    owner.loadView(source: source, isNewSource: isNewSource)
+    return owner
+  }
+
+  private func setupView() {
+    let scrollView = makeScrollView()
+    detailViewOwner = makeDetailViewOwner()
+
+    scrollView.addSubview(detailViewOwner.view)
+    view.addSubview(scrollView)
+
+    setupLayout(scrollView: scrollView, contentView: detailViewOwner.view)
+  }
+
+  private func setupLayout(#scrollView: UIScrollView, contentView: UIView) {
+    let viewNamesToObjects = [
+      "scrollView": scrollView,
+      "contentView": contentView
+    ]
+
+    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "H:|[scrollView]|",
+      options: nil,
+      metrics: nil,
+      views: viewNamesToObjects))
+
+    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "V:|[scrollView]|",
+      options: nil,
+      metrics: nil,
+      views: viewNamesToObjects))
+
+    scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "H:|[contentView]|",
+      options: nil,
+      metrics: nil,
+      views: viewNamesToObjects))
+
+    scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "V:|[contentView]|",
+      options: nil,
+      metrics: nil,
+      views: viewNamesToObjects))
+
+    view.addConstraint(NSLayoutConstraint(
+      item: contentView,
+      attribute: .Leading,
+      relatedBy: .Equal,
+      toItem: view,
+      attribute: .Left,
+      multiplier: 1,
+      constant: 0))
+
+    view.addConstraint(NSLayoutConstraint(
+      item: contentView,
+      attribute: .Trailing,
+      relatedBy: .Equal,
+      toItem: view,
+      attribute: .Right,
+      multiplier: 1,
+      constant: 0))
   }
 
   private func refreshDoneButtonState() {
     if let button = navigationItem.rightBarButtonItem {
       button.enabled = isValidCurrentName && isValidCurrentURL
     }
-  }
-
-  private func beginURLValidationProgress() {
-    urlValidationLabel.text = "Validating URL…"
-
-    UIView.animateWithDuration(
-      Config.UI.AnimationDurationFadeMessage,
-      delay: 0,
-      options: .CurveEaseIn | .BeginFromCurrentState,
-      animations: {
-        self.urlValidationLabel.alpha = 1
-      },
-      completion: nil)
-
-    isValidatingURLIndicator.startAnimating()
-  }
-
-  private func endURLValidationProgress(result: Try<NSURL>) {
-    switch result {
-    case .Success:
-      urlValidationLabel.text = "URL is valid"
-      UIView.animateWithDuration(
-        Config.UI.AnimationDurationFadeMessage,
-        delay: Config.UI.AnimationDelayFadeOutMessage,
-        options: .CurveEaseOut | .BeginFromCurrentState,
-        animations: {
-          self.urlValidationLabel.alpha = 0
-        },
-        completion: nil)
-    case .Failure(let desc):
-      urlValidationLabel.text = desc
-    }
-
-    isValidatingURLIndicator.stopAnimating()
   }
 
   private func checkIsReachableURL(urlString: String) -> Future<NSURL> {

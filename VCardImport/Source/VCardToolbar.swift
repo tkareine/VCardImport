@@ -21,6 +21,8 @@ class VCardToolbar: UIView {
     }
   }
 
+  // MARK: View Life Cycle
+
   override init() {
     super.init()
   }
@@ -53,6 +55,8 @@ class VCardToolbar: UIView {
   required init(coder decoder: NSCoder) {
     fatalError("not implemented")
   }
+
+  // MARK: Public API
 
   func beginProgress(text: String) {
     progressLabel.text = text
