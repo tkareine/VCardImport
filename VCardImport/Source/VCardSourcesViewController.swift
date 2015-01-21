@@ -135,6 +135,16 @@ class VCardSourcesViewController: UITableViewController {
     vcardImporter.importFrom(sources)
   }
 
+  // MARK: Environment Changes
+
+  override func viewWillTransitionToSize(
+    size: CGSize,
+    withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+  {
+    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    setToolbarFrame(size)
+  }
+
   // MARK: Helpers
 
   private func refreshButtonsEnabledStates() {
@@ -204,15 +214,7 @@ class VCardSourcesViewController: UITableViewController {
 
   private func addToolbarToNavigationController() {
     if let nc = navigationController {
-      let frame = nc.view.frame
-      let toolbarHeight: CGFloat = 58
-
-      toolbar.frame = CGRect(
-        x: 0,
-        y: frame.size.height - toolbarHeight,
-        width: frame.width,
-        height: toolbarHeight)
-
+      setToolbarFrame(nc.view.frame.size)
       nc.view.addSubview(toolbar)
     }
   }
@@ -221,5 +223,14 @@ class VCardSourcesViewController: UITableViewController {
     if navigationController != nil {
       toolbar.removeFromSuperview()
     }
+  }
+
+  private func setToolbarFrame(size: CGSize) {
+    let toolbarHeight: CGFloat = 58
+    toolbar.frame = CGRect(
+      x: 0,
+      y: size.height - toolbarHeight,
+      width: size.width,
+      height: toolbarHeight)
   }
 }
