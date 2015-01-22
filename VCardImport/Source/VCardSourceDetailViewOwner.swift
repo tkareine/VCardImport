@@ -78,12 +78,6 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
       selector: "keyboardWillHide:",
       name: UIKeyboardWillHideNotification,
       object: nil)
-
-
-    nameField.delegate = self
-    urlField.delegate = self
-    usernameField.delegate = self
-    passwordField.delegate = self
   }
 
   func beginURLValidationProgress() {
@@ -134,6 +128,11 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
 
   func textFieldDidEndEditing(textField: UITextField) {
     focusedTextField = nil
+  }
+
+  func textFieldShouldReturn(textField: UITextField) -> Bool {
+    textField.resignFirstResponder()
+    return true
   }
 
   // MARK: Notification Handlers
@@ -228,5 +227,10 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
       isEnabledLabel.hidden = true
       isEnabledSwitch.hidden = true
     }
+
+    nameField.delegate = self
+    urlField.delegate = self
+    usernameField.delegate = self
+    passwordField.delegate = self
   }
 }

@@ -61,7 +61,7 @@
                         <constraint firstAttribute="height" constant="30" id="7Gv-Xn-VEq"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits"/>
+                    <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
                     <variation key="default">
                         <mask key="constraints">
                             <exclude reference="7Gv-Xn-VEq"/>
@@ -74,7 +74,7 @@
                         <constraint firstAttribute="height" constant="30" id="N37-0h-syV"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits" keyboardType="URL"/>
+                    <textInputTraits key="textInputTraits" keyboardType="URL" enablesReturnKeyAutomatically="YES"/>
                     <variation key="default">
                         <mask key="constraints">
                             <exclude reference="N37-0h-syV"/>
