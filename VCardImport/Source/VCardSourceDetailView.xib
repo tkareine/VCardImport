@@ -14,6 +14,7 @@
                 <outlet property="nameLabel" destination="fLb-Ji-VKL" id="wX9-FB-EbT"/>
                 <outlet property="passwordField" destination="qws-9C-7p9" id="V5H-mq-6HA"/>
                 <outlet property="passwordLabel" destination="suf-LR-4rq" id="pRq-fb-Ufs"/>
+                <outlet property="topConstraint" destination="iC5-8z-gTf" id="vRw-VY-T6J"/>
                 <outlet property="urlField" destination="K1K-lX-4oR" id="fyV-gy-EZU"/>
                 <outlet property="urlLabel" destination="Lrn-LY-24h" id="pjl-YN-lxo"/>
                 <outlet property="urlValidationLabel" destination="qUS-1f-eyi" id="4Fo-aK-uEx"/>

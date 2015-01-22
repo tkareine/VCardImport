@@ -1,6 +1,7 @@
 import UIKit
 
-class VCardSourceDetailViewOwner: NSObject {
+class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
+  @IBOutlet weak var topConstraint: NSLayoutConstraint!
   @IBOutlet weak var nameLabel: UILabel!
   @IBOutlet weak var nameField: UITextField!
   @IBOutlet weak var urlLabel: UILabel!
@@ -15,6 +16,16 @@ class VCardSourceDetailViewOwner: NSObject {
   @IBOutlet weak var isEnabledSwitch: UISwitch!
 
   var view: UIView!
+
+  private var focusedTextField: UITextField!
+
+  private var originalScrollViewContentInsets = UIEdgeInsetsZero
+  private var originalScrollViewScrollIndicatorInsets = UIEdgeInsetsZero
+  private var originalContainerViewFrame = CGRect()
+
+  private weak var containerView: UIView!
+  private weak var scrollView: UIScrollView!
+  private weak var navigationController: UINavigationController?
 
   // MARK: View Life Cycle
 
@@ -47,13 +58,33 @@ class VCardSourceDetailViewOwner: NSObject {
     return view
   }
 
-  // MARK: Actions
+  func setScrollingToFocusedTextField(
+    #containerView: UIView,
+    scrollView: UIScrollView,
+    navigationController: UINavigationController?)
+  {
+    self.containerView = containerView
+    self.scrollView = scrollView
+    self.navigationController = navigationController
 
-  @IBAction func backgroundTapped(sender: AnyObject) {
-    view.endEditing(true)
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "keyboardDidShow:",
+      name: UIKeyboardDidShowNotification,
+      object: nil)
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "keyboardWillHide:",
+      name: UIKeyboardWillHideNotification,
+      object: nil)
+
+
+    nameField.delegate = self
+    urlField.delegate = self
+    usernameField.delegate = self
+    passwordField.delegate = self
   }
-
-  // MARK: Helpers
 
   func beginURLValidationProgress() {
     urlValidationLabel.text = "Validating URL…"
@@ -89,6 +120,87 @@ class VCardSourceDetailViewOwner: NSObject {
     isValidatingURLIndicator.stopAnimating()
   }
 
+  // MARK: Actions
+
+  @IBAction func backgroundTapped(sender: AnyObject) {
+    view.endEditing(true)
+  }
+
+  // MARK: UITextFieldDelegate Methods
+
+  func textFieldDidBeginEditing(textField: UITextField) {
+    focusedTextField = textField
+  }
+
+  func textFieldDidEndEditing(textField: UITextField) {
+    focusedTextField = nil
+  }
+
+  // MARK: Notification Handlers
+
+  func keyboardDidShow(notification: NSNotification) {
+    // from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
+
+    if containerView == nil || scrollView == nil || focusedTextField == nil {
+      return
+    }
+
+    func topOffset() -> CGFloat {
+      if let nv = navigationController {
+        return nv.toolbar.frame.size.height + topConstraint.constant
+      } else {
+        return 0
+      }
+    }
+
+    func bottomOffset(info: [NSObject: AnyObject]) -> CGFloat {
+      let nsvalue = info[UIKeyboardFrameBeginUserInfoKey]! as NSValue
+      let orgRect = nsvalue.CGRectValue()
+      let convRect = containerView.convertRect(orgRect, fromView: nil)
+      return convRect.size.height
+    }
+
+    if let info = notification.userInfo {
+      let top = topOffset()
+      let bottom = bottomOffset(info)
+
+      let contentInsets = UIEdgeInsets(top: top, left: 0, bottom: bottom, right: 0)
+
+      originalScrollViewContentInsets = scrollView.contentInset
+      originalScrollViewScrollIndicatorInsets = scrollView.scrollIndicatorInsets
+
+      scrollView.contentInset = contentInsets
+      scrollView.scrollIndicatorInsets = contentInsets
+
+      originalContainerViewFrame = containerView.frame
+
+      containerView.frame = CGRect(
+        x: originalContainerViewFrame.origin.x,
+        y: originalContainerViewFrame.origin.y,
+        width: originalContainerViewFrame.size.width,
+        height: originalContainerViewFrame.size.height - bottom)
+
+//      NSLog("-------------")
+//      NSLog("top=\(top), bottom=\(bottom)")
+//      NSLog("containerView.frame=\(containerView.frame)")
+//      NSLog("original containerView.frame=\(originalContainerViewFrame)")
+
+      if !CGRectContainsPoint(containerView.frame, focusedTextField.frame.origin) {
+        scrollView.scrollRectToVisible(focusedTextField.frame, animated: true)
+      }
+    }
+  }
+
+  func keyboardWillHide(notification: NSNotification) {
+    if containerView == nil || scrollView == nil {
+      return
+    }
+
+    containerView.frame = originalContainerViewFrame
+    scrollView.contentInset = originalScrollViewContentInsets
+    scrollView.scrollIndicatorInsets = originalScrollViewScrollIndicatorInsets
+  }
+
   func resetFontSizes() {
     let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
     nameLabel.font = bodyFont
@@ -102,6 +214,8 @@ class VCardSourceDetailViewOwner: NSObject {
     passwordField.font = bodyFont
     isEnabledLabel.font = bodyFont
   }
+
+  // MARK: Helpers
 
   private func setupSubviews(#source: VCardSource, isNewSource isNew: Bool) {
     nameField.text = source.name

@@ -156,6 +156,11 @@ class VCardSourceDetailViewController: UIViewController {
     view.addSubview(scrollView)
 
     setupLayout(scrollView: scrollView, contentView: detailViewOwner.view)
+
+    detailViewOwner.setScrollingToFocusedTextField(
+      containerView: view,
+      scrollView: scrollView,
+      navigationController: navigationController)
   }
 
   private func setupLayout(#scrollView: UIScrollView, contentView: UIView) {
