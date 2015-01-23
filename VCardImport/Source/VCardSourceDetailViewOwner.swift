@@ -1,6 +1,6 @@
 import UIKit
 
-class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
+class VCardSourceDetailViewOwner: NSObject {
   @IBOutlet weak var topConstraint: NSLayoutConstraint!
   @IBOutlet weak var nameLabel: UILabel!
   @IBOutlet weak var nameField: UITextField!
@@ -17,6 +17,8 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
 
   var view: UIView!
 
+  private let textFieldDelegate: ProxyTextFieldDelegate
+
   private var focusedTextField: UITextField!
 
   private var originalScrollViewContentInsets = UIEdgeInsetsZero
@@ -29,7 +31,9 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
 
   // MARK: View Life Cycle
 
-  override init() {
+  init(textFieldDelegate: ProxyTextFieldDelegate) {
+    self.textFieldDelegate = textFieldDelegate
+
     super.init()
 
     NSNotificationCenter.defaultCenter().addObserver(
@@ -41,6 +45,12 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
 
   deinit {
     NSNotificationCenter.defaultCenter().removeObserver(self)
+
+    for f in [nameField, urlField, usernameField, passwordField] {
+      textFieldDelegate.removeOnBeginEditing(f)
+      textFieldDelegate.removeOnEndEditing(f)
+      textFieldDelegate.removeOnShouldReturn(f)
+    }
   }
 
   // MARK: Public API
@@ -54,6 +64,7 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
 
     setupSubviews(source: source, isNewSource: isNew)
     resetFontSizes()
+    setupTextFieldDelegate()
 
     return view
   }
@@ -118,21 +129,6 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
 
   @IBAction func backgroundTapped(sender: AnyObject) {
     view.endEditing(true)
-  }
-
-  // MARK: UITextFieldDelegate Methods
-
-  func textFieldDidBeginEditing(textField: UITextField) {
-    focusedTextField = textField
-  }
-
-  func textFieldDidEndEditing(textField: UITextField) {
-    focusedTextField = nil
-  }
-
-  func textFieldShouldReturn(textField: UITextField) -> Bool {
-    textField.resignFirstResponder()
-    return true
   }
 
   // MARK: Notification Handlers
@@ -227,10 +223,29 @@ class VCardSourceDetailViewOwner: NSObject, UITextFieldDelegate {
       isEnabledLabel.hidden = true
       isEnabledSwitch.hidden = true
     }
+  }
 
-    nameField.delegate = self
-    urlField.delegate = self
-    usernameField.delegate = self
-    passwordField.delegate = self
+  private func setupTextFieldDelegate() {
+    nameField.delegate = textFieldDelegate
+    urlField.delegate = textFieldDelegate
+    usernameField.delegate = textFieldDelegate
+    passwordField.delegate = textFieldDelegate
+
+    let fields = [nameField, urlField, usernameField, passwordField]
+
+    for f in fields {
+      textFieldDelegate.addOnBeginEditing(f) { tf in
+        self.focusedTextField = tf
+      }
+
+      textFieldDelegate.addOnEndEditing(f) { tf in
+        self.focusedTextField = nil
+      }
+
+      textFieldDelegate.addOnShouldReturn(f) { tf in
+        tf.resignFirstResponder()
+        return true
+      }
+    }
   }
 }

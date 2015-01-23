@@ -5,6 +5,7 @@ class VCardSourceDetailViewController: UIViewController {
   private let isNewSource: Bool
   private let urlConnection: URLConnection
   private let doneCallback: VCardSource -> Void
+  private let textFieldDelegate: ProxyTextFieldDelegate
 
   private var shouldCallDoneCallbackOnViewDisappear: Bool
   private var nameFieldValidator: TextFieldValidator<String>!
@@ -30,6 +31,7 @@ class VCardSourceDetailViewController: UIViewController {
     self.isNewSource = isNewSource
     self.urlConnection = urlConnection
     self.doneCallback = doneCallback
+    textFieldDelegate = ProxyTextFieldDelegate()
 
     shouldCallDoneCallbackOnViewDisappear = !isNewSource
 
@@ -55,6 +57,7 @@ class VCardSourceDetailViewController: UIViewController {
 
     nameFieldValidator = TextFieldValidator(
       textField: detailViewOwner.nameField,
+      textFieldDelegate: textFieldDelegate,
       syncValidator: { [weak self] text in
         self?.isValidCurrentName = false
         return !text.isEmpty ? .Success(text) : .Failure("empty")
@@ -71,6 +74,7 @@ class VCardSourceDetailViewController: UIViewController {
 
     urlFieldValidator = TextFieldValidator(
       textField: detailViewOwner.urlField,
+      textFieldDelegate: textFieldDelegate,
       asyncValidator: { [weak self] url in
         if let s = self {
           s.isValidCurrentURL = false
@@ -143,7 +147,7 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   private func makeDetailViewOwner() -> VCardSourceDetailViewOwner {
-    let owner = VCardSourceDetailViewOwner()
+    let owner = VCardSourceDetailViewOwner(textFieldDelegate: textFieldDelegate)
     owner.loadView(source: source, isNewSource: isNewSource)
     return owner
   }

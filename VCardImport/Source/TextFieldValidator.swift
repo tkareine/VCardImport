@@ -15,45 +15,57 @@ class TextFieldValidator<T> {
   private let validBorderWidth: CGFloat
   private let validBorderColor: CGColor
 
-  private var delegate: OnTextChangeTextFieldDelegate!
   private weak var textField: UITextField!
 
   private let switcher: (Future<T> -> Future<T>) = QueueExecution.makeSwitchLatest()
   private let debouncer: (String -> Void)!
+  private let textFieldDelegate: ProxyTextFieldDelegate
 
   init(
     textField: UITextField,
+    textFieldDelegate: ProxyTextFieldDelegate,
     asyncValidator: AsyncValidator,
     onValidated: OnValidatedCallback)
   {
     self.textField = textField
     self.validator = asyncValidator
     self.onValidated = onValidated
+    self.textFieldDelegate = textFieldDelegate
 
     validBorderWidth = textField.layer.borderWidth
     validBorderColor = textField.layer.borderColor
 
-    debouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) { self.validate($0) }
-
-    delegate = OnTextChangeTextFieldDelegate() { text, replacement, range in
-      QueueExecution.async(self.queue) {
-        let newText = self.change(text: text, replacement: replacement, range: range)
-        self.debouncer(newText)
-      }
+    debouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) {
+      self.validate($0)
     }
 
-    textField.delegate = delegate
+    textFieldDelegate.addOnTextChange(textField) { tf, range, replacement in
+      let oldText = tf.text
+      QueueExecution.async(self.queue) {
+        let newText = self.change(text: oldText, range: range, replacement: replacement)
+        self.debouncer(newText)
+      }
+      return true
+    }
   }
 
   convenience init(
     textField: UITextField,
+    textFieldDelegate: ProxyTextFieldDelegate,
     syncValidator: SyncValidator,
     onValidated: OnValidatedCallback)
   {
     self.init(
       textField: textField,
+      textFieldDelegate: textFieldDelegate,
       asyncValidator: { Future.fromTry(syncValidator($0)) },
       onValidated: onValidated)
+  }
+
+  deinit {
+    if let tf = textField {
+      textFieldDelegate.removeOnTextChange(tf)
+    }
   }
 
   func validate() {
@@ -87,8 +99,8 @@ class TextFieldValidator<T> {
 
   private func change(
     #text: NSString,
-    replacement: NSString,
-    range: NSRange)
+    range: NSRange,
+    replacement: NSString)
     -> NSString
   {
     let unaffectedStart = text.substringToIndex(range.location)
