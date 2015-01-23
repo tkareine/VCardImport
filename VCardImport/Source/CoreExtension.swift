@@ -145,3 +145,29 @@ func countWhere<S: SequenceType, E where E == S.Generator.Element>(
   }
   return c
 }
+
+func findElement<S: SequenceType, E where E == S.Generator.Element>(
+  seq: S,
+  predicate: E -> Bool)
+  -> E?
+{
+  for e in seq {
+    if predicate(e) {
+      return e
+    }
+  }
+  return nil
+}
+
+func findIndex<S: SequenceType, E where E == S.Generator.Element>(
+  seq: S,
+  predicate: E -> Bool)
+  -> Int?
+{
+  for (idx, e) in enumerate(seq) {
+    if predicate(e) {
+      return idx
+    }
+  }
+  return nil
+}

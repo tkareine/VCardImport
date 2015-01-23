@@ -75,4 +75,19 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertEqual(countWhere(["A", "b", "C"], { $0 == $0.uppercaseString }), 2)
     XCTAssertEqual(countWhere(["a": 1, "b": 2, "c": 3], { (k, v) in v % 2 == 0 }), 1)
   }
+
+  func testFindElement() {
+    XCTAssert(findElement([1, 2, 3, 4], { $0 % 2 == 0}) == 2)
+
+    let pair = findElement(["a": 1, "b": 2, "c": 4]) { (k, v) in v % 2 == 0 }
+    XCTAssert(pair != nil)
+    XCTAssertEqual(pair!.0, "b")
+    XCTAssertEqual(pair!.1, 2)
+  }
+
+  func testFindIndex() {
+    let index = findIndex(["a", "b", "b"]) { $0 == "b" }
+    XCTAssert(index != nil)
+    XCTAssertEqual(index!, 1)
+  }
 }
