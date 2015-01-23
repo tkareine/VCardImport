@@ -132,7 +132,11 @@ func !=<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
   return !(lhs == rhs)
 }
 
-func countWhere<S: SequenceType>(seq: S, predicate: (S.Generator.Element -> Bool)) -> Int {
+func countWhere<S: SequenceType, E where E == S.Generator.Element>(
+  seq: S,
+  predicate: E -> Bool)
+  -> Int
+{
   var c = 0
   for e in seq {
     if predicate(e) {
