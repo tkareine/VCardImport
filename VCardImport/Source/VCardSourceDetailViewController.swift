@@ -11,9 +11,6 @@ class VCardSourceDetailViewController: UIViewController {
   private var nameFieldValidator: TextFieldValidator<String>!
   private var urlFieldValidator: TextFieldValidator<NSURL>!
 
-  private var lastValidName: String?
-  private var lastValidURL: NSURL?
-
   private var isValidCurrentName = false
   private var isValidCurrentURL = false
 
@@ -59,15 +56,11 @@ class VCardSourceDetailViewController: UIViewController {
       textField: detailViewOwner.nameField,
       textFieldDelegate: textFieldDelegate,
       syncValidator: { [weak self] text in
-        self?.isValidCurrentName = false
-        return !text.isEmpty ? .Success(text) : .Failure("empty")
+        return !text.trimmed.isEmpty ? .Success(text) : .Failure("empty")
       },
       onValidated: { [weak self] result in
         if let s = self {
-          if result.isSuccess {
-            s.lastValidName = result.value!
-            s.isValidCurrentName = true
-          }
+          s.isValidCurrentName = result.isSuccess
           s.refreshDoneButtonState()
         }
       })
@@ -77,7 +70,6 @@ class VCardSourceDetailViewController: UIViewController {
       textFieldDelegate: textFieldDelegate,
       asyncValidator: { [weak self] url in
         if let s = self {
-          s.isValidCurrentURL = false
           QueueExecution.async(QueueExecution.mainQueue) {
             s.detailViewOwner.beginURLValidationProgress()
           }
@@ -88,10 +80,7 @@ class VCardSourceDetailViewController: UIViewController {
       },
       onValidated: { [weak self] result in
         if let s = self {
-          if result.isSuccess {
-            s.lastValidURL = result.value!
-            s.isValidCurrentURL = true
-          }
+          s.isValidCurrentURL = result.isSuccess
           s.detailViewOwner.endURLValidationProgress(result)
           s.refreshDoneButtonState()
         }
@@ -113,8 +102,14 @@ class VCardSourceDetailViewController: UIViewController {
     super.viewWillDisappear(animated)
 
     if shouldCallDoneCallbackOnViewDisappear {
-      let newName = lastValidName ?? source.name
-      let newURL = lastValidURL ?? source.connection.url
+      let newName = detailViewOwner.nameField.text.trimmed
+
+      var newURL: NSURL
+      if let url = NSURL(string: detailViewOwner.urlField.text.trimmed) {
+        newURL = url
+      } else {
+        newURL = source.connection.url
+      }
 
       let newSource = source.with(
         name: newName,
@@ -223,13 +218,20 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   private func checkIsReachableURL(urlString: String) -> Future<NSURL> {
-    if let url = NSURL(string: urlString) {
-      if url.isValidHTTPURL {
-        return self.urlConnection
-          .head(url, headers: Config.Net.VCardHTTPHeaders)
-          .map { _ in url }
-      }
+    if let url = stringToValidHTTPURL(urlString) {
+      return self.urlConnection
+        .head(url, headers: Config.Net.VCardHTTPHeaders)
+        .map { _ in url }
     }
     return Future.failed("Invalid URL")
+  }
+
+  private func stringToValidHTTPURL(urlString: String) -> NSURL? {
+    if let url = NSURL(string: urlString.trimmed) {
+      if url.isValidHTTPURL {
+        return url
+      }
+    }
+    return nil
   }
 }
