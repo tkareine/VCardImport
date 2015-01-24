@@ -46,6 +46,8 @@ class VCardToolbar: UIView {
     backgroundColor = UIColor.whiteColor()
 
     setupLayout()
+
+    backupButton.hidden = true  // not implemented yet
   }
 
   required init(coder decoder: NSCoder) {

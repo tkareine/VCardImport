@@ -156,8 +156,6 @@ class VCardSourcesViewController: UITableViewController {
       !editing &&
       progressState == nil &&
       dataSource.hasEnabledVCardSources
-
-    toolbar.backupButton.enabled = false
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {
