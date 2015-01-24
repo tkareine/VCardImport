@@ -43,6 +43,7 @@ class VCardSourceDetailViewController: UIViewController {
     super.init(nibName: "VCardSourceDetailViewController", bundle: nil)
 
     if isNewSource {
+      navigationItem.title = "Add vCard Source"
       navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancel:")
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
     }
