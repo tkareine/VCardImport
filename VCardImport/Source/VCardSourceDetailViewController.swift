@@ -33,7 +33,7 @@ class VCardSourceDetailViewController: UIViewController {
 
   private var originalScrollViewContentInsets = UIEdgeInsetsZero
   private var originalScrollViewScrollIndicatorInsets = UIEdgeInsetsZero
-  private var originalContainerViewFrame = CGRect()
+  private var originalViewFrame = CGRect()
 
   // MARK: Controller Life Cycle
 
@@ -172,18 +172,18 @@ class VCardSourceDetailViewController: UIViewController {
       scrollView.contentInset = contentInsets
       scrollView.scrollIndicatorInsets = contentInsets
 
-      originalContainerViewFrame = view.frame
+      originalViewFrame = view.frame
 
       view.frame = CGRect(
-        x: originalContainerViewFrame.origin.x,
-        y: originalContainerViewFrame.origin.y,
-        width: originalContainerViewFrame.size.width,
-        height: originalContainerViewFrame.size.height - bottom)
+        x: originalViewFrame.origin.x,
+        y: originalViewFrame.origin.y,
+        width: originalViewFrame.size.width,
+        height: originalViewFrame.size.height - bottom)
 
-      // NSLog("-------------")
-      // NSLog("top=\(top), bottom=\(bottom)")
-      // NSLog("containerView.frame=\(containerView.frame)")
-      // NSLog("original containerView.frame=\(originalContainerViewFrame)")
+//      NSLog("-------------")
+//      NSLog("top=\(top), bottom=\(bottom)")
+//      NSLog("view.frame=\(view.frame)")
+//      NSLog("original view.frame=\(originalViewFrame)")
 
       if !CGRectContainsPoint(view.frame, focusedTextField.frame.origin) {
         scrollView.scrollRectToVisible(focusedTextField.frame, animated: true)
@@ -192,7 +192,7 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   func keyboardWillHide(notification: NSNotification) {
-    view.frame = originalContainerViewFrame
+    view.frame = originalViewFrame
     scrollView.contentInset = originalScrollViewContentInsets
     scrollView.scrollIndicatorInsets = originalScrollViewScrollIndicatorInsets
   }
