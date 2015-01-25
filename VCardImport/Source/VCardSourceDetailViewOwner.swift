@@ -214,10 +214,12 @@ class VCardSourceDetailViewOwner: NSObject {
 
   private func setupSubviews(#source: VCardSource, isNewSource isNew: Bool) {
     nameField.text = source.name
-    urlField.text = source.connection.url.absoluteString
+    urlField.text = source.connection.url
     isEnabledSwitch.on = source.isEnabled
     urlValidationLabel.alpha = 0
     isValidatingURLIndicator.hidesWhenStopped = true
+    usernameField.text = source.connection.username
+    passwordField.text = source.connection.password
 
     if isNew {
       isEnabledLabel.hidden = true

@@ -1,6 +1,7 @@
 import Foundation
 
 class VCardSourceStore {
+  private let keychainItem: KeychainItemWrapper
   private var store: InsertionOrderDictionary<String, VCardSource> = InsertionOrderDictionary()
 
   var isEmpty: Bool {
@@ -19,7 +20,12 @@ class VCardSourceStore {
     return filter(store.values, { $0.isEnabled })
   }
 
-  init() {}
+  init() {
+    keychainItem = KeychainItemWrapper(
+      account: Config.BundleIdentifier,
+      service: Config.Persistence.CredentialsKey,
+      accessGroup: nil)
+  }
 
   subscript(index: Int) -> VCardSource {
     return store[index]
@@ -46,31 +52,85 @@ class VCardSourceStore {
   }
 
   func save() {
-    let sourcesData = JSONSerialization.encode(store.values.map { $0.toDictionary() })
-    let defaults = NSUserDefaults.standardUserDefaults()
-    defaults.setInteger(1, forKey: "VCardSourcesVersion")
-    defaults.setObject(sourcesData, forKey: "VCardSources")
-    defaults.synchronize()
+    saveNonSensitiveDataToUserDefaults()
+    saveSensitiveDataToKeychain()
   }
 
   func load() {
-    if let sourcesData = NSUserDefaults.standardUserDefaults().objectForKey("VCardSources") as? NSData {
-      let sources = (JSONSerialization.decode(sourcesData) as [[String: AnyObject]])
-        .map { VCardSource.fromDictionary($0) }
-      resetFrom(sources)
+    if let sources = loadNonSensitiveDataFromUserDefaults() {
+      resetFrom(loadSensitiveDataFromKeychain(sources))
     } else {
       resetFrom([
         VCardSource(
           name: "Example: Body Corp",
-          connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf")!),
+          connection: VCardSource.Connection(url: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf"),
           isEnabled: false
         ),
         VCardSource(
           name: "Example: Cold Temp",
-          connection: VCardSource.Connection(url: NSURL(string: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf")!),
+          connection: VCardSource.Connection(url: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf"),
           isEnabled: false
         )
       ])
+    }
+  }
+
+  // MARK: Helpers
+
+  private func saveNonSensitiveDataToUserDefaults() {
+    let sourcesData = JSONSerialization.encode(store.values.map { $0.toDictionary() })
+    let defaults = NSUserDefaults.standardUserDefaults()
+    defaults.setInteger(1, forKey: Config.Persistence.VersionKey)
+    defaults.setObject(sourcesData, forKey: Config.Persistence.VCardSourcesKey)
+    defaults.synchronize()
+  }
+
+  private func saveSensitiveDataToKeychain() {
+    func credentialsToDictionary() -> [String: [String: String]] {
+      var result: [String: [String: String]] = [:]
+      for (id, source) in store {
+        let conn = source.connection
+        var cred: [String: String] = [:]
+        if !conn.username.isEmpty {
+          cred["username"] = conn.username
+        }
+        if !conn.password.isEmpty {
+          cred["password"] = conn.password
+        }
+        if !cred.isEmpty {
+          result[id] = cred
+        }
+      }
+      return result
+    }
+
+    let credsData = JSONSerialization.encode(credentialsToDictionary())
+    keychainItem.setObject(credsData, forKey: kSecAttrGeneric)
+  }
+
+  private func loadNonSensitiveDataFromUserDefaults() -> [VCardSource]? {
+    if let sourcesData = NSUserDefaults
+      .standardUserDefaults()
+      .objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
+      return (JSONSerialization.decode(sourcesData) as [[String: AnyObject]])
+        .map { VCardSource.fromDictionary($0) }
+    } else {
+      return nil
+    }
+  }
+
+  private func loadSensitiveDataFromKeychain(sources: [VCardSource]) -> [VCardSource] {
+    if let credsData = keychainItem.objectForKey(kSecAttrGeneric) as? NSData {
+      let creds = JSONSerialization.decode(credsData) as [String: [String: String]]
+      return sources.map { source in
+        if let cred = creds[source.id] {
+          return source.with(username: cred["username"] ?? "", password: cred["password"] ?? "")
+        } else {
+          return source  // this source has no credentials
+        }
+      }
+    } else {
+      return sources  // no source has credentials
     }
   }
 

@@ -37,6 +37,21 @@ struct Errors {
       userInfo: CFErrorCopyUserInfo(error))
   }
 
+  static func describeErrorForNSURLRequest(error: NSError) -> String {
+    switch error.code {
+    case NSURLErrorTimedOut | NSURLErrorUserCancelledAuthentication:
+      return "Response timed out"
+    case NSURLErrorCancelled:
+      return "Cancelled (authentication rejected?)"
+    case NSURLErrorNotConnectedToInternet | NSURLErrorNetworkConnectionLost:
+      return "No internet connection"
+    default:
+      return Config.Net.GenericErrorDescription
+    }
+  }
+
+  // MARK: Helpers
+
   private static func vcardError(#code: Int, failureReason: String, description: String) -> NSError {
     let userInfo = [
       NSLocalizedFailureReasonErrorKey: failureReason,

@@ -40,16 +40,17 @@ struct Config {
   static let OS = NSProcessInfo.processInfo().operatingSystemVersionString
 
   struct Net {
-    /**
-     * On failure, NSURLSession reports an NSError with description "The
-     * operation couldn’t be completed". (NSURLErrorDomain error -1001.) It's
-     * not helpful, so let's so a generic error description then.
-     */
     static let GenericErrorDescription = "Cannot reach URL"
 
     static let VCardHTTPHeaders = [
       "Accept": "text/vcard,text/x-vcard,text/directory;profile=vCard;q=0.9,text/directory;q=0.8,*/*;q=0.7"
     ]
+  }
+
+  struct Persistence {
+    static let CredentialsKey = "Credentials"
+    static let VCardSourcesKey = "VCardSources"
+    static let VersionKey = "Version"
   }
 
   struct UI {

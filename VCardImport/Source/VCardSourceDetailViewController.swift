@@ -73,7 +73,17 @@ class VCardSourceDetailViewController: UIViewController {
           QueueExecution.async(QueueExecution.mainQueue) {
             s.detailViewOwner.beginURLValidationProgress()
           }
-          return s.checkIsReachableURL(url)
+          var username = ""
+          var password = ""
+          QueueExecution.sync(QueueExecution.mainQueue) {
+            username = s.detailViewOwner.usernameField.text
+            password = s.detailViewOwner.passwordField.text
+          }
+          let connection = VCardSource.Connection(
+            url: url,
+            username: username,
+            password: password)
+          return s.checkIsReachableURL(connection)
         } else {
           return Future.failed("view disappeared")
         }
@@ -102,18 +112,14 @@ class VCardSourceDetailViewController: UIViewController {
     super.viewWillDisappear(animated)
 
     if shouldCallDoneCallbackOnViewDisappear {
-      let newName = detailViewOwner.nameField.text.trimmed
-
-      var newURL: NSURL
-      if let url = NSURL(string: detailViewOwner.urlField.text.trimmed) {
-        newURL = url
-      } else {
-        newURL = source.connection.url
-      }
+      let newConnection = VCardSource.Connection(
+        url: detailViewOwner.urlField.text,
+        username: detailViewOwner.usernameField.text,
+        password: detailViewOwner.passwordField.text)
 
       let newSource = source.with(
-        name: newName,
-        connection: VCardSource.Connection(url: newURL),
+        name: detailViewOwner.nameField.text.trimmed,
+        connection: newConnection,
         isEnabled: detailViewOwner.isEnabledSwitch.on
       )
 
@@ -217,10 +223,11 @@ class VCardSourceDetailViewController: UIViewController {
     }
   }
 
-  private func checkIsReachableURL(urlString: String) -> Future<NSURL> {
-    if let url = stringToValidHTTPURL(urlString) {
+  private func checkIsReachableURL(connection: VCardSource.Connection) -> Future<NSURL> {
+    if let url = stringToValidHTTPURL(connection.url) {
+      let credential = connection.toCredential()
       return self.urlConnection
-        .head(url, headers: Config.Net.VCardHTTPHeaders)
+        .head(url, headers: Config.Net.VCardHTTPHeaders, credential: credential)
         .map { _ in url }
     }
     return Future.failed("Invalid URL")

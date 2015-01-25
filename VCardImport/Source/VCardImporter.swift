@@ -254,26 +254,35 @@ class VCardImporter {
 
   private func checkAndLoadSource(source: VCardSource) -> Future<SourceImportResult> {
     NSLog("vCard source %@: checking if remote has changed…", source.name)
-    return urlConnection.head(source.connection.url, headers: Config.Net.VCardHTTPHeaders).flatMap { response in
-      let newStamp = ModifiedHeaderStamp(headers: response.allHeaderFields)
+    return urlConnection
+      .head(
+        source.connection.toURL(),
+        headers: Config.Net.VCardHTTPHeaders,
+        credential: source.connection.toCredential(.ForSession))
+      .flatMap { response in
+        let newStamp = ModifiedHeaderStamp(headers: response.allHeaderFields)
 
-      if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
-        if oldStamp == newStamp {
-          NSLog("vCard source %@: remote hasn't changed (\(oldStamp))", source.name)
-          return Future.succeeded(.Unchanged)
+        if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
+          if oldStamp == newStamp {
+            NSLog("vCard source %@: remote hasn't changed (\(oldStamp))", source.name)
+            return Future.succeeded(.Unchanged)
+          }
         }
-      }
 
-      NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
-      return self.loadSourceFromURL(source.connection.url).map { records in .Updated(records, newStamp) }
-    }
+        NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
+        return self.loadSourceFromURL(source.connection).map { records in .Updated(records, newStamp) }
+      }
   }
 
-  private func loadSourceFromURL(url: NSURL) -> Future<[ABRecord]> {
+  private func loadSourceFromURL(connection: VCardSource.Connection) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
     let future = urlConnection
-        .download(url, to: fileURL, headers: Config.Net.VCardHTTPHeaders)
-        .flatMap(loadRecordsFromFile)
+      .download(
+        connection.toURL(),
+        to: fileURL,
+        headers: Config.Net.VCardHTTPHeaders,
+        credential: connection.toCredential(.ForSession))
+      .flatMap(loadRecordsFromFile)
     future.onComplete { _ in Files.remove(fileURL) }
     return future
   }

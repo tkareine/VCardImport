@@ -24,64 +24,91 @@ class URLConnection {
     manager = Alamofire.Manager(configuration: makeConfig())
   }
 
-  func request(method: Method, url: NSURL, headers: Headers = [:])
+  func request(
+    method: Method,
+    url: NSURL,
+    headers: Headers = [:],
+    credential: NSURLCredential? = nil)
     -> Future<NSHTTPURLResponse>
   {
-    let request = makeRequest(url: url, method: method, headers: headers)
+    var request = Alamofire.request(makeURLRequest(
+      url: url,
+      method: method,
+      headers: headers))
+
+    if let cred = credential {
+       request = request.authenticate(usingCredential: cred)
+    }
+
     let promise = Future<NSHTTPURLResponse>.promise()
-    Alamofire
-      .request(request)
-      .response(
-        queue: QueueExecution.backgroundQueue,
-        serializer: Alamofire.Request.responseDataSerializer(),
-        completionHandler: { request, response, data, error in
-          if error != nil {
-            promise.reject(Config.Net.GenericErrorDescription)
-          } else if let res = response {
-            if self.isSuccessStatusCode(res.statusCode) {
-              promise.resolve(res)
-            } else {
-              promise.reject(res)
-            }
+
+    request.response(
+      queue: QueueExecution.backgroundQueue,
+      serializer: Alamofire.Request.responseDataSerializer(),
+      completionHandler: { _, response, _, error in
+        if let err = error {
+          promise.reject(Errors.describeErrorForNSURLRequest(err))
+        } else if let res = response {
+          if self.isSuccessStatusCode(res.statusCode) {
+            promise.resolve(res)
           } else {
-            promise.reject("Unknown request error for \(method) \(url)")
+            promise.reject(res)
           }
-        })
+        } else {
+          promise.reject("Unknown request error for \(method) \(url)")
+        }
+      })
+
     return promise
   }
 
-  func head(url: NSURL, headers: Headers = [:]) -> Future<NSHTTPURLResponse>
+  func head(
+    url: NSURL,
+    headers: Headers = [:],
+    credential: NSURLCredential? = nil)
+    -> Future<NSHTTPURLResponse>
   {
-    return request(.HEAD, url: url, headers: headers)
+    return request(.HEAD, url: url, headers: headers, credential: credential)
   }
 
-  func download(url: NSURL, to destination: NSURL, headers: Headers = [:])
+  func download(
+    url: NSURL,
+    to destination: NSURL,
+    headers: Headers = [:],
+    credential: NSURLCredential? = nil)
     -> Future<NSURL>
   {
-    let request = makeRequest(url: url, headers: headers)
+    var request = Alamofire.download(makeURLRequest(url: url, headers: headers), { _, _ in destination })
+
+    if let cred = credential {
+      request = request.authenticate(usingCredential: cred)
+    }
+
     let promise = Future<NSURL>.promise()
-    Alamofire
-      .download(request, { _, _ in destination })
-      .response(
-        queue: QueueExecution.backgroundQueue,
-        serializer: Alamofire.Request.responseDataSerializer(),
-        completionHandler: { request, response, _, error in
-          if error != nil {
-            promise.reject(Config.Net.GenericErrorDescription)
-          } else if let res = response {
-            if self.isSuccessStatusCode(res.statusCode) {
-              promise.resolve(destination)
-            } else {
-              promise.reject(res)
-            }
+
+    request.response(
+      queue: QueueExecution.backgroundQueue,
+      serializer: Alamofire.Request.responseDataSerializer(),
+      completionHandler: { _, response, _, error in
+        if let err = error {
+          promise.reject(Errors.describeErrorForNSURLRequest(err))
+        } else if let res = response {
+          if self.isSuccessStatusCode(res.statusCode) {
+            promise.resolve(destination)
           } else {
-            promise.reject("Unknown download error for \(url)")
+            promise.reject(res)
           }
-        })
+        } else {
+          promise.reject("Unknown download error for \(url)")
+        }
+      })
+
     return promise
   }
 
-  private func makeRequest(
+  // MARK: Helpers
+
+  private func makeURLRequest(
     #url: NSURL,
     method: Method = .GET,
     headers: Headers = [:])

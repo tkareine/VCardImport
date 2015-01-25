@@ -24,7 +24,7 @@ struct VCardSource {
   static func empty() -> VCardSource {
     return self(
       name: "",
-      connection: VCardSource.Connection(url: NSURL(string: "")!),
+      connection: Connection(url: ""),
       isEnabled: true)
   }
 
@@ -43,6 +43,19 @@ struct VCardSource {
       isEnabled: isEnabled,
       id: id,
       lastImportResult: stamp)
+  }
+
+  func with(#username: String, password: String) -> VCardSource {
+    let connection = Connection(
+      url: self.connection.url,
+      username: username,
+      password: password)
+    return VCardSource(
+      name: name,
+      connection: connection,
+      isEnabled: isEnabled,
+      id: id,
+      lastImportResult: lastImportResult)
   }
 
   func withLastImportResult(
@@ -68,7 +81,33 @@ struct VCardSource {
   }
 
   struct Connection {
-    let url: NSURL
+    let url: String
+    let username: String
+    let password: String
+
+    init(url: String, username: String, password: String) {
+      self.url = url.trimmed  // needed by `toURL`
+      self.username = username
+      self.password = password
+    }
+
+    init(url: String) {
+      self.url = url
+      username = ""
+      password = ""
+    }
+
+    func toURL() -> NSURL {
+      return NSURL(string: url)!  // guaranteed by trimming in initializer
+    }
+
+    func toCredential(_ persistence: NSURLCredentialPersistence = .None) -> NSURLCredential? {
+      if !username.isEmpty {
+        return NSURLCredential(user: username, password: password, persistence: persistence)
+      } else {
+        return nil
+      }
+    }
   }
 
   struct ImportResult {
@@ -110,11 +149,11 @@ extension VCardSource: DictionaryConvertible {
 
 extension VCardSource.Connection: DictionaryConvertible {
   func toDictionary() -> [String: AnyObject] {
-    return ["url": url.absoluteString!]
+    return ["url": url]
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return self(url: NSURL(string: dictionary["url"] as String)!)
+    return self(url: dictionary["url"] as String)
   }
 }
 
