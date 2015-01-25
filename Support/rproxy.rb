@@ -22,7 +22,7 @@ class Config
   private
 
   def get_uri_from_env
-    URI.parse(ENV.fetch("RPROXY_URL", "https://dl.dropboxusercontent.com/u/1404049/vcards"))
+    URI.parse(ENV.fetch("RPROXY_URL", "https://dl.dropboxusercontent.com/u/1404049/"))
   end
 
   def get_basic_auth_from_env
