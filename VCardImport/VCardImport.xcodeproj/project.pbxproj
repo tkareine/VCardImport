@@ -141,7 +141,7 @@
 		E97B6C0A1A34A1F100B4D3E6 /* VCardSourceStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceStore.swift; sourceTree = "<group>"; };
 		E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSource.swift; sourceTree = "<group>"; };
 		E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardImporter.swift; sourceTree = "<group>"; };
-		E983F1D219E9C76F00219305 /* vCardImport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vCardImport.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E983F1D219E9C76F00219305 /* vCard Turbo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "vCard Turbo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCardSourcesViewController.swift; sourceTree = "<group>"; };
@@ -215,7 +215,7 @@
 		E983F1D319E9C76F00219305 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E983F1D219E9C76F00219305 /* vCardImport.app */,
+				E983F1D219E9C76F00219305 /* vCard Turbo.app */,
 				E983F1E719E9C76F00219305 /* Test.xctest */,
 			);
 			name = Products;
@@ -317,7 +317,7 @@
 			);
 			name = "vCard Turbo";
 			productName = vCardImport;
-			productReference = E983F1D219E9C76F00219305 /* vCardImport.app */;
+			productReference = E983F1D219E9C76F00219305 /* vCard Turbo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E983F1E619E9C76F00219305 /* Test */ = {
