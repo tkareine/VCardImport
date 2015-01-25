@@ -50,8 +50,10 @@ struct RecordDifferences {
 
       switch existingRecordsWithName.count {
       case 0:
+        NSLog("Marking record for addition: %@", newRecordName.description)
         additions.append(newRecord)
       case 1:
+        NSLog("Marking record for checking changes: %@", newRecordName.description)
         let existingRecord: ABRecord = existingRecordsWithName.first!
         matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
       default:
@@ -68,9 +70,10 @@ struct RecordDifferences {
   {
     var changeSets: [RecordChangeSet] = []
 
-    for (_, (existingRecord, newRecord)) in matchingRecords {
+    for (recordName, (existingRecord, newRecord)) in matchingRecords {
       let changeSet = RecordChangeSet(oldRecord: existingRecord, newRecord: newRecord)
       if let cs = changeSet {
+        NSLog("Marking record for having changes: %@", recordName.description)
         changeSets.append(cs)
       }
     }
