@@ -18,7 +18,7 @@ class TextFieldValidator<T> {
   private weak var textField: UITextField!
 
   private let switcher: (Future<T> -> Future<T>) = QueueExecution.makeSwitchLatest()
-  private let debouncer: (String -> Void)!
+  private let validationDebouncer: (String -> Void)!
   private let textFieldDelegate: ProxyTextFieldDelegate
 
   init(
@@ -35,7 +35,7 @@ class TextFieldValidator<T> {
     validBorderWidth = textField.layer.borderWidth
     validBorderColor = textField.layer.borderColor
 
-    debouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) {
+    validationDebouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) {
       self.validate($0)
     }
 
@@ -43,7 +43,7 @@ class TextFieldValidator<T> {
       let oldText = tf.text
       QueueExecution.async(self.queue) {
         let newText = self.change(text: oldText, range: range, replacement: replacement)
-        self.debouncer(newText)
+        self.validationDebouncer(newText)
       }
       return true
     }
@@ -70,7 +70,7 @@ class TextFieldValidator<T> {
 
   func validate() {
     let text = textField.text
-    QueueExecution.async(queue) { self.validate(text) }
+    QueueExecution.async(queue) { self.validationDebouncer(text) }
   }
 
   private func validate(text: NSString) {

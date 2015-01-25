@@ -49,52 +49,8 @@ class VCardSourceDetailViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
     setupView()
-
-    nameFieldValidator = TextFieldValidator(
-      textField: detailViewOwner.nameField,
-      textFieldDelegate: textFieldDelegate,
-      syncValidator: { [weak self] text in
-        return !text.trimmed.isEmpty ? .Success(text) : .Failure("empty")
-      },
-      onValidated: { [weak self] result in
-        if let s = self {
-          s.isValidCurrentName = result.isSuccess
-          s.refreshDoneButtonState()
-        }
-      })
-
-    urlFieldValidator = TextFieldValidator(
-      textField: detailViewOwner.urlField,
-      textFieldDelegate: textFieldDelegate,
-      asyncValidator: { [weak self] url in
-        if let s = self {
-          QueueExecution.async(QueueExecution.mainQueue) {
-            s.detailViewOwner.beginURLValidationProgress()
-          }
-          var username = ""
-          var password = ""
-          QueueExecution.sync(QueueExecution.mainQueue) {
-            username = s.detailViewOwner.usernameField.text
-            password = s.detailViewOwner.passwordField.text
-          }
-          let connection = VCardSource.Connection(
-            url: url,
-            username: username,
-            password: password)
-          return s.checkIsReachableURL(connection)
-        } else {
-          return Future.failed("view disappeared")
-        }
-      },
-      onValidated: { [weak self] result in
-        if let s = self {
-          s.isValidCurrentURL = result.isSuccess
-          s.detailViewOwner.endURLValidationProgress(result)
-          s.refreshDoneButtonState()
-        }
-      })
+    setupFieldValidation()
   }
 
   override func viewWillAppear(animated: Bool) {
@@ -166,6 +122,62 @@ class VCardSourceDetailViewController: UIViewController {
       containerView: view,
       scrollView: scrollView,
       navigationController: navigationController)
+  }
+
+  private func setupFieldValidation() {
+    nameFieldValidator = TextFieldValidator(
+      textField: detailViewOwner.nameField,
+      textFieldDelegate: textFieldDelegate,
+      syncValidator: { [weak self] text in
+        return !text.trimmed.isEmpty ? .Success(text) : .Failure("empty")
+      },
+      onValidated: { [weak self] result in
+        if let s = self {
+          s.isValidCurrentName = result.isSuccess
+          s.refreshDoneButtonState()
+        }
+    })
+
+    urlFieldValidator = TextFieldValidator(
+      textField: detailViewOwner.urlField,
+      textFieldDelegate: textFieldDelegate,
+      asyncValidator: { [weak self] url in
+        if let s = self {
+          QueueExecution.async(QueueExecution.mainQueue) {
+            s.detailViewOwner.beginURLValidationProgress()
+          }
+          var username = ""
+          var password = ""
+          QueueExecution.sync(QueueExecution.mainQueue) {
+            username = s.detailViewOwner.usernameField.text
+            password = s.detailViewOwner.passwordField.text
+          }
+          let connection = VCardSource.Connection(
+            url: url,
+            username: username,
+            password: password)
+          return s.checkIsReachableURL(connection)
+        } else {
+          return Future.failed("view disappeared")
+        }
+      },
+      onValidated: { [weak self] result in
+        if let s = self {
+          s.isValidCurrentURL = result.isSuccess
+          s.detailViewOwner.endURLValidationProgress(result)
+          s.refreshDoneButtonState()
+        }
+    })
+
+    // oh this is just horrible :(
+
+    let callURLFieldValidatorOnTextChange: ProxyTextFieldDelegate.OnTextChangeCallback = { _, _, _ in
+      self.urlFieldValidator.validate()
+      return true
+    }
+
+    textFieldDelegate.addOnTextChange(detailViewOwner.usernameField, callURLFieldValidatorOnTextChange)
+    textFieldDelegate.addOnTextChange(detailViewOwner.passwordField, callURLFieldValidatorOnTextChange)
   }
 
   private func setupLayout(#scrollView: UIScrollView, contentView: UIView) {
