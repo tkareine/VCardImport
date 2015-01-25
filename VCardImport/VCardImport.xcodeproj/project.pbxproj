@@ -17,7 +17,6 @@
 		E91DC01E1A70447200A022CE /* VCardSourceDetailViewOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E91DC01D1A70447200A022CE /* VCardSourceDetailViewOwner.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
-		E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E9375BC81A0ED1120065A042 /* example-contacts.vcf */; };
 		E9401B931A74141D0078AD51 /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E9401B8B1A7413570078AD51 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -130,7 +129,6 @@
 		E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyTextFieldDelegate.swift; sourceTree = "<group>"; };
 		E91DC01D1A70447200A022CE /* VCardSourceDetailViewOwner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceDetailViewOwner.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
-		E9375BC81A0ED1120065A042 /* example-contacts.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "example-contacts.vcf"; sourceTree = "<group>"; };
 		E9401B841A7413570078AD51 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = ../Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordName.swift; sourceTree = "<group>"; };
@@ -266,7 +264,6 @@
 		E983F1D519E9C76F00219305 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E9375BC81A0ED1120065A042 /* example-contacts.vcf */,
 				E983F1D619E9C76F00219305 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -410,7 +407,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E983F1E219E9C76F00219305 /* LaunchScreen.xib in Resources */,
-				E9375BC91A0ED1120065A042 /* example-contacts.vcf in Resources */,
 				E95E95AF19F43862002D864B /* VCardSourceDetailView.xib in Resources */,
 				E9F850351A6EFE6C0051669A /* VCardSourceCell.xib in Resources */,
 				E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */,
