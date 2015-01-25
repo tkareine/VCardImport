@@ -88,7 +88,7 @@ class VCardToolbar: UIView {
       })
   }
 
-  func inProgress(text: String, progress: Float) {
+  func inProgress(#text: String, progress: Float) {
     progressLabel.text = text
     progressView.setProgress(progress, animated: true)
   }
