@@ -23,12 +23,13 @@
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "vcardimport-120x120.png",
+      "filename" : "vcard-turbo-60@2x.png",
       "scale" : "2x"
     },
     {
-      "idiom" : "iphone",
       "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "vcard-turbo-60@3x.png",
       "scale" : "3x"
     },
     {
@@ -54,13 +55,13 @@
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "vcardimport-76x76.png",
+      "filename" : "vcard-turbo-76.png",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "vcardimport-152x152.png",
+      "filename" : "vcard-turbo-76@2x.png",
       "scale" : "2x"
     }
   ],
