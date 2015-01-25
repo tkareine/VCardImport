@@ -59,19 +59,6 @@ class VCardSourceStore {
   func load() {
     if let sources = loadNonSensitiveDataFromUserDefaults() {
       resetFrom(loadSensitiveDataFromKeychain(sources))
-    } else {
-      resetFrom([
-        VCardSource(
-          name: "Example: Body Corp",
-          connection: VCardSource.Connection(url: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf"),
-          isEnabled: false
-        ),
-        VCardSource(
-          name: "Example: Cold Temp",
-          connection: VCardSource.Connection(url: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf"),
-          isEnabled: false
-        )
-      ])
     }
   }
 
