@@ -21,6 +21,7 @@
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
 		E94897411A47448C004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
+		E94C0D661A7442E40005C472 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C0D651A7442E40005C472 /* KeychainItemWrapper.m */; };
 		E95E95AD19F4380F002D864B /* VCardSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */; };
 		E95E95AF19F43862002D864B /* VCardSourceDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E95E95AE19F43862002D864B /* VCardSourceDetailView.xib */; };
 		E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = E969253F1A4F7CF000B6427A /* QueueExecution.swift */; };
@@ -132,6 +133,9 @@
 		E9401B841A7413570078AD51 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = ../Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordName.swift; sourceTree = "<group>"; };
+		E94C0D631A74428D0005C472 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		E94C0D641A7442E30005C472 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		E94C0D651A7442E40005C472 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCardSourceDetailViewController.swift; sourceTree = "<group>"; };
 		E95E95AE19F43862002D864B /* VCardSourceDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VCardSourceDetailView.xib; sourceTree = "<group>"; };
 		E969253F1A4F7CF000B6427A /* QueueExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueExecution.swift; sourceTree = "<group>"; };
@@ -254,8 +258,11 @@
 				E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */,
 				E91DC01D1A70447200A022CE /* VCardSourceDetailViewOwner.swift */,
 				E95E95AE19F43862002D864B /* VCardSourceDetailView.xib */,
-				E983F1DE19E9C76F00219305 /* Images.xcassets */,
+				E94C0D631A74428D0005C472 /* KeychainItemWrapper.h */,
+				E94C0D651A7442E40005C472 /* KeychainItemWrapper.m */,
+				E94C0D641A7442E30005C472 /* Bridging-Header.h */,
 				E983F1E019E9C76F00219305 /* LaunchScreen.xib */,
+				E983F1DE19E9C76F00219305 /* Images.xcassets */,
 				E983F1D519E9C76F00219305 /* Supporting Files */,
 			);
 			path = Source;
@@ -444,6 +451,7 @@
 				E947E1591A4F87A200513F77 /* Files.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
+				E94C0D661A7442E40005C472 /* KeychainItemWrapper.m in Sources */,
 				E907C6A91A6B382700612C90 /* FutureExtension.swift in Sources */,
 				E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */,
 				E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */,
@@ -613,12 +621,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Source/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Source/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -626,12 +637,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Source/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Source/Bridging-Header.h";
 			};
 			name = Release;
 		};
