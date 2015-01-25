@@ -41,8 +41,8 @@ class VCardSourcesViewController: UITableViewController {
     vcardImporter = VCardImporter.builder()
       .connectWith(urlConnection)
       .queueTo(QueueExecution.mainQueue)
-      .onSourceDownload { source, completionRatio in
-        self.progressState(.Downloading(completionRatio: completionRatio), forSource: source)
+      .onSourceDownload { source, progress in
+        self.progressState(.Downloading(progress), forSource: source)
       }
       .onSourceComplete { source, changes, modifiedHeaderStamp, error in
         if let err = error {
@@ -179,13 +179,13 @@ class VCardSourcesViewController: UITableViewController {
 
   private enum VCardProgress {
     case Completed
-    case Downloading(completionRatio: Float)
+    case Downloading(bytes: Int64, bytesTotal: Int64, bytesTotalExpected: Int64)
 
     func describeProgress(task: String) -> String {
       switch self {
       case Completed:
         return "Completed \(task)"
-      case Downloading(let completionRatio):
+      case Downloading:
         return "Downloading \(task)…"
       }
     }
@@ -210,23 +210,22 @@ class VCardSourcesViewController: UITableViewController {
     func set(type: VCardProgress, forSource source: VCardSource) {
       func stepProgressLeft() -> Float {
         if let progressLeft = progressLeftBySourceId[source.id] {
-          var step: Float
           switch type {
           case .Completed:
-            step = progressLeft
             progressLeftBySourceId.removeValueForKey(source.id)
-          case .Downloading(let completionRatio):
-            step = completionRatio * MaxDownloadingRatioToCompleted
+            return progressLeft
+          case .Downloading(let bytes, let totalBytes, let totalBytesExpected):
+            let step = Float(bytes) / Float(totalBytesExpected) * MaxDownloadingRatioToCompleted
             progressLeftBySourceId[source.id] = progressLeft - step
+            return step
           }
-          return step
         } else {
           return 0
         }
       }
 
       let progressStep = stepProgressLeft()
-      let currentProgress = lastProgress + (1 / numSources) * progressStep
+      let currentProgress = min(lastProgress + (1 / numSources) * progressStep, 1)
       let currentProgressText = type.describeProgress(source.name)
 
       NSLog("Progress: %0.2f/%0.2f (%@)", progressStep, currentProgress, currentProgressText)
