@@ -15,11 +15,11 @@ class TextFieldValidator<T> {
   private let validBorderWidth: CGFloat
   private let validBorderColor: CGColor
 
-  private weak var textField: UITextField!
+  private weak var textField: UITextField?
+  private weak var textFieldDelegate: ProxyTextFieldDelegate?
 
   private let switcher: (Future<T> -> Future<T>) = QueueExecution.makeSwitchLatest()
   private let validationDebouncer: (String -> Void)!
-  private let textFieldDelegate: ProxyTextFieldDelegate
 
   init(
     textField: UITextField,
@@ -35,11 +35,13 @@ class TextFieldValidator<T> {
     validBorderWidth = textField.layer.borderWidth
     validBorderColor = textField.layer.borderColor
 
-    validationDebouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) {
-      self.validate($0)
+    validationDebouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) { [weak self] in
+      if let s = self {  // view might have been destroyed already
+        s.validate($0)
+      }
     }
 
-    textFieldDelegate.addOnTextChange(textField) { tf, range, replacement in
+    self.textFieldDelegate?.addOnTextChange(textField) { tf, range, replacement in
       let oldText = tf.text
       QueueExecution.async(self.queue) {
         let newText = self.change(text: oldText, range: range, replacement: replacement)
@@ -64,13 +66,17 @@ class TextFieldValidator<T> {
 
   deinit {
     if let tf = textField {
-      textFieldDelegate.removeOnTextChange(tf)
+      if let dl = textFieldDelegate {
+        dl.removeOnTextChange(tf)
+      }
     }
   }
 
   func validate() {
-    let text = textField.text
-    QueueExecution.async(queue) { self.validationDebouncer(text) }
+    if let tf = textField {
+      let text = tf.text
+      QueueExecution.async(queue) { self.validationDebouncer(text) }
+    }
   }
 
   private func validate(text: NSString) {

@@ -5,7 +5,7 @@
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VCardSourceDetailViewOwner" customModule="VCardImport">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VCardSourceDetailViewController" customModule="VCardImport">
             <connections>
                 <outlet property="isEnabledLabel" destination="4ip-B5-OgZ" id="QK3-bV-yUs"/>
                 <outlet property="isEnabledSwitch" destination="aVp-Bk-xZC" id="JFl-oS-0D0"/>

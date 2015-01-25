@@ -1,6 +1,20 @@
 import UIKit
 
 class VCardSourceDetailViewController: UIViewController {
+  @IBOutlet weak var topConstraint: NSLayoutConstraint!
+  @IBOutlet weak var nameLabel: UILabel!
+  @IBOutlet weak var nameField: UITextField!
+  @IBOutlet weak var urlLabel: UILabel!
+  @IBOutlet weak var urlField: UITextField!
+  @IBOutlet weak var urlValidationLabel: UILabel!
+  @IBOutlet weak var isValidatingURLIndicator: UIActivityIndicatorView!
+  @IBOutlet weak var usernameLabel: UILabel!
+  @IBOutlet weak var usernameField: UITextField!
+  @IBOutlet weak var passwordLabel: UILabel!
+  @IBOutlet weak var passwordField: UITextField!
+  @IBOutlet weak var isEnabledLabel: UILabel!
+  @IBOutlet weak var isEnabledSwitch: UISwitch!
+
   private let source: VCardSource
   private let isNewSource: Bool
   private let urlConnection: URLConnection
@@ -14,7 +28,12 @@ class VCardSourceDetailViewController: UIViewController {
   private var isValidCurrentName = false
   private var isValidCurrentURL = false
 
-  private var detailViewOwner: VCardSourceDetailViewOwner!
+  private var scrollView: UIScrollView!
+  private var focusedTextField: UITextField!
+
+  private var originalScrollViewContentInsets = UIEdgeInsetsZero
+  private var originalScrollViewScrollIndicatorInsets = UIEdgeInsetsZero
+  private var originalContainerViewFrame = CGRect()
 
   // MARK: Controller Life Cycle
 
@@ -50,11 +69,30 @@ class VCardSourceDetailViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setupView()
-    setupFieldValidation()
   }
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "resetFontSizes",
+      name: UIContentSizeCategoryDidChangeNotification,
+      object: nil)
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "keyboardDidShow:",
+      name: UIKeyboardDidShowNotification,
+      object: nil)
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "keyboardWillHide:",
+      name: UIKeyboardWillHideNotification,
+      object: nil)
+
+    setupFieldValidation()
 
     if isNewSource {
       refreshDoneButtonState()
@@ -67,16 +105,20 @@ class VCardSourceDetailViewController: UIViewController {
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
 
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+
+    teardownFieldDelegation()
+
     if shouldCallDoneCallbackOnViewDisappear {
       let newConnection = VCardSource.Connection(
-        url: detailViewOwner.urlField.text,
-        username: detailViewOwner.usernameField.text,
-        password: detailViewOwner.passwordField.text)
+        url: urlField.text,
+        username: usernameField.text,
+        password: passwordField.text)
 
       let newSource = source.with(
-        name: detailViewOwner.nameField.text.trimmed,
+        name: nameField.text.trimmed,
         connection: newConnection,
-        isEnabled: detailViewOwner.isEnabledSwitch.on
+        isEnabled: isEnabledSwitch.on
       )
 
       doneCallback(newSource)
@@ -94,39 +136,202 @@ class VCardSourceDetailViewController: UIViewController {
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
 
+  @IBAction func backgroundTapped(sender: AnyObject) {
+    view.endEditing(true)
+  }
+
+  // MARK: Notification Handlers
+
+  func keyboardDidShow(notification: NSNotification) {
+    // from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
+
+    func topOffset() -> CGFloat {
+      if let nv = navigationController {
+        return nv.toolbar.frame.size.height + topConstraint.constant
+      } else {
+        return 0
+      }
+    }
+
+    func bottomOffset(info: [NSObject: AnyObject]) -> CGFloat {
+      let nsvalue = info[UIKeyboardFrameBeginUserInfoKey]! as NSValue
+      let orgRect = nsvalue.CGRectValue()
+      let convRect = view.convertRect(orgRect, fromView: nil)
+      return convRect.size.height
+    }
+
+    if let info = notification.userInfo {
+      let top = topOffset()
+      let bottom = bottomOffset(info)
+
+      let contentInsets = UIEdgeInsets(top: top, left: 0, bottom: bottom, right: 0)
+
+      originalScrollViewContentInsets = scrollView.contentInset
+      originalScrollViewScrollIndicatorInsets = scrollView.scrollIndicatorInsets
+
+      scrollView.contentInset = contentInsets
+      scrollView.scrollIndicatorInsets = contentInsets
+
+      originalContainerViewFrame = view.frame
+
+      view.frame = CGRect(
+        x: originalContainerViewFrame.origin.x,
+        y: originalContainerViewFrame.origin.y,
+        width: originalContainerViewFrame.size.width,
+        height: originalContainerViewFrame.size.height - bottom)
+
+      // NSLog("-------------")
+      // NSLog("top=\(top), bottom=\(bottom)")
+      // NSLog("containerView.frame=\(containerView.frame)")
+      // NSLog("original containerView.frame=\(originalContainerViewFrame)")
+
+      if !CGRectContainsPoint(view.frame, focusedTextField.frame.origin) {
+        scrollView.scrollRectToVisible(focusedTextField.frame, animated: true)
+      }
+    }
+  }
+
+  func keyboardWillHide(notification: NSNotification) {
+    view.frame = originalContainerViewFrame
+    scrollView.contentInset = originalScrollViewContentInsets
+    scrollView.scrollIndicatorInsets = originalScrollViewScrollIndicatorInsets
+  }
+
+  func resetFontSizes() {
+    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    nameLabel.font = bodyFont
+    nameField.font = bodyFont
+    urlLabel.font = bodyFont
+    urlField.font = bodyFont
+    urlValidationLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 2)
+    usernameLabel.font = bodyFont
+    usernameField.font = bodyFont
+    passwordLabel.font = bodyFont
+    passwordField.font = bodyFont
+    isEnabledLabel.font = bodyFont
+  }
+
   // MARK: Helpers
 
-  private func makeScrollView() -> UIScrollView {
-    let sv = UIScrollView()
-    sv.backgroundColor = UIColor.whiteColor()
-    sv.setTranslatesAutoresizingMaskIntoConstraints(false)
-    return sv
-  }
-
-  private func makeDetailViewOwner() -> VCardSourceDetailViewOwner {
-    let owner = VCardSourceDetailViewOwner(textFieldDelegate: textFieldDelegate)
-    owner.loadView(source: source, isNewSource: isNewSource)
-    return owner
-  }
-
   private func setupView() {
-    let scrollView = makeScrollView()
-    detailViewOwner = makeDetailViewOwner()
+    func makeScrollView() -> UIScrollView {
+      let sv = UIScrollView()
+      sv.backgroundColor = UIColor.whiteColor()
+      sv.setTranslatesAutoresizingMaskIntoConstraints(false)
+      return sv
+    }
 
-    scrollView.addSubview(detailViewOwner.view)
+    func makeDetailView() -> UIView {
+      let dv = NSBundle
+        .mainBundle()
+        .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as UIView
+      dv.setTranslatesAutoresizingMaskIntoConstraints(false)
+      return dv
+    }
+
+    func setupSubviews() {
+      nameField.text = source.name
+      urlField.text = source.connection.url
+      isEnabledSwitch.on = source.isEnabled
+      urlValidationLabel.alpha = 0
+      isValidatingURLIndicator.hidesWhenStopped = true
+      usernameField.text = source.connection.username
+      passwordField.text = source.connection.password
+
+      if isNewSource {
+        isEnabledLabel.hidden = true
+        isEnabledSwitch.hidden = true
+      }
+    }
+
+    func setupTextFieldDelegates() {
+      nameField.delegate = textFieldDelegate
+      urlField.delegate = textFieldDelegate
+      usernameField.delegate = textFieldDelegate
+      passwordField.delegate = textFieldDelegate
+
+      let fields = [nameField, urlField, usernameField, passwordField]
+
+      for f in fields {
+        textFieldDelegate.addOnBeginEditing(f) { [unowned self] tf in
+          self.focusedTextField = tf
+        }
+
+        textFieldDelegate.addOnEndEditing(f) { [unowned self] tf in
+          self.focusedTextField = nil
+        }
+
+        textFieldDelegate.addOnShouldReturn(f) { [unowned self] tf in
+          tf.resignFirstResponder()
+          return true
+        }
+      }
+    }
+
+    func setupLayout(contentView: UIView) {
+      let viewNamesToObjects = [
+        "scrollView": scrollView,
+        "contentView": contentView
+      ]
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "H:|[scrollView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "V:|[scrollView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "H:|[contentView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "V:|[contentView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      view.addConstraint(NSLayoutConstraint(
+        item: contentView,
+        attribute: .Leading,
+        relatedBy: .Equal,
+        toItem: view,
+        attribute: .Left,
+        multiplier: 1,
+        constant: 0))
+
+      view.addConstraint(NSLayoutConstraint(
+        item: contentView,
+        attribute: .Trailing,
+        relatedBy: .Equal,
+        toItem: view,
+        attribute: .Right,
+        multiplier: 1,
+        constant: 0))
+    }
+
+    scrollView = makeScrollView()
+    let detailView = makeDetailView()
+    resetFontSizes()
+    setupSubviews()
+    setupTextFieldDelegates()
+
+    scrollView.addSubview(detailView)
     view.addSubview(scrollView)
 
-    setupLayout(scrollView: scrollView, contentView: detailViewOwner.view)
-
-    detailViewOwner.setScrollingToFocusedTextField(
-      containerView: view,
-      scrollView: scrollView,
-      navigationController: navigationController)
+    setupLayout(detailView)
   }
 
   private func setupFieldValidation() {
     nameFieldValidator = TextFieldValidator(
-      textField: detailViewOwner.nameField,
+      textField: nameField,
       textFieldDelegate: textFieldDelegate,
       syncValidator: { [weak self] text in
         return !text.trimmed.isEmpty ? .Success(text) : .Failure("empty")
@@ -139,18 +344,18 @@ class VCardSourceDetailViewController: UIViewController {
     })
 
     urlFieldValidator = TextFieldValidator(
-      textField: detailViewOwner.urlField,
+      textField: urlField,
       textFieldDelegate: textFieldDelegate,
       asyncValidator: { [weak self] url in
         if let s = self {
           QueueExecution.async(QueueExecution.mainQueue) {
-            s.detailViewOwner.beginURLValidationProgress()
+            s.beginURLValidationProgress()
           }
           var username = ""
           var password = ""
           QueueExecution.sync(QueueExecution.mainQueue) {
-            username = s.detailViewOwner.usernameField.text
-            password = s.detailViewOwner.passwordField.text
+            username = s.usernameField.text
+            password = s.passwordField.text
           }
           let connection = VCardSource.Connection(
             url: url,
@@ -164,69 +369,65 @@ class VCardSourceDetailViewController: UIViewController {
       onValidated: { [weak self] result in
         if let s = self {
           s.isValidCurrentURL = result.isSuccess
-          s.detailViewOwner.endURLValidationProgress(result)
+          s.endURLValidationProgress(result)
           s.refreshDoneButtonState()
         }
     })
 
     // oh this is just horrible :(
 
-    let callURLFieldValidatorOnTextChange: ProxyTextFieldDelegate.OnTextChangeCallback = { _, _, _ in
-      self.urlFieldValidator.validate()
+    let callURLFieldValidatorOnTextChange: ProxyTextFieldDelegate.OnTextChangeCallback = { [weak self] _, _, _ in
+      if let s = self {
+        s.urlFieldValidator.validate()
+      }
       return true
     }
 
-    textFieldDelegate.addOnTextChange(detailViewOwner.usernameField, callURLFieldValidatorOnTextChange)
-    textFieldDelegate.addOnTextChange(detailViewOwner.passwordField, callURLFieldValidatorOnTextChange)
+    textFieldDelegate.addOnTextChange(usernameField, callURLFieldValidatorOnTextChange)
+    textFieldDelegate.addOnTextChange(passwordField, callURLFieldValidatorOnTextChange)
   }
 
-  private func setupLayout(#scrollView: UIScrollView, contentView: UIView) {
-    let viewNamesToObjects = [
-      "scrollView": scrollView,
-      "contentView": contentView
-    ]
+  private func teardownFieldDelegation() {
+    for tf in [nameField, urlField, usernameField, passwordField] {
+      textFieldDelegate.removeOnBeginEditing(tf)
+      textFieldDelegate.removeOnEndEditing(tf)
+      textFieldDelegate.removeOnShouldReturn(tf)
+      textFieldDelegate.removeOnTextChange(tf)
+    }
+  }
 
-    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|[scrollView]|",
-      options: nil,
-      metrics: nil,
-      views: viewNamesToObjects))
+  private func beginURLValidationProgress() {
+    urlValidationLabel.text = "Validating URL…"
 
-    view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:|[scrollView]|",
-      options: nil,
-      metrics: nil,
-      views: viewNamesToObjects))
+    UIView.animateWithDuration(
+      Config.UI.AnimationDurationFadeMessage,
+      delay: 0,
+      options: .CurveEaseIn | .BeginFromCurrentState,
+      animations: {
+        self.urlValidationLabel.alpha = 1
+      },
+      completion: nil)
 
-    scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|[contentView]|",
-      options: nil,
-      metrics: nil,
-      views: viewNamesToObjects))
+    isValidatingURLIndicator.startAnimating()
+  }
 
-    scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:|[contentView]|",
-      options: nil,
-      metrics: nil,
-      views: viewNamesToObjects))
+  private func endURLValidationProgress(result: Try<NSURL>) {
+    switch result {
+    case .Success:
+      urlValidationLabel.text = "URL is valid"
+      UIView.animateWithDuration(
+        Config.UI.AnimationDurationFadeMessage,
+        delay: Config.UI.AnimationDelayFadeOutMessage,
+        options: .CurveEaseOut | .BeginFromCurrentState,
+        animations: {
+          self.urlValidationLabel.alpha = 0
+        },
+        completion: nil)
+    case .Failure(let desc):
+      urlValidationLabel.text = desc
+    }
 
-    view.addConstraint(NSLayoutConstraint(
-      item: contentView,
-      attribute: .Leading,
-      relatedBy: .Equal,
-      toItem: view,
-      attribute: .Left,
-      multiplier: 1,
-      constant: 0))
-
-    view.addConstraint(NSLayoutConstraint(
-      item: contentView,
-      attribute: .Trailing,
-      relatedBy: .Equal,
-      toItem: view,
-      attribute: .Right,
-      multiplier: 1,
-      constant: 0))
+    isValidatingURLIndicator.stopAnimating()
   }
 
   private func refreshDoneButtonState() {
