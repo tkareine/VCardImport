@@ -41,8 +41,8 @@ class VCardSourcesViewController: UITableViewController {
     vcardImporter = VCardImporter.builder()
       .connectWith(urlConnection)
       .queueTo(QueueExecution.mainQueue)
-      .onSourceLoad { source in
-        self.progressState(.Load, forSource: source)
+      .onSourceDownload { source, completionRatio in
+        self.progressState(.Downloading(completionRatio: completionRatio), forSource: source)
       }
       .onSourceComplete { source, changes, modifiedHeaderStamp, error in
         if let err = error {
@@ -53,7 +53,7 @@ class VCardSourcesViewController: UITableViewController {
             changes: changes!,
             modifiedHeaderStamp: modifiedHeaderStamp)
         }
-        self.progressState(.Complete, forSource: source)
+        self.progressState(.Completed, forSource: source)
         self.reloadTableViewSourceRow(source)
       }
       .onComplete { error in
@@ -178,23 +178,62 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   private enum VCardProgress {
-    case Complete
-    case Load
+    case Completed
+    case Downloading(completionRatio: Float)
+
+    func describeProgress(task: String) -> String {
+      switch self {
+      case Completed:
+        return "Completed \(task)"
+      case Downloading(let completionRatio):
+        return "Downloading \(task)…"
+      }
+    }
   }
 
   private func makeProgressState(vcardSources: [VCardSource]) -> ProgressState {
+    // 70 % of progress per source is for downloading, left is for completion
+    let MaxDownloadingRatioToCompleted: Float = 0.7
+
+    func makeProgressLeftDictionary() -> [String: Float] {
+      var dict: [String: Float] = [:]
+      for source in vcardSources {
+        dict[source.id] = 1.0
+      }
+      return dict
+    }
+
     var lastProgress: Float = 0
-    let numSources = vcardSources.count
+    let numSources = Float(vcardSources.count)
+    var progressLeftBySourceId = makeProgressLeftDictionary()
 
     func set(type: VCardProgress, forSource source: VCardSource) {
-      let nextProgress = lastProgress + (1 / Float(numSources)) * 0.5
-      let nextText = type == .Complete ? "Completed \(source.name)" : "Downloaded \(source.name)"
+      func stepProgressLeft() -> Float {
+        if let progressLeft = progressLeftBySourceId[source.id] {
+          var step: Float
+          switch type {
+          case .Completed:
+            step = progressLeft
+            progressLeftBySourceId.removeValueForKey(source.id)
+          case .Downloading(let completionRatio):
+            step = completionRatio * MaxDownloadingRatioToCompleted
+            progressLeftBySourceId[source.id] = progressLeft - step
+          }
+          return step
+        } else {
+          return 0
+        }
+      }
 
-      NSLog("Progress: \(nextProgress) \(nextText)")
+      let progressStep = stepProgressLeft()
+      let currentProgress = lastProgress + (1 / numSources) * progressStep
+      let currentProgressText = type.describeProgress(source.name)
 
-      self.toolbar.inProgress(nextText, progress: nextProgress)
+      NSLog("Progress: %0.2f/%0.2f (%@)", progressStep, currentProgress, currentProgressText)
 
-      lastProgress = nextProgress
+      self.toolbar.inProgress(currentProgressText, progress: currentProgress)
+
+      lastProgress = currentProgress
     }
 
     return set

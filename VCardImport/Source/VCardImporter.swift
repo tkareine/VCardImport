@@ -2,11 +2,11 @@ import Foundation
 import AddressBook
 
 class VCardImporter {
-  typealias OnSourceLoadCallback = VCardSource -> Void
+  typealias OnSourceDownloadCallback = (VCardSource, Float) -> Void
   typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, ModifiedHeaderStamp?, NSError?) -> Void
   typealias OnCompleteCallback = NSError? -> Void
 
-  private let onSourceLoad: OnSourceLoadCallback
+  private let onSourceDownload: OnSourceDownloadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
   private let urlConnection: URLConnection
@@ -17,13 +17,13 @@ class VCardImporter {
   }
 
   private init(
-    onSourceLoad: OnSourceLoadCallback,
+    onSourceDownload: OnSourceDownloadCallback,
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
     urlConnection: URLConnection,
     queue: dispatch_queue_t)
   {
-    self.onSourceLoad = onSourceLoad
+    self.onSourceDownload = onSourceDownload
     self.onSourceComplete = onSourceComplete
     self.onComplete = onComplete
     self.urlConnection = urlConnection
@@ -52,13 +52,11 @@ class VCardImporter {
       }
 
       let sourceImports: [(VCardSource, Future<SourceImportResult>)] = sources.map { source in
-        (source, self.checkAndLoadSource(source))
+        (source, self.checkAndDownloadSource(source))
       }
 
       for (source, sourceImport) in sourceImports {
         let importResult = sourceImport.get()
-
-        QueueExecution.async(self.queue) { self.onSourceLoad(source) }
 
         var loadedRecords: [ABRecord]
         var modifiedHeaderStamp: ModifiedHeaderStamp?
@@ -252,7 +250,7 @@ class VCardImporter {
       property: property)
   }
 
-  private func checkAndLoadSource(source: VCardSource) -> Future<SourceImportResult> {
+  private func checkAndDownloadSource(source: VCardSource) -> Future<SourceImportResult> {
     NSLog("vCard source %@: checking if remote has changed…", source.name)
     return urlConnection
       .head(
@@ -270,18 +268,22 @@ class VCardImporter {
         }
 
         NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
-        return self.loadSourceFromURL(source.connection).map { records in .Updated(records, newStamp) }
+        return self.downloadSource(source).map { records in .Updated(records, newStamp) }
       }
   }
 
-  private func loadSourceFromURL(connection: VCardSource.Connection) -> Future<[ABRecord]> {
+  private func downloadSource(source: VCardSource) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
+    let onProgressCallback: URLConnection.OnProgressCallback = { _, totalBytes, totalBytesExpected in
+      self.onSourceDownload(source, Float(totalBytes)/Float(totalBytesExpected))
+    }
     let future = urlConnection
       .download(
-        connection.toURL(),
+        source.connection.toURL(),
         to: fileURL,
         headers: Config.Net.VCardHTTPHeaders,
-        credential: connection.toCredential(.ForSession))
+        credential: source.connection.toCredential(.ForSession),
+        onProgress: onProgressCallback)
       .flatMap(loadRecordsFromFile)
     future.onComplete { _ in Files.remove(fileURL) }
     return future
@@ -302,14 +304,14 @@ class VCardImporter {
   }
 
   class Builder {
-    private var onSourceLoad: OnSourceLoadCallback?
+    private var onSourceDownload: OnSourceDownloadCallback?
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
     private var urlConnection: URLConnection?
     private var queue: dispatch_queue_t?
 
-    func onSourceLoad(callback: OnSourceLoadCallback) -> Builder {
-      self.onSourceLoad = callback
+    func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
+      self.onSourceDownload = callback
       return self
     }
 
@@ -334,7 +336,7 @@ class VCardImporter {
     }
 
     func build() -> VCardImporter {
-      if self.onSourceLoad == nil ||
+      if self.onSourceDownload == nil ||
         self.onSourceComplete == nil ||
         self.onComplete == nil ||
         self.urlConnection == nil ||
@@ -342,7 +344,7 @@ class VCardImporter {
         fatalError("all parameters must be given")
       }
       return VCardImporter(
-        onSourceLoad: self.onSourceLoad!,
+        onSourceDownload: self.onSourceDownload!,
         onSourceComplete: self.onSourceComplete!,
         onComplete: self.onComplete!,
         urlConnection: self.urlConnection!,

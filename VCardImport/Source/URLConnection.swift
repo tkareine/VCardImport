@@ -3,6 +3,7 @@ import Alamofire
 
 class URLConnection {
   typealias Headers = [String: String]
+  typealias OnProgressCallback = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64) -> Void
 
   private let DefaultHeaders = [
     "User-Agent": "\(Config.Executable)/\(Config.BundleIdentifier) (\(Config.Version); OS \(Config.OS))"
@@ -28,7 +29,8 @@ class URLConnection {
     method: Method,
     url: NSURL,
     headers: Headers = [:],
-    credential: NSURLCredential? = nil)
+    credential: NSURLCredential? = nil,
+    onProgress: OnProgressCallback? = nil)
     -> Future<NSHTTPURLResponse>
   {
     var request = Alamofire.request(makeURLRequest(
@@ -38,6 +40,10 @@ class URLConnection {
 
     if let cred = credential {
        request = request.authenticate(usingCredential: cred)
+    }
+
+    if let prog = onProgress {
+      request.progress(prog)
     }
 
     let promise = Future<NSHTTPURLResponse>.promise()
@@ -75,13 +81,18 @@ class URLConnection {
     url: NSURL,
     to destination: NSURL,
     headers: Headers = [:],
-    credential: NSURLCredential? = nil)
+    credential: NSURLCredential? = nil,
+    onProgress: OnProgressCallback? = nil)
     -> Future<NSURL>
   {
     var request = Alamofire.download(makeURLRequest(url: url, headers: headers), { _, _ in destination })
 
     if let cred = credential {
       request = request.authenticate(usingCredential: cred)
+    }
+
+    if let prog = onProgress {
+      request.progress(prog)
     }
 
     let promise = Future<NSURL>.promise()
