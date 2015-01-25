@@ -301,9 +301,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E983F1D119E9C76F00219305 /* vCardImport */ = {
+		E983F1D119E9C76F00219305 /* vCard Turbo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCardImport" */;
+			buildConfigurationList = E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCard Turbo" */;
 			buildPhases = (
 				E983F1CE19E9C76F00219305 /* Sources */,
 				E983F1CF19E9C76F00219305 /* Frameworks */,
@@ -315,7 +315,7 @@
 			dependencies = (
 				E9401B911A7413E30078AD51 /* PBXTargetDependency */,
 			);
-			name = vCardImport;
+			name = "vCard Turbo";
 			productName = vCardImport;
 			productReference = E983F1D219E9C76F00219305 /* vCardImport.app */;
 			productType = "com.apple.product-type.application";
@@ -378,7 +378,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E983F1D119E9C76F00219305 /* vCardImport */,
+				E983F1D119E9C76F00219305 /* vCard Turbo */,
 				E983F1E619E9C76F00219305 /* Test */,
 			);
 		};
@@ -509,7 +509,7 @@
 		};
 		E983F1E919E9C76F00219305 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E983F1D119E9C76F00219305 /* vCardImport */;
+			target = E983F1D119E9C76F00219305 /* vCard Turbo */;
 			targetProxy = E983F1E819E9C76F00219305 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -694,7 +694,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCardImport" */ = {
+		E983F1F119E9C76F00219305 /* Build configuration list for PBXNativeTarget "vCard Turbo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E983F1F219E9C76F00219305 /* Debug */,

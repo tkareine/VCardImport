@@ -20,8 +20,8 @@ private func getBundleInfo()
   }
 
   return (
-    executable ?? "Unknown",
-    bundleId   ?? "org.tkareine.VCardImport",
+    executable ?? "vCard Turbo",
+    bundleId   ?? "org.tkareine.vCard-Turbo",
     version    ?? "Unknown"
   )
 }
@@ -29,8 +29,6 @@ private func getBundleInfo()
 private let BundleInfo = getBundleInfo()
 
 struct Config {
-  static let AppTitle = "vCard Import"
-
   static let Executable = BundleInfo.executable
 
   static let BundleIdentifier = BundleInfo.bundleId

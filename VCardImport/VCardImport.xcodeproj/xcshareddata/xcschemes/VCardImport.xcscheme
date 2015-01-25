@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E983F1D119E9C76F00219305"
-               BuildableName = "vCardImport.app"
-               BlueprintName = "vCardImport"
+               BuildableName = "vCard Turbo.app"
+               BlueprintName = "vCard Turbo"
                ReferencedContainer = "container:VCardImport.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -57,8 +57,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E983F1D119E9C76F00219305"
-            BuildableName = "vCardImport.app"
-            BlueprintName = "vCardImport"
+            BuildableName = "vCard Turbo.app"
+            BlueprintName = "vCard Turbo"
             ReferencedContainer = "container:VCardImport.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -76,8 +76,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E983F1D119E9C76F00219305"
-            BuildableName = "vCardImport.app"
-            BlueprintName = "vCardImport"
+            BuildableName = "vCard Turbo.app"
+            BlueprintName = "vCard Turbo"
             ReferencedContainer = "container:VCardImport.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -94,8 +94,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E983F1D119E9C76F00219305"
-            BuildableName = "vCardImport.app"
-            BlueprintName = "vCardImport"
+            BuildableName = "vCard Turbo.app"
+            BlueprintName = "vCard Turbo"
             ReferencedContainer = "container:VCardImport.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

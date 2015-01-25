@@ -31,7 +31,7 @@ class VCardSourcesViewController: UITableViewController {
       action: "importVCardSources:",
       forControlEvents: .TouchUpInside)
 
-    navigationItem.title = Config.AppTitle
+    navigationItem.title = Config.Executable
     navigationItem.leftBarButtonItem = editButton
     navigationItem.rightBarButtonItem = addButton
     tableView.dataSource = dataSource
