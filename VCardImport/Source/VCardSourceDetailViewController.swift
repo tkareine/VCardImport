@@ -268,6 +268,12 @@ class VCardSourceDetailViewController: UIViewController {
       }
     }
 
+    func setupBackgroundTap() {
+      let tapRecognizer = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
+      view.addGestureRecognizer(tapRecognizer)
+      view.userInteractionEnabled = true
+    }
+
     func setupLayout(contentView: UIView) {
       let viewNamesToObjects = [
         "scrollView": scrollView,
@@ -322,6 +328,7 @@ class VCardSourceDetailViewController: UIViewController {
     resetFontSizes()
     setupSubviews()
     setupTextFieldDelegates()
+    setupBackgroundTap()
 
     scrollView.addSubview(detailView)
     view.addSubview(scrollView)

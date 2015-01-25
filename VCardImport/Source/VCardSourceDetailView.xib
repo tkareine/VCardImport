@@ -214,9 +214,6 @@
                     <exclude reference="aOK-eJ-e6T"/>
                 </mask>
             </variation>
-            <connections>
-                <action selector="backgroundTapped:" destination="-1" eventType="touchUpInside" id="Yx8-hi-s8i"/>
-            </connections>
             <point key="canvasLocation" x="-101" y="74.5"/>
         </view>
     </objects>
