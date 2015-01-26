@@ -1,7 +1,6 @@
 import UIKit
 
 class VCardSourceDetailViewController: UIViewController {
-  @IBOutlet weak var topConstraint: NSLayoutConstraint!
   @IBOutlet weak var nameLabel: UILabel!
   @IBOutlet weak var nameField: UITextField!
   @IBOutlet weak var urlLabel: UILabel!
@@ -145,12 +144,7 @@ class VCardSourceDetailViewController: UIViewController {
     // from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
 
     func topOffset() -> CGFloat {
-      if let nv = navigationController {
-        let rect = view.convertRect(nv.toolbar.frame, fromView: nil)
-        return rect.size.height + topConstraint.constant
-      } else {
-        return 0
-      }
+      return topLayoutGuide.length
     }
 
     func bottomOffset(info: [NSObject: AnyObject]) -> CGFloat {
