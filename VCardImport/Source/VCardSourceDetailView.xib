@@ -28,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="URL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lrn-LY-24h">
-                    <rect key="frame" x="8" y="61" width="45.5" height="21"/>
+                    <rect key="frame" x="8" y="61" width="46" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="Pku-sp-1dc"/>
                     </constraints>
@@ -42,7 +42,7 @@
                     </variation>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="752" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fLb-Ji-VKL" userLabel="Name">
-                    <rect key="frame" x="8" y="24" width="45.5" height="20"/>
+                    <rect key="frame" x="8" y="24" width="46" height="20"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="8h9-2d-20v"/>
                     </constraints>
@@ -56,7 +56,7 @@
                     </variation>
                 </label>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="My Organization" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w4Q-Av-MiB">
-                    <rect key="frame" x="61" y="20" width="250.5" height="30"/>
+                    <rect key="frame" x="62" y="20" width="250" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="7Gv-Xn-VEq"/>
                     </constraints>
@@ -69,7 +69,7 @@
                     </variation>
                 </textField>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="https://example.com/vcards.vcf" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="K1K-lX-4oR">
-                    <rect key="frame" x="61" y="58" width="251" height="30"/>
+                    <rect key="frame" x="62" y="58" width="250" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="N37-0h-syV"/>
                     </constraints>
@@ -82,7 +82,7 @@
                     </variation>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enabled" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ip-B5-OgZ">
-                    <rect key="frame" x="8" y="251" width="63" height="20.5"/>
+                    <rect key="frame" x="8" y="251" width="63" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="ZA2-Nr-gqG"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="83" id="hc6-xm-KK3"/>
@@ -126,13 +126,13 @@
                     </constraints>
                 </switch>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1k5-tt-aRA">
-                    <rect key="frame" x="8" y="152" width="79" height="21.5"/>
+                    <rect key="frame" x="8" y="152" width="79" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="suf-LR-4rq">
-                    <rect key="frame" x="8" y="190" width="79" height="20.5"/>
+                    <rect key="frame" x="8" y="190" width="79" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
@@ -148,7 +148,6 @@
                     <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES"/>
                 </textField>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="1k5-tt-aRA" firstAttribute="width" secondItem="suf-LR-4rq" secondAttribute="width" id="0KT-HM-vdH"/>
                 <constraint firstAttribute="bottom" secondItem="4ip-B5-OgZ" secondAttribute="bottom" constant="25.5" id="1id-2X-mjc"/>

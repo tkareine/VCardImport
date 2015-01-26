@@ -33,7 +33,6 @@ class VCardSourceDetailViewController: UIViewController {
 
   private var originalScrollViewContentInsets = UIEdgeInsetsZero
   private var originalScrollViewScrollIndicatorInsets = UIEdgeInsetsZero
-  private var originalViewFrame = CGRect()
 
   // MARK: Controller Life Cycle
 
@@ -147,7 +146,8 @@ class VCardSourceDetailViewController: UIViewController {
 
     func topOffset() -> CGFloat {
       if let nv = navigationController {
-        return nv.toolbar.frame.size.height + topConstraint.constant
+        let rect = view.convertRect(nv.toolbar.frame, fromView: nil)
+        return rect.size.height + topConstraint.constant
       } else {
         return 0
       }
@@ -172,19 +172,6 @@ class VCardSourceDetailViewController: UIViewController {
       scrollView.contentInset = contentInsets
       scrollView.scrollIndicatorInsets = contentInsets
 
-      originalViewFrame = view.frame
-
-      view.frame = CGRect(
-        x: originalViewFrame.origin.x,
-        y: originalViewFrame.origin.y,
-        width: originalViewFrame.size.width,
-        height: originalViewFrame.size.height - bottom)
-
-//      NSLog("-------------")
-//      NSLog("top=\(top), bottom=\(bottom)")
-//      NSLog("view.frame=\(view.frame)")
-//      NSLog("original view.frame=\(originalViewFrame)")
-
       if !CGRectContainsPoint(view.frame, focusedTextField.frame.origin) {
         scrollView.scrollRectToVisible(focusedTextField.frame, animated: true)
       }
@@ -192,7 +179,6 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   func keyboardWillHide(notification: NSNotification) {
-    view.frame = originalViewFrame
     scrollView.contentInset = originalScrollViewContentInsets
     scrollView.scrollIndicatorInsets = originalScrollViewScrollIndicatorInsets
   }
