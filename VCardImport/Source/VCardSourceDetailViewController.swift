@@ -30,9 +30,6 @@ class VCardSourceDetailViewController: UIViewController {
   private var scrollView: UIScrollView!
   private var focusedTextField: UITextField!
 
-  private var originalScrollViewContentInsets = UIEdgeInsetsZero
-  private var originalScrollViewScrollIndicatorInsets = UIEdgeInsetsZero
-
   // MARK: Controller Life Cycle
 
   init(
@@ -141,11 +138,7 @@ class VCardSourceDetailViewController: UIViewController {
   // MARK: Notification Handlers
 
   func keyboardDidShow(notification: NSNotification) {
-    // from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
-
-    func topOffset() -> CGFloat {
-      return topLayoutGuide.length
-    }
+    // adapted from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
 
     func bottomOffset(info: [NSObject: AnyObject]) -> CGFloat {
       let nsvalue = info[UIKeyboardFrameBeginUserInfoKey]! as NSValue
@@ -155,13 +148,9 @@ class VCardSourceDetailViewController: UIViewController {
     }
 
     if let info = notification.userInfo {
-      let top = topOffset()
+      let top = topLayoutGuide.length
       let bottom = bottomOffset(info)
-
       let contentInsets = UIEdgeInsets(top: top, left: 0, bottom: bottom, right: 0)
-
-      originalScrollViewContentInsets = scrollView.contentInset
-      originalScrollViewScrollIndicatorInsets = scrollView.scrollIndicatorInsets
 
       scrollView.contentInset = contentInsets
       scrollView.scrollIndicatorInsets = contentInsets
@@ -173,8 +162,13 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   func keyboardWillHide(notification: NSNotification) {
-    scrollView.contentInset = originalScrollViewContentInsets
-    scrollView.scrollIndicatorInsets = originalScrollViewScrollIndicatorInsets
+    let contentInsets = UIEdgeInsets(
+      top: topLayoutGuide.length,
+      left: 0,
+      bottom: bottomLayoutGuide.length,
+      right: 0)
+    scrollView.contentInset = contentInsets
+    scrollView.scrollIndicatorInsets = contentInsets
   }
 
   func resetFontSizes() {
