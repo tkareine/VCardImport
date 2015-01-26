@@ -27,21 +27,9 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="esU-Tg-j4A">
                             <rect key="frame" x="0.0" y="1" width="480" height="57"/>
-                            <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7M9-et-G4z">
-                                    <rect key="frame" x="8" y="14" width="48" height="30"/>
-                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                    <state key="normal" title="Import">
-                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                </button>
-                            </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstItem="7M9-et-G4z" firstAttribute="leading" secondItem="esU-Tg-j4A" secondAttribute="leading" constant="8" id="33N-bV-rqs"/>
                                 <constraint firstAttribute="height" constant="57" id="arj-VV-cbP"/>
-                                <constraint firstItem="7M9-et-G4z" firstAttribute="top" secondItem="esU-Tg-j4A" secondAttribute="top" constant="14" id="iui-hU-p8Q"/>
-                                <constraint firstAttribute="bottom" secondItem="7M9-et-G4z" secondAttribute="bottom" constant="13" id="pJK-Bb-H21"/>
                             </constraints>
                         </view>
                     </subviews>
