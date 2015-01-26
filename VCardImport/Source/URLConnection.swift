@@ -3,7 +3,8 @@ import Alamofire
 
 class URLConnection {
   typealias Headers = [String: String]
-  typealias OnProgressCallback = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64) -> Void
+  typealias ProgressBytes = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)
+  typealias OnProgressCallback = ProgressBytes -> Void
 
   private let DefaultHeaders = [
     "User-Agent": "\(Config.Executable)/\(Config.BundleIdentifier) (\(Config.Version); OS \(Config.OS))"

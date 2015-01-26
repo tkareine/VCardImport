@@ -2,7 +2,7 @@ import Foundation
 import AddressBook
 
 class VCardImporter {
-  typealias OnSourceDownloadCallback = (VCardSource, (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)) -> Void
+  typealias OnSourceDownloadCallback = (VCardSource, URLConnection.ProgressBytes) -> Void
   typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, ModifiedHeaderStamp?, NSError?) -> Void
   typealias OnCompleteCallback = NSError? -> Void
 
@@ -274,9 +274,9 @@ class VCardImporter {
 
   private func downloadSource(source: VCardSource) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
-    let onProgressCallback: URLConnection.OnProgressCallback = { bytes, totalBytes, totalBytesExpected in
+    let onProgressCallback: URLConnection.OnProgressCallback = { progressBytes in
       QueueExecution.async(QueueExecution.mainQueue) {
-        self.onSourceDownload(source, (bytes, totalBytes, totalBytesExpected))
+        self.onSourceDownload(source, progressBytes)
       }
     }
     let future = urlConnection

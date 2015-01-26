@@ -8,7 +8,7 @@ class VCardSourcesViewController: UITableViewController {
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
   private var vcardImporter: VCardImporter!
-  private var progressState: VCardProgressState!
+  private var vcardImportProgress: VCardImportProgress!
 
   // MARK: View Controller Life Cycle
 
@@ -41,7 +41,8 @@ class VCardSourcesViewController: UITableViewController {
       .queueTo(QueueExecution.mainQueue)
       .onSourceDownload { [weak self] source, progress in
         if let s = self {
-          s.progressState.inProgress(.Downloading(progress), forSource: source)
+          let ratio = Float(progress.bytes) / Float(progress.totalBytesExpected)
+          s.inProgress(.Downloading(completionStepRatio: ratio), forSource: source)
         }
       }
       .onSourceComplete { [weak self] source, changes, modifiedHeaderStamp, error in
@@ -54,7 +55,7 @@ class VCardSourcesViewController: UITableViewController {
               changes: changes!,
               modifiedHeaderStamp: modifiedHeaderStamp)
           }
-          s.progressState.inProgress(.Completed, forSource: source)
+          s.inProgress(.Completed, forSource: source)
           s.reloadTableViewSourceRow(source)
         }
       }
@@ -156,7 +157,7 @@ class VCardSourcesViewController: UITableViewController {
 
     toolbar.importButton.enabled =
       !editing &&
-      progressState == nil &&
+      vcardImportProgress == nil &&
       dataSource.hasEnabledVCardSources
   }
 
@@ -180,12 +181,22 @@ class VCardSourcesViewController: UITableViewController {
   }
 
   private func beginProgress(sources: [VCardSource]) {
-    progressState = VCardProgressState(toolbar: toolbar, sources: sources)
+    vcardImportProgress = VCardImportProgress(sourceIds: sources.map { $0.id })
     toolbar.beginProgress("Checking for changes…")
   }
 
+  private func inProgress(
+    type: VCardImportProgress.Progress,
+    forSource source: VCardSource)
+  {
+    let progress = vcardImportProgress.step(type, forId: source.id)
+    let text = type.describeProgress(source.name)
+    NSLog("Import progress: %0.1f%% %@", progress * 100, text)
+    toolbar.inProgress(text: text, progress: progress)
+  }
+
   private func endProgress() {
-    progressState = nil
+    vcardImportProgress = nil
     toolbar.endProgress()
   }
 
