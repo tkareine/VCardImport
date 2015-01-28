@@ -24,7 +24,7 @@ struct VCardSource {
   static func empty() -> VCardSource {
     return self(
       name: "",
-      connection: Connection(url: ""),
+      connection: Connection.empty(),
       isEnabled: true)
   }
 
@@ -91,10 +91,11 @@ struct VCardSource {
       self.password = password
     }
 
-    init(url: String) {
-      self.url = url
-      username = ""
-      password = ""
+    static func empty() -> Connection {
+      return self(
+        url: "",
+        username: "",
+        password: "")
     }
 
     func toURL() -> NSURL {
@@ -153,7 +154,10 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return self(url: dictionary["url"] as String)
+    return self(
+      url: dictionary["url"] as String,
+      username: "",
+      password: "")
   }
 }
 
