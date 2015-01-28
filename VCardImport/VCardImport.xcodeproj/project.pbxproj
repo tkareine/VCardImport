@@ -392,7 +392,7 @@
 				E9401B911A7413E30078AD51 /* PBXTargetDependency */,
 			);
 			name = "vCard Turbo";
-			productName = vCardImport;
+			productName = "$(TARGET_NAME)";
 			productReference = E983F1D219E9C76F00219305 /* vCard Turbo.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -741,7 +741,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCardImport.app/vCardImport";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCard Turbo.app/vCard Turbo";
 			};
 			name = Debug;
 		};
@@ -756,7 +756,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCardImport.app/vCardImport";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCard Turbo.app/vCard Turbo";
 			};
 			name = Release;
 		};
