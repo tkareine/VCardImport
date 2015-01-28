@@ -56,6 +56,7 @@ extension NSDate {
   }
 }
 
+// adapted and modified from https://gist.github.com/dperini/729294
 /* Regular expression for validating HTTP(S) URLs, modified from
  * Diego Perini's regular expression at
  * <https://gist.github.com/dperini/729294>.

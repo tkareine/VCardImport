@@ -138,7 +138,7 @@ class VCardSourceDetailViewController: UIViewController {
   // MARK: Notification Handlers
 
   func keyboardDidShow(notification: NSNotification) {
-    // adapted from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
+    // adapted and modified from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
 
     func bottomOffset(info: [NSObject: AnyObject]) -> CGFloat {
       let nsvalue = info[UIKeyboardFrameBeginUserInfoKey]! as NSValue
