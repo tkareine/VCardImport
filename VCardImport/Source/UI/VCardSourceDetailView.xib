@@ -22,7 +22,7 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="o4r-Pt-0I5" customClass="UIControl">
+        <view contentMode="scaleToFill" id="o4r-Pt-0I5" userLabel="vCard Source Detail View" customClass="UIControl">
             <rect key="frame" x="0.0" y="0.0" width="320" height="297"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
