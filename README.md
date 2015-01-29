@@ -24,7 +24,7 @@ sources from importing, too.
 After downloading a remote vCard file, the app builds changesets from
 the contact record data inside it.
 
-An imported contact record is considered as new if there's no other
+An imported contact record is considered new if there's no other
 contact with the same name in the phone's address book (by comparing
 records' first and last names). Such a contact gets added to the
 address book as is.
@@ -32,9 +32,10 @@ address book as is.
 A contact record with one matching name in the address book is
 considered a candidate for possible changes in record fields. The app
 marks a single-value-field (such as the job title) for addition if the
-record has no existing value for it. For multi-value-fields (such as
-phone numbers), any field with nonexisting values gets marked for
-addition. The labels of multi-value-fields are ignored.
+record in the address book has no existing value for it. For
+multi-value-fields (such as phone numbers), any field with nonexisting
+values in the address book gets marked for addition. The labels of
+multi-value-fields are not compared.
 
 If there are multiple name matches for an imported contact record, the
 app ignores the record.
@@ -51,8 +52,8 @@ job title values for the same person from other sources.
 
 ## Technical features
 
-* The app utilizes HEAD request to avoid unnecessary downloading of the
-  remote file by checking if the Etag or Modified-Since response
+* The app utilizes HEAD request to avoid unnecessary downloading of
+  the remote file by checking if the Etag or Last-Modified response
   header has changed since the last import.
 * The import job downloads and parses each vCard source asynchronously
   and in parallel (if the system lets it). The application of
@@ -63,13 +64,13 @@ job title values for the same person from other sources.
   last URL validation request gets counted in, tackling the problem of
   interleaved responses).
 * Uses [Futures](https://github.com/tkareine/ToyFuture) for handling
-  complex asynchronous tasks.
+  complex asynchronous tasks and their dependencies to each other.
 * Stores nonsensitive user data to `NSUserDefaults`, JSON encoded.
 * Stores sensitive user data (usernames and passwords, currently) to
   the phone's keychain, JSON encoded.
 * The progress bar shown while importing has granularity up to the
   download progress of each individual vCard source. Record changeset
-  application gets counted in, too.
+  application counts as well.
 
 ## Acknowledgements
 
@@ -86,7 +87,7 @@ original form:
 Thanks to [Reaktor](http://reaktor.fi/) for sponsorship and the
 awesome people there for guidance! Tommi Asiala
 ([@tommi](https://github.com/tommi)) designed the app icon and got
-paid with a lunch coupon. :)
+paid with a lunch coupon. 😊
 
 ## Legal
 
