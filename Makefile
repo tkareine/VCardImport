@@ -4,7 +4,7 @@ INSTALL_PATH ?= /build
 .PHONY: test clean rproxy
 
 test:
-	xcodebuild -scheme VCardImport -target Test -destination 'platform=iOS Simulator,name=iPhone 5s,OS=latest' -destination-timeout 10 test
+	xcodebuild -scheme VCardImport -target Test -destination 'platform=iOS Simulator,name=iPhone 5s,OS=latest' -destination-timeout 10 test ONLY_ACTIVE_ARCH=YES
 
 clean:
 	rm -fr build DerivedData
