@@ -27,18 +27,18 @@ class CoreExtensionTests: XCTestCase {
   }
 
   func testDateISOString() {
-    var date = NSDate(timeIntervalSinceReferenceDate: 0)
+    let date = NSDate(timeIntervalSinceReferenceDate: 0)
     XCTAssertEqual(date.ISOString, "2001-01-01T00:00:00Z")
   }
 
   func testDateFromISOString() {
-    var date = NSDate.dateFromISOString("2001-01-01T00:00:00Z")!
+    let date = NSDate.dateFromISOString("2001-01-01T00:00:00Z")!
     XCTAssertEqual(date, NSDate(timeIntervalSinceReferenceDate: 0))
   }
 
   func testDateFromAndToISOString() {
     let isoString = "2014-12-23T10:32:45Z"
-    var date = NSDate.dateFromISOString(isoString)!
+    let date = NSDate.dateFromISOString(isoString)!
     XCTAssertEqual(date.ISOString as String, isoString)
   }
 

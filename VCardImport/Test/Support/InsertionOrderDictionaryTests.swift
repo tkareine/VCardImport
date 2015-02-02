@@ -2,7 +2,7 @@ import XCTest
 
 class InsertionOrderDictionaryTests: XCTestCase {
   func testEmpty() {
-    var dict: InsertionOrderDictionary<String, Int> = InsertionOrderDictionary()
+    let dict: InsertionOrderDictionary<String, Int> = InsertionOrderDictionary()
 
     XCTAssertTrue(dict.isEmpty)
     XCTAssertEqual(dict.count, 0)
@@ -112,13 +112,13 @@ class InsertionOrderDictionaryTests: XCTestCase {
   }
 
   func testHasKey() {
-    var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14]
+    let dict: InsertionOrderDictionary<String, Float> = ["a": 3.14]
     XCTAssertTrue(dict.hasKey("a"))
     XCTAssertFalse(dict.hasKey("b"))
   }
 
   func testIndexOf() {
-    var dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42]
+    let dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42]
     XCTAssertEqual(dict.indexOf("a")!, 0)
     XCTAssertEqual(dict.indexOf("b")!, 1)
     XCTAssert(dict.indexOf("c") == nil)
