@@ -6,10 +6,11 @@ from vCard files located at remote servers.
 You get new contacts and updates to existing contacts already on your
 phone. _The app never overwrites existing contact data on your phone._
 
-Save for granting the permission to access the address book, the app
-never asks anything from you. This is a tool for importing lots of
-contacts and you don't want to get bothered with questions about which
-new fields for which contacts you actually want to import.
+Save for granting the permission to access Contacts app (the address
+book), the app never asks anything from you. This is a tool for
+importing lots of contacts and you don't want to get bothered with
+questions about which new fields for which contacts you actually want
+to import.
 
 The app supports accessing vCard files with http(s), optionally with
 basic authentication. It avoids unnecessary downloading if the remote
@@ -18,6 +19,10 @@ vCard file has not been changed since the last check.
 There may be multiple sources for remote vCards. The app attempts to
 download vCard files from all of them. You can disable individual
 sources from importing, too.
+
+*NOTE:* Use the app to import contacts only from sources you
+trust. The app is designed to import all contacts from the sources you
+specify. You should make a backup of your contacts before use.
 
 ## Contact importing algorithm
 
