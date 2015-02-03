@@ -41,8 +41,10 @@ class VCardSourcesViewController: UITableViewController {
       .queueTo(QueueExecution.mainQueue)
       .onSourceDownload { [weak self] source, progress in
         if let s = self {
-          let ratio = Float(progress.bytes) / Float(progress.totalBytesExpected)
-          s.inProgress(.Downloading(completionStepRatio: ratio), forSource: source)
+          if progress.totalBytesExpected > 0 {
+            let ratio = Float(progress.bytes) / Float(progress.totalBytesExpected)
+            s.inProgress(.Downloading(completionStepRatio: ratio), forSource: source)
+          }
         }
       }
       .onSourceComplete { [weak self] source, changes, modifiedHeaderStamp, error in
