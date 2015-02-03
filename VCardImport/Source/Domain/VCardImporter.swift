@@ -294,7 +294,12 @@ class VCardImporter {
   private func loadRecordsFromFile(fileURL: NSURL) -> Future<[ABRecord]> {
     let vcardData = NSData(contentsOfURL: fileURL)
     if let records = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData) {
-      return Future.succeeded(records.takeRetainedValue())
+      let foundRecords: [ABRecord] = records.takeRetainedValue()
+      if foundRecords.isEmpty {
+        return Future.failed("no contact data found from vCard file")
+      } else {
+        return Future.succeeded(foundRecords)
+      }
     } else {
       return Future.failed("invalid vCard file")
     }
