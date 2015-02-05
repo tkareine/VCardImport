@@ -1,9 +1,4 @@
-<h1>
-  <a href="https://itunes.apple.com/fi/app/vcard-turbo/id961567696">
-    <img src="Resources/vt-rounded-60@2x.png?raw=true" width="60" height="60" style="vertical-align: middle; margin-bottom: 0.2em">
-  </a>
-  vCard Turbo
-</h1>
+# vCard Turbo
 
 Keep your organization's contacts up to date by importing contacts
 from vCard files located at remote servers.
@@ -29,8 +24,10 @@ sources from importing, too.
 trust. The app is designed to import all contacts from the sources you
 specify. You should make a backup of your contacts before use.
 
-<img src="Resources/screenshot-importing-iphone5s.png?raw=true" width="213" height="378" style="border: 1px solid black">
-<img src="Resources/screenshot-add-source-iphone5s.png?raw=true" width="213" height="378" style="border: 1px solid black; margin-left: 20px;">
+<a href="https://itunes.apple.com/fi/app/vcard-turbo/id961567696"><img src="Resources/vt-rounded-60@2x.png?raw=true" width="60" height="60"></a>
+
+<img src="Resources/screenshot-importing-iphone5s.png?raw=true" width="213" height="378">
+<img src="Resources/screenshot-add-source-iphone5s.png?raw=true" width="213" height="378">
 
 ## Contact importing algorithm
 
