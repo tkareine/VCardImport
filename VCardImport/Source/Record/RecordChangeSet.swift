@@ -33,7 +33,9 @@ struct RecordChangeSet {
     kABPersonEmailProperty,
     kABPersonPhoneProperty,
     kABPersonURLProperty,
-    kABPersonAddressProperty
+    kABPersonAddressProperty,
+    kABPersonInstantMessageProperty,
+    kABPersonSocialProfileProperty
   ]
 
   private static func findSingleValueChanges(
