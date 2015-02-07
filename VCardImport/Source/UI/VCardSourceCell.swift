@@ -5,6 +5,9 @@ class VCardSourceCell: UITableViewCell {
   @IBOutlet weak var descriptionLabel: UILabel!
   @IBOutlet weak var iconLabel: UILabel!
 
+  @IBOutlet weak var headerLabelLeadingConstraint: NSLayoutConstraint!
+  @IBOutlet weak var descriptionLabelLeadingConstraint: NSLayoutConstraint!
+
   // MARK: View Life Cycle
 
   override func awakeFromNib() {
@@ -40,6 +43,11 @@ class VCardSourceCell: UITableViewCell {
       descriptionLabel.text = "Not imported yet"
       iconLabel.text = nil
     }
+  }
+
+  func setContentLeadingSpace(spacing: CGFloat) {
+    headerLabelLeadingConstraint.constant = spacing
+    descriptionLabelLeadingConstraint.constant = spacing
   }
 
   // MARK: Notification Handlers
