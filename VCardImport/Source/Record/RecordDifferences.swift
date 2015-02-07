@@ -21,7 +21,7 @@ struct RecordDifferences {
     var uniqueRecords: [RecordName: ABRecord] = [:]
     var skipRecords: [RecordName: Bool] = [:]
     for rec in records {
-      if let name = RecordName(ofRecord: rec) {
+      if let name = RecordName.of(rec) {
         if uniqueRecords.hasKey(name) {
           uniqueRecords.removeValueForKey(name)
           skipRecords[name] = true
@@ -43,7 +43,7 @@ struct RecordDifferences {
 
     for (newRecordName, newRecord) in newRecords {
       let existingRecordsWithName = oldRecords.filter { oldRecord in
-        if let oldRecordName = RecordName(ofRecord: oldRecord) {
+        if let oldRecordName = RecordName.of(oldRecord) {
           return oldRecordName == newRecordName
         } else {
           return false
