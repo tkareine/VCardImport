@@ -62,8 +62,128 @@ class VCardSourceDetailViewController: UIViewController {
   // MARK: View Life Cycle
 
   override func viewDidLoad() {
+    func makeScrollView() -> UIScrollView {
+      let sv = UIScrollView()
+      sv.backgroundColor = UIColor.whiteColor()
+      sv.setTranslatesAutoresizingMaskIntoConstraints(false)
+      return sv
+    }
+
+    func makeDetailView() -> UIView {
+      let dv = NSBundle
+        .mainBundle()
+        .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as UIView
+      dv.setTranslatesAutoresizingMaskIntoConstraints(false)
+      return dv
+    }
+
+    func setupSubviews() {
+      nameField.text = source.name
+      urlField.text = source.connection.url
+      isEnabledSwitch.on = source.isEnabled
+      urlValidationLabel.alpha = 0
+      isValidatingURLIndicator.hidesWhenStopped = true
+      usernameField.text = source.connection.username
+      passwordField.text = source.connection.password
+
+      if isNewSource {
+        isEnabledLabel.hidden = true
+        isEnabledSwitch.hidden = true
+      }
+    }
+
+    func setupTextFieldDelegates() {
+      nameField.delegate = textFieldDelegate
+      urlField.delegate = textFieldDelegate
+      usernameField.delegate = textFieldDelegate
+      passwordField.delegate = textFieldDelegate
+
+      let fields = [nameField, urlField, usernameField, passwordField]
+
+      for f in fields {
+        textFieldDelegate.addOnBeginEditing(f) { [unowned self] tf in
+          self.focusedTextField = tf
+        }
+
+        textFieldDelegate.addOnEndEditing(f) { [unowned self] tf in
+          self.focusedTextField = nil
+        }
+
+        textFieldDelegate.addOnShouldReturn(f) { [unowned self] tf in
+          tf.resignFirstResponder()
+          return true
+        }
+      }
+    }
+
+    func setupBackgroundTap() {
+      let tapRecognizer = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
+      view.addGestureRecognizer(tapRecognizer)
+      view.userInteractionEnabled = true
+    }
+
+    func setupLayout(contentView: UIView) {
+      let viewNamesToObjects = [
+        "scrollView": scrollView,
+        "contentView": contentView
+      ]
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "H:|[scrollView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "V:|[scrollView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "H:|[contentView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "V:|[contentView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      view.addConstraint(NSLayoutConstraint(
+        item: contentView,
+        attribute: .Leading,
+        relatedBy: .Equal,
+        toItem: view,
+        attribute: .Left,
+        multiplier: 1,
+        constant: 0))
+
+      view.addConstraint(NSLayoutConstraint(
+        item: contentView,
+        attribute: .Trailing,
+        relatedBy: .Equal,
+        toItem: view,
+        attribute: .Right,
+        multiplier: 1,
+        constant: 0))
+    }
+
     super.viewDidLoad()
-    setupView()
+
+    scrollView = makeScrollView()
+    let detailView = makeDetailView()
+    resetFontSizes()
+    setupSubviews()
+    setupTextFieldDelegates()
+    setupBackgroundTap()
+
+    scrollView.addSubview(detailView)
+    view.addSubview(scrollView)
+
+    setupLayout(detailView)
   }
 
   override func viewWillAppear(animated: Bool) {
@@ -186,129 +306,6 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   // MARK: Helpers
-
-  private func setupView() {
-    func makeScrollView() -> UIScrollView {
-      let sv = UIScrollView()
-      sv.backgroundColor = UIColor.whiteColor()
-      sv.setTranslatesAutoresizingMaskIntoConstraints(false)
-      return sv
-    }
-
-    func makeDetailView() -> UIView {
-      let dv = NSBundle
-        .mainBundle()
-        .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as UIView
-      dv.setTranslatesAutoresizingMaskIntoConstraints(false)
-      return dv
-    }
-
-    func setupSubviews() {
-      nameField.text = source.name
-      urlField.text = source.connection.url
-      isEnabledSwitch.on = source.isEnabled
-      urlValidationLabel.alpha = 0
-      isValidatingURLIndicator.hidesWhenStopped = true
-      usernameField.text = source.connection.username
-      passwordField.text = source.connection.password
-
-      if isNewSource {
-        isEnabledLabel.hidden = true
-        isEnabledSwitch.hidden = true
-      }
-    }
-
-    func setupTextFieldDelegates() {
-      nameField.delegate = textFieldDelegate
-      urlField.delegate = textFieldDelegate
-      usernameField.delegate = textFieldDelegate
-      passwordField.delegate = textFieldDelegate
-
-      let fields = [nameField, urlField, usernameField, passwordField]
-
-      for f in fields {
-        textFieldDelegate.addOnBeginEditing(f) { [unowned self] tf in
-          self.focusedTextField = tf
-        }
-
-        textFieldDelegate.addOnEndEditing(f) { [unowned self] tf in
-          self.focusedTextField = nil
-        }
-
-        textFieldDelegate.addOnShouldReturn(f) { [unowned self] tf in
-          tf.resignFirstResponder()
-          return true
-        }
-      }
-    }
-
-    func setupBackgroundTap() {
-      let tapRecognizer = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
-      view.addGestureRecognizer(tapRecognizer)
-      view.userInteractionEnabled = true
-    }
-
-    func setupLayout(contentView: UIView) {
-      let viewNamesToObjects = [
-        "scrollView": scrollView,
-        "contentView": contentView
-      ]
-
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|[scrollView]|",
-        options: nil,
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:|[scrollView]|",
-        options: nil,
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|[contentView]|",
-        options: nil,
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:|[contentView]|",
-        options: nil,
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      view.addConstraint(NSLayoutConstraint(
-        item: contentView,
-        attribute: .Leading,
-        relatedBy: .Equal,
-        toItem: view,
-        attribute: .Left,
-        multiplier: 1,
-        constant: 0))
-
-      view.addConstraint(NSLayoutConstraint(
-        item: contentView,
-        attribute: .Trailing,
-        relatedBy: .Equal,
-        toItem: view,
-        attribute: .Right,
-        multiplier: 1,
-        constant: 0))
-    }
-
-    scrollView = makeScrollView()
-    let detailView = makeDetailView()
-    resetFontSizes()
-    setupSubviews()
-    setupTextFieldDelegates()
-    setupBackgroundTap()
-
-    scrollView.addSubview(detailView)
-    view.addSubview(scrollView)
-
-    setupLayout(detailView)
-  }
 
   private func setupFieldValidation() {
     nameFieldValidator = TextFieldValidator(
