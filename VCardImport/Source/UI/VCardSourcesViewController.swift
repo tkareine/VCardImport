@@ -1,10 +1,11 @@
 import UIKit
 
-class VCardSourcesViewController: UITableViewController {
+class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private let dataSource: VCardSourcesDataSource
-  private let toolbar: VCardToolbar
   private let urlConnection: URLConnection
 
+  private var toolbar: VCardToolbar!
+  private var tableView: UITableView!
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
   private var vcardImporter: VCardImporter!
@@ -14,27 +15,9 @@ class VCardSourcesViewController: UITableViewController {
 
   init(appContext: AppContext) {
     dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
-    toolbar = VCardToolbar()
     urlConnection = appContext.urlConnection
 
     super.init(nibName: nil, bundle: nil)
-
-    editButton = editButtonItem()
-
-    addButton = UIBarButtonItem(
-      barButtonSystemItem: .Add,
-      target: self,
-      action: "addVCardSource:")
-
-    toolbar.importButton.addTarget(
-      self,
-      action: "importVCardSources:",
-      forControlEvents: .TouchUpInside)
-
-    navigationItem.title = Config.Executable
-    navigationItem.leftBarButtonItem = editButton
-    navigationItem.rightBarButtonItem = addButton
-    tableView.dataSource = dataSource
 
     vcardImporter = VCardImporter.builder()
       .connectWith(urlConnection)
@@ -78,34 +61,84 @@ class VCardSourcesViewController: UITableViewController {
   // MARK: View Life Cycle
 
   override func viewDidLoad() {
+    func makeToolbar() -> VCardToolbar {
+      let tb = VCardToolbar()
+      tb.importButton.addTarget(
+        self,
+        action: "importVCardSources:",
+        forControlEvents: .TouchUpInside)
+      return tb
+    }
+
+    func makeTableView() -> UITableView {
+      let tv = UITableView()
+      tv.estimatedRowHeight = 95
+      tv.rowHeight = UITableViewAutomaticDimension
+      tv.dataSource = dataSource
+      tv.delegate = self
+      let cellNib = UINib(nibName: "VCardSourceCell", bundle: nil)
+      tv.registerNib(cellNib, forCellReuseIdentifier: Config.UI.TableCellReuseIdentifier)
+      return tv
+    }
+
+    func setupLayout() {
+      let viewNamesToObjects = [
+        "tableView": tableView,
+        "toolbar": toolbar
+      ]
+
+      tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
+      toolbar.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "H:|[tableView]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "H:|[toolbar]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "V:|[tableView][toolbar(==58)]|",
+        options: nil,
+        metrics: nil,
+        views: viewNamesToObjects))
+    }
+
     super.viewDidLoad()
-    let cellNib = UINib(nibName: "VCardSourceCell", bundle: nil)
-    tableView.registerNib(cellNib, forCellReuseIdentifier: Config.UI.TableCellReuseIdentifier)
+
+    toolbar = makeToolbar()
+    tableView = makeTableView()
+
+    view.addSubview(tableView)
+    view.addSubview(toolbar)
+
+    setupLayout()
+
+    editButton = editButtonItem()
+    navigationItem.leftBarButtonItem = editButton
+
+    addButton = UIBarButtonItem(
+      barButtonSystemItem: .Add,
+      target: self,
+      action: "addVCardSource:")
+    navigationItem.rightBarButtonItem = addButton
+
+    navigationItem.title = Config.Executable
   }
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    tableView.estimatedRowHeight = 95
-    tableView.rowHeight = UITableViewAutomaticDimension
-    addToolbarToNavigationController()
     refreshButtonsEnabledStates()
   }
 
-  override func viewWillDisappear(animated: Bool) {
-    super.viewWillDisappear(animated)
-    removeToolbarFromNavigationController()
-  }
+  // MARK: UITableViewDelegate
 
-  // MARK: Table View Customization
-
-  override func setEditing(editing: Bool, animated: Bool) {
-    super.setEditing(editing, animated: animated)
-    refreshButtonsEnabledStates()
-  }
-
-  // MARK: Actions
-
-  override func tableView(
+  func tableView(
     tableView: UITableView,
     didSelectRowAtIndexPath indexPath: NSIndexPath)
   {
@@ -118,6 +151,14 @@ class VCardSourcesViewController: UITableViewController {
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
       }
     self.navigationController!.pushViewController(vc, animated: true)
+  }
+
+  // MARK: Actions
+
+  override func setEditing(editing: Bool, animated: Bool) {
+    super.setEditing(editing, animated: animated)
+    tableView.setEditing(editing, animated: animated)
+    refreshButtonsEnabledStates()
   }
 
   func addVCardSource(sender: AnyObject) {
@@ -138,16 +179,6 @@ class VCardSourcesViewController: UITableViewController {
     beginProgress(sources)
     refreshButtonsEnabledStates()
     vcardImporter.importFrom(sources)
-  }
-
-  // MARK: Environment Changes
-
-  override func viewWillTransitionToSize(
-    size: CGSize,
-    withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
-  {
-    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-    setToolbarFrame(size)
   }
 
   // MARK: Helpers
@@ -200,27 +231,5 @@ class VCardSourcesViewController: UITableViewController {
   private func endProgress() {
     vcardImportProgress = nil
     toolbar.endProgress()
-  }
-
-  private func addToolbarToNavigationController() {
-    if let nc = navigationController {
-      setToolbarFrame(nc.view.frame.size)
-      nc.view.addSubview(toolbar)
-    }
-  }
-
-  private func removeToolbarFromNavigationController() {
-    if navigationController != nil {
-      toolbar.removeFromSuperview()
-    }
-  }
-
-  private func setToolbarFrame(size: CGSize) {
-    let toolbarHeight: CGFloat = 58
-    toolbar.frame = CGRect(
-      x: 0,
-      y: size.height - toolbarHeight,
-      width: size.width,
-      height: toolbarHeight)
   }
 }
