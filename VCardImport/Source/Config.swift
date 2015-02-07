@@ -58,6 +58,8 @@ struct Config {
     static let TableCellHeaderTextColor = UIColor.blackColor()
     static let TableCellDescriptionTextColor = UIColor(white: 0.3, alpha: 1)
     static let TableCellDisabledTextColor = UIColor.grayColor()
+    static let ToolbarBackgroundColor = UIColor(white: 0.97, alpha: 1)
+    static let ToolbarBorderColor = UIColor(white: 0.8, alpha: 1).CGColor
     static let ToolbarProgressTextColor = TableCellDescriptionTextColor
     static let ValidationBorderColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.6).CGColor
     static let ValidationBorderWidth: CGFloat = 2

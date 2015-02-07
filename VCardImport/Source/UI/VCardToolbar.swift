@@ -32,7 +32,7 @@ class VCardToolbar: UIView {
     layer.addSublayer(border)
     addSubview(progressView)
 
-    backgroundColor = UIColor.whiteColor()
+    backgroundColor = Config.UI.ToolbarBackgroundColor
 
     setupLayout()
 
@@ -126,7 +126,7 @@ class VCardToolbar: UIView {
   private func makeBorderLayer() -> CALayer {
     let layer = CALayer()
     layer.frame = getBorderLayerRect(bounds)
-    layer.backgroundColor = UIColor(white: 0.8, alpha: 1).CGColor
+    layer.backgroundColor = Config.UI.ToolbarBorderColor
     return layer
   }
 
