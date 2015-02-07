@@ -161,6 +161,7 @@ class RecordDifferencesTests: XCTestCase {
   func testSkipsRecordAdditionForMultipleNewRecordsWithSameName() {
     let newRecords = [
       makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "middle"),
       makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
@@ -185,6 +186,7 @@ class RecordDifferencesTests: XCTestCase {
   func testSkipsRecordChangeForMultipleOldRecordsHavingSameName() {
     let oldRecords = [
       makePersonRecord(firstName: "Arnold", lastName: "Alpha"),
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha"),
       makePersonRecord(firstName: "Arnold", lastName: "Alpha")
     ]
     let newRecord: ABRecord = makePersonRecord(
@@ -203,6 +205,7 @@ class RecordDifferencesTests: XCTestCase {
     let oldRecord: ABRecord = makePersonRecord(firstName: "Arnold", lastName: "Alpha")
     let newRecords = [
       makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
+      makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "middle"),
       makePersonRecord(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter")
     ]
     let recordDiff = RecordDifferences.resolveBetween(

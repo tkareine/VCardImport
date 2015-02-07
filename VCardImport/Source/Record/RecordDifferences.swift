@@ -18,17 +18,19 @@ struct RecordDifferences {
   }
 
   private static func uniqueRecordsOf(records: [ABRecord]) -> [RecordName: ABRecord] {
-    var result: [RecordName: ABRecord] = [:]
+    var uniqueRecords: [RecordName: ABRecord] = [:]
+    var skipRecords: [RecordName: Bool] = [:]
     for rec in records {
       if let name = RecordName(ofRecord: rec) {
-        if result.hasKey(name) {
-          result.removeValueForKey(name)
-        } else {
-          result[name] = rec
+        if uniqueRecords.hasKey(name) {
+          uniqueRecords.removeValueForKey(name)
+          skipRecords[name] = true
+        } else if !skipRecords.hasKey(name) {
+          uniqueRecords[name] = rec
         }
       }
     }
-    return result
+    return uniqueRecords
   }
 
   private static func findAdditionsAndExistingMatchesBetween(
