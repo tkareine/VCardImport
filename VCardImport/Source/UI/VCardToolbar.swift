@@ -8,19 +8,6 @@ class VCardToolbar: UIView {
 
   private let border: CALayer!
 
-  override var frame: CGRect {
-    get {
-      return super.frame
-    }
-
-    set {
-      super.frame = newValue
-      if border != nil {
-        border.frame = getBorderLayerRect(newValue)
-      }
-    }
-  }
-
   // MARK: View Life Cycle
 
   override init() {
@@ -34,7 +21,7 @@ class VCardToolbar: UIView {
     backupButton = makeButton("Backup", align: .Right)
     progressLabel = makeProgressLabel()
     progressView = makeProgressView()
-    border = makeBorderLayer(frame)
+    border = makeBorderLayer()
 
     addSubview(importButton)
     addSubview(backupButton)
@@ -93,6 +80,13 @@ class VCardToolbar: UIView {
     progressView.setProgress(progress, animated: true)
   }
 
+  // MARK: Laying out Subviews
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    border.frame = getBorderLayerRect(bounds)
+  }
+
   // MARK: Helpers
 
   private func makeButton(
@@ -129,15 +123,15 @@ class VCardToolbar: UIView {
     return view
   }
 
-  private func makeBorderLayer(frame: CGRect) -> CALayer {
+  private func makeBorderLayer() -> CALayer {
     let layer = CALayer()
-    layer.frame = getBorderLayerRect(frame)
+    layer.frame = getBorderLayerRect(bounds)
     layer.backgroundColor = UIColor(white: 0.8, alpha: 1).CGColor
     return layer
   }
 
-  private func getBorderLayerRect(frame: CGRect) -> CGRect {
-    return CGRect(x: 0, y: 0, width: frame.size.width, height: 1)
+  private func getBorderLayerRect(bounds: CGRect) -> CGRect {
+    return CGRect(x: 0, y: 0, width: bounds.size.width, height: 1)
   }
 
   private func setupLayout() {
