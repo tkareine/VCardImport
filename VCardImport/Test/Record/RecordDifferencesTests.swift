@@ -18,12 +18,15 @@ class RecordDifferencesTests: XCTestCase {
       city: "Sacramento",
       state: "CA")
     let newRecord: ABRecord = makePersonRecord(
+      prefixName: "Mr.",
       firstName: "Arnold",
+      nickName: "Arnie",
       middleName: "Big",
       lastName: "Alpha",
+      suffixName: "Senior",
+      organization: "State Council",
       jobTitle: "Manager",
       department: "Headquarters",
-      organization: "State Council",
       phones: [(kABPersonPhoneMainLabel, "5551001002")],
       emails: [("Home", "arnold.alpha@example.com")],
       urls: [("Work", "https://exampleinc.com/")],
@@ -38,11 +41,27 @@ class RecordDifferencesTests: XCTestCase {
 
     let singleValueChanges = recordDiff.changes.first!.singleValueChanges
 
-    XCTAssertEqual(singleValueChanges.count, 4)
+    XCTAssertEqual(singleValueChanges.count, 7)
+
+    let prefixNameChange = singleValueChanges[kABPersonPrefixProperty]!
+
+    XCTAssertEqual(prefixNameChange, "Mr.")
+
+    let nickNameChange = singleValueChanges[kABPersonNicknameProperty]!
+
+    XCTAssertEqual(nickNameChange, "Arnie")
 
     let middleNameChange = singleValueChanges[kABPersonMiddleNameProperty]!
 
     XCTAssertEqual(middleNameChange, "Big")
+
+    let suffixNameChange = singleValueChanges[kABPersonSuffixProperty]!
+
+    XCTAssertEqual(suffixNameChange, "Senior")
+
+    let organizationChange = singleValueChanges[kABPersonOrganizationProperty]!
+
+    XCTAssertEqual(organizationChange, "State Council")
 
     let jobTitleChange = singleValueChanges[kABPersonJobTitleProperty]!
 
@@ -51,10 +70,6 @@ class RecordDifferencesTests: XCTestCase {
     let departmentChange = singleValueChanges[kABPersonDepartmentProperty]!
 
     XCTAssertEqual(departmentChange, "Headquarters")
-
-    let organizationChange = singleValueChanges[kABPersonOrganizationProperty]!
-
-    XCTAssertEqual(organizationChange, "State Council")
 
     let multiValueChanges = recordDiff.changes.first!.multiValueChanges
 
@@ -288,12 +303,15 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   private func makePersonRecord(
+    prefixName: NSString? = nil,
     firstName: NSString? = nil,
+    nickName: NSString? = nil,
     middleName: NSString? = nil,
     lastName: NSString? = nil,
+    suffixName: NSString? = nil,
+    organization: NSString? = nil,
     jobTitle: NSString? = nil,
     department: NSString? = nil,
-    organization: NSString? = nil,
     phones: [(NSString, NSString)]? = nil,
     emails: [(NSString, NSString)]? = nil,
     urls: [(NSString, NSString)]? = nil,
@@ -301,8 +319,14 @@ class RecordDifferencesTests: XCTestCase {
     -> ABRecord
   {
     let record: ABRecord = ABPersonCreate().takeRetainedValue()
+    if let val = prefixName {
+      Records.setValue(val, toSingleValueProperty: kABPersonPrefixProperty, of: record)
+    }
     if let val = firstName {
       Records.setValue(val, toSingleValueProperty: kABPersonFirstNameProperty, of: record)
+    }
+    if let val = nickName {
+      Records.setValue(val, toSingleValueProperty: kABPersonNicknameProperty, of: record)
     }
     if let val = middleName {
       Records.setValue(val, toSingleValueProperty: kABPersonMiddleNameProperty, of: record)
@@ -310,14 +334,17 @@ class RecordDifferencesTests: XCTestCase {
     if let val = lastName {
       Records.setValue(val, toSingleValueProperty: kABPersonLastNameProperty, of: record)
     }
+    if let val = suffixName {
+      Records.setValue(val, toSingleValueProperty: kABPersonSuffixProperty, of: record)
+    }
+    if let val = organization {
+      Records.setValue(val, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
+    }
     if let val = jobTitle {
       Records.setValue(val, toSingleValueProperty: kABPersonJobTitleProperty, of: record)
     }
     if let val = department {
       Records.setValue(val, toSingleValueProperty: kABPersonDepartmentProperty, of: record)
-    }
-    if let val = organization {
-      Records.setValue(val, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
     }
     if let vals = phones {
       Records.addValues(vals, toMultiValueProperty: kABPersonPhoneProperty, of: record)

@@ -21,9 +21,12 @@ struct RecordChangeSet {
 
   static let TrackedSingleValueProperties = [
     kABPersonMiddleNameProperty,
+    kABPersonPrefixProperty,
+    kABPersonSuffixProperty,
+    kABPersonNicknameProperty,
+    kABPersonOrganizationProperty,
     kABPersonJobTitleProperty,
-    kABPersonDepartmentProperty,
-    kABPersonOrganizationProperty
+    kABPersonDepartmentProperty
   ]
 
   static let TrackedMultiValueProperties = [
