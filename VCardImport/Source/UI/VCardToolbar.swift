@@ -97,7 +97,8 @@ class VCardToolbar: UIView {
     let button = UIButton.buttonWithType(.System) as UIButton
     button.setTitle(title, forState: .Normal)
     if let label = button.titleLabel {
-      label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+      let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+      label.font = bodyFont.fontWithSize(16)
     }
     button.contentHorizontalAlignment = labelAlignment
     return button
@@ -109,8 +110,8 @@ class VCardToolbar: UIView {
     label.textAlignment = .Center
     label.textColor = Config.UI.ToolbarProgressTextColor
     label.adjustsFontSizeToFitWidth = true
-    label.font = label.font.fontWithSize(bodyFont.pointSize - 4)
-    label.minimumScaleFactor = 0.7
+    label.font = label.font.fontWithSize(13)
+    label.minimumScaleFactor = 0.85
     label.lineBreakMode = .ByWordWrapping
     label.numberOfLines = 2
     label.alpha = 0
