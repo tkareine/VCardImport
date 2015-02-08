@@ -46,11 +46,6 @@ class VCardImporter {
 
       let addressBook: ABAddressBook = addressBookOpt!
 
-      if !self.authorizeAddressBookAccess(addressBook, error: &error) {
-        QueueExecution.async(self.queue) { self.onComplete(error!) }
-        return
-      }
-
       let sourceImports: [(VCardSource, Future<SourceImportResult>)] = sources.map { source in
         (source, self.checkAndDownloadSource(source))
       }
@@ -138,26 +133,45 @@ class VCardImporter {
     }
   }
 
-  private func authorizeAddressBookAccess(
-    addressBook: ABAddressBook,
-    error: NSErrorPointer)
-    -> Bool
-  {
+  private func makeAddressBook(error: NSErrorPointer) -> ABAddressBook? {
+    func make() -> ABAddressBook? {
+      var abError: Unmanaged<CFError>?
+      let ab: Unmanaged<ABAddressBook>? = ABAddressBookCreateWithOptions(nil, &abError)
+
+      if let abRef = ab {
+        return abRef.takeRetainedValue()
+      }
+
+      if error != nil && abError != nil {
+        error.memory = Errors.fromCFError(abError!.takeRetainedValue())
+      }
+
+      return nil
+    }
+
     var authStatus = ABAddressBookGetAuthorizationStatus()
+    var addressBook: ABAddressBook?
 
     if authStatus == .NotDetermined {
-      authStatus = requestAddressBookAuthorizationAndWaitResult(addressBook)
+      if let ab: ABAddressBook = make() {
+        addressBook = ab
+        authStatus = requestAddressBookAuthorizationAndWaitResult(ab)
+      }
     }
 
     if authStatus != .Authorized {
       if error != nil {
-        error.memory = Errors.addressBookAccessDeniedOrResticted()
+        error.memory = Errors.addressBookAccessDeniedOrRestricted()
       }
 
-      return false
+      return nil
     }
 
-    return true
+    if let ab: ABAddressBook = addressBook {
+      return ab
+    } else {
+      return make()
+    }
   }
 
   private func requestAddressBookAuthorizationAndWaitResult(
@@ -175,21 +189,6 @@ class VCardImporter {
     semaphore.wait(timeout: 30_000)
 
     return authResolution ? .Authorized : .Denied
-  }
-
-  private func makeAddressBook(error: NSErrorPointer) -> ABAddressBook? {
-    var abError: Unmanaged<CFError>?
-    let ab: Unmanaged<ABAddressBook>? = ABAddressBookCreateWithOptions(nil, &abError)
-
-    if let abRef = ab {
-      return abRef.takeRetainedValue()
-    }
-
-    if error != nil && abError != nil {
-      error.memory = Errors.fromCFError(abError!.takeRetainedValue())
-    }
-
-    return nil
   }
 
   private func addRecords(

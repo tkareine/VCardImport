@@ -4,11 +4,11 @@ import AddressBook
 struct Errors {
   private static let Domain = Config.BundleIdentifier + ".Error"
 
-  static func addressBookAccessDeniedOrResticted() -> NSError {
+  static func addressBookAccessDeniedOrRestricted() -> NSError {
     return vcardError(
       code: 5,
       failureReason: "Contacts Access Error",
-      description: "The application needs access to Contacts, but the access is denied or restricted. Please allow access in System Settings.")
+      description: "The application needs access to Contacts, but access is denied or restricted. Please allow access in System Settings.")
   }
 
   static func addressBookFailedToLoadVCardSource(reason: String) -> NSError {
