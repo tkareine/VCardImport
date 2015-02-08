@@ -1,6 +1,7 @@
 import UIKit
 
 class VCardSourceDetailViewController: UIViewController {
+  @IBOutlet weak var noticeLabel: UILabel!
   @IBOutlet weak var nameLabel: UILabel!
   @IBOutlet weak var nameField: UITextField!
   @IBOutlet weak var urlLabel: UILabel!
@@ -65,16 +66,13 @@ class VCardSourceDetailViewController: UIViewController {
     func makeScrollView() -> UIScrollView {
       let sv = UIScrollView()
       sv.backgroundColor = UIColor.whiteColor()
-      sv.setTranslatesAutoresizingMaskIntoConstraints(false)
       return sv
     }
 
     func makeDetailView() -> UIView {
-      let dv = NSBundle
+      return NSBundle
         .mainBundle()
         .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as UIView
-      dv.setTranslatesAutoresizingMaskIntoConstraints(false)
-      return dv
     }
 
     func setupSubviews() {
@@ -127,6 +125,9 @@ class VCardSourceDetailViewController: UIViewController {
         "scrollView": scrollView,
         "contentView": contentView
       ]
+
+      scrollView.setTranslatesAutoresizingMaskIntoConstraints(false)
+      contentView.setTranslatesAutoresizingMaskIntoConstraints(false)
 
       view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[scrollView]|",
@@ -293,6 +294,7 @@ class VCardSourceDetailViewController: UIViewController {
 
   func resetFontSizes() {
     let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    noticeLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 4)
     nameLabel.font = bodyFont
     nameField.font = bodyFont
     urlLabel.font = bodyFont
