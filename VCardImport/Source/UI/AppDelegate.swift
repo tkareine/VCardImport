@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let navigationController = UINavigationController(rootViewController: vcardSourcesController)
 
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    window.tintColor = Config.UI.TintColor
     window.backgroundColor = UIColor.whiteColor()
     window.rootViewController = navigationController
     window.makeKeyAndVisible()
