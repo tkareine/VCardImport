@@ -105,7 +105,6 @@ class VCardToolbar: UIView {
   }
 
   private func makeProgressLabel() -> UILabel {
-    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
     let label = UILabel()
     label.textAlignment = .Center
     label.textColor = Config.UI.ToolbarProgressTextColor
