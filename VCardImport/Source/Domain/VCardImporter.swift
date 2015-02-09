@@ -219,7 +219,7 @@ class VCardImporter {
       for (property, value) in changeSet.singleValueChanges {
         let isChanged = Records.setValue(value, toSingleValueProperty: property, of: changeSet.record)
         if !isChanged {
-          setRecordChangeError(property: property, record: changeSet.record, error: error)
+          error.memory = Errors.addressBookFailedToChange(property, of: changeSet.record)
           return false
         }
       }
@@ -230,23 +230,21 @@ class VCardImporter {
           toMultiValueProperty: property,
           of: changeSet.record)
         if !isChanged {
-          setRecordChangeError(property: property, record: changeSet.record, error: error)
+          error.memory = Errors.addressBookFailedToChange(property, of: changeSet.record)
+          return false
+        }
+      }
+
+      if let img = changeSet.imageChange {
+        let isChanged = Records.setImage(img, of: changeSet.record)
+        if !isChanged {
+          error.memory = Errors.addressBookFailedToChangeImage(of: changeSet.record)
           return false
         }
       }
     }
 
     return true
-  }
-
-  private func setRecordChangeError(
-    #property: ABPropertyID,
-    record: ABRecord,
-    error: NSErrorPointer)
-  {
-    error.memory = Errors.addressBookFailedToChangeRecord(
-      name: ABRecordCopyCompositeName(record).takeRetainedValue(),
-      property: property)
   }
 
   private func checkAndDownloadSource(source: VCardSource) -> Future<SourceImportResult> {

@@ -2,6 +2,10 @@ import Foundation
 import AddressBook
 
 struct Records {
+  static func hasImage(record: ABRecord) -> Bool {
+    return ABPersonHasImageData(record)
+  }
+
   static func getSingleValueProperty(
     property: ABPropertyID,
     of record: ABRecord)
@@ -32,6 +36,14 @@ struct Records {
         }
       }
       return result
+    } else {
+      return nil
+    }
+  }
+
+  static func getImage(record: ABRecord) -> NSData? {
+    if let img = ABPersonCopyImageData(record) {
+      return (img.takeRetainedValue() as NSData)
     } else {
       return nil
     }
@@ -81,5 +93,18 @@ struct Records {
     }
 
     return setValue(mutableMultiVal, toSingleValueProperty: property, of: record)
+  }
+
+  static func setImage(imageData: NSData, of record: ABRecord) -> Bool {
+    var abError: Unmanaged<CFError>?
+    let didSet = ABPersonSetImageData(record, imageData, &abError)
+    if !didSet {
+      if abError != nil {
+        let err = Errors.fromCFError(abError!.takeRetainedValue())
+        NSLog("Failed to set image: %@ (%d)", err.localizedDescription, err.code)
+      }
+      return false
+    }
+    return true
   }
 }

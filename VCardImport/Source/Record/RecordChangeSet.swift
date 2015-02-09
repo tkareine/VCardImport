@@ -5,18 +5,21 @@ struct RecordChangeSet {
   let record: ABRecord
   let singleValueChanges: [ABPropertyID: NSObject]
   let multiValueChanges: [ABPropertyID: [(NSString, NSObject)]]
+  let imageChange: NSData?
 
   init?(oldRecord: ABRecord, newRecord: ABRecord) {
     let singleValueChanges = RecordChangeSet.findSingleValueChanges(oldRecord, newRecord)
     let multiValueChanges = RecordChangeSet.findMultiValueChanges(oldRecord, newRecord)
+    let imageChange = RecordChangeSet.findImageChange(oldRecord, newRecord)
 
-    if singleValueChanges.isEmpty && multiValueChanges.isEmpty {
+    if singleValueChanges.isEmpty && multiValueChanges.isEmpty && imageChange == nil {
       return nil
     }
 
     self.record = oldRecord
     self.singleValueChanges = singleValueChanges
     self.multiValueChanges = multiValueChanges
+    self.imageChange = imageChange
   }
 
   static let TrackedSingleValueProperties = [
@@ -89,5 +92,16 @@ struct RecordChangeSet {
     }
 
     return changes
+  }
+
+  private static func findImageChange(
+    oldRecord: ABRecord,
+    _ newRecord: ABRecord)
+    -> NSData?
+  {
+    if Records.hasImage(oldRecord) {
+      return nil
+    }
+    return Records.getImage(newRecord)
   }
 }

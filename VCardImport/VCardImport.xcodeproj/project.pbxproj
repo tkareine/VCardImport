@@ -37,6 +37,8 @@
 		E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FD3F31A508B5300A9DB27 /* FilesTests.swift */; };
 		E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */; };
+		E996101B1A894B5C00D52ECF /* aa-60.png in Resources */ = {isa = PBXBuildFile; fileRef = E996101A1A894B5C00D52ECF /* aa-60.png */; };
+		E996101D1A89524200D52ECF /* bb-60.png in Resources */ = {isa = PBXBuildFile; fileRef = E996101C1A89524200D52ECF /* bb-60.png */; };
 		E9AD7D0F1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */; };
 		E9AD7D101A69F4DC00F1B668 /* ModifiedHeaderStamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */; };
 		E9AD7D111A69F7A700F1B668 /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
@@ -163,6 +165,8 @@
 		E983F1EC19E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E98FD3F31A508B5300A9DB27 /* FilesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FilesTests.swift; path = Support/FilesTests.swift; sourceTree = "<group>"; };
 		E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordChangeSet.swift; path = Record/RecordChangeSet.swift; sourceTree = "<group>"; };
+		E996101A1A894B5C00D52ECF /* aa-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "aa-60.png"; sourceTree = "<group>"; };
+		E996101C1A89524200D52ECF /* bb-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bb-60.png"; sourceTree = "<group>"; };
 		E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModifiedHeaderStampTests.swift; path = Domain/ModifiedHeaderStampTests.swift; sourceTree = "<group>"; };
 		E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModifiedHeaderStamp.swift; path = Domain/ModifiedHeaderStamp.swift; sourceTree = "<group>"; };
 		E9B9B9F31A5BF653004C53CA /* VCardToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardToolbar.swift; path = UI/VCardToolbar.swift; sourceTree = "<group>"; };
@@ -274,6 +278,8 @@
 		E983F1EB19E9C76F00219305 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E996101A1A894B5C00D52ECF /* aa-60.png */,
+				E996101C1A89524200D52ECF /* bb-60.png */,
 				E983F1EC19E9C76F00219305 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -518,6 +524,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E996101B1A894B5C00D52ECF /* aa-60.png in Resources */,
+				E996101D1A89524200D52ECF /* bb-60.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

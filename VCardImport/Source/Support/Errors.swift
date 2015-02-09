@@ -18,16 +18,29 @@ struct Errors {
       description: "Download failed: \(reason)")
   }
 
-  static func addressBookFailedToChangeRecord(
-    #name: String,
-    property: ABPropertyID)
+  static func addressBookFailedToChange(
+    property: ABPropertyID,
+    of record: ABRecord)
     -> NSError
   {
-    let propDesc = describeAddressBookProperty(property)
+    let desc = describeAddressBookProperty(property)
+    return addressBookFailedToChange(desc, of: record)
+  }
+
+  static func addressBookFailedToChangeImage(of record: ABRecord) -> NSError {
+    return addressBookFailedToChange("image", of: record)
+  }
+
+  static func addressBookFailedToChange(
+    propertyDescription: String,
+    of record: ABRecord)
+    -> NSError
+  {
+    let name = ABRecordCopyCompositeName(record).takeRetainedValue()
     return vcardError(
       code: 8,
       failureReason: "Contact Update Error",
-      description: "Failed in updating \(propDesc) for contact \(name)")
+      description: "Failed in updating \(propertyDescription) for contact \(name)")
   }
 
   static func fromCFError(error: CFError) -> NSError {

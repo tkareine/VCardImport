@@ -1,4 +1,5 @@
 import AddressBook
+import UIKit
 import XCTest
 
 class RecordDifferencesTests: XCTestCase {
@@ -39,8 +40,8 @@ class RecordDifferencesTests: XCTestCase {
       urls: [("Work", "https://exampleinc.com/")],
       addresses: [("Home", newRecordHomeAddress)],
       instantMessages: [(kABPersonInstantMessageServiceSkype, newInstantMessage)],
-      socialProfiles: [(kABPersonSocialProfileServiceTwitter, newSocialProfile)]
-    )
+      socialProfiles: [(kABPersonSocialProfileServiceTwitter, newSocialProfile)],
+      image: loadImage("aa-60"))
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
       newRecords: [newRecord])
@@ -119,6 +120,8 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(socialProfileChanges.count, 1)
     XCTAssertEqual(socialProfileChanges.first!.0, kABPersonSocialProfileServiceTwitter)
     XCTAssertEqual(socialProfileChanges.first!.1, newSocialProfile)
+
+    XCTAssertNotNil(recordDiff.changes.first!.imageChange)
   }
 
   func testSetsOrganizationRecordChangesForFieldValues() {
@@ -309,6 +312,23 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(recordDiff.changes.count, 0)
   }
 
+  func testDoesNotSetRecordChangeForExistingImage() {
+    let oldRecord: ABRecord = makePersonRecord(
+      firstName: "Arnold",
+      lastName: "Alpha",
+      image: loadImage("aa-60"))
+    let newRecord: ABRecord = makePersonRecord(
+      firstName: "Arnold",
+      lastName: "Alpha",
+      image: loadImage("bb-60"))
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [oldRecord],
+      newRecords: [newRecord])
+
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 0)
+  }
+
   func testDoesNotSetRecordChangeForExistingValueOfMultiStringValueField() {
     let oldRecord: ABRecord = makePersonRecord(
       firstName: "Arnold",
@@ -417,7 +437,8 @@ class RecordDifferencesTests: XCTestCase {
     urls: [(NSString, NSString)]? = nil,
     addresses: [(NSString, NSDictionary)]? = nil,
     instantMessages: [(NSString, NSDictionary)]? = nil,
-    socialProfiles: [(NSString, NSDictionary)]? = nil)
+    socialProfiles: [(NSString, NSDictionary)]? = nil,
+    image: UIImage? = nil)
     -> ABRecord
   {
     let record: ABRecord = ABPersonCreate().takeRetainedValue()
@@ -465,6 +486,9 @@ class RecordDifferencesTests: XCTestCase {
     }
     if let vals = socialProfiles {
       Records.addValues(vals, toMultiValueProperty: kABPersonSocialProfileProperty, of: record)
+    }
+    if let img = image {
+      Records.setImage(UIImagePNGRepresentation(img), of: record)
     }
     return record
   }
@@ -518,5 +542,10 @@ class RecordDifferencesTests: XCTestCase {
       kABPersonSocialProfileURLKey: url,
       kABPersonSocialProfileUsernameKey: username
     ]
+  }
+
+  private func loadImage(filename: String) -> UIImage {
+    let path = NSBundle(forClass: RecordDifferencesTests.self).pathForResource(filename, ofType: "png")
+    return UIImage(contentsOfFile: path!)!
   }
 }
