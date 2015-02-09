@@ -64,12 +64,18 @@ struct Errors {
     switch property {
     case kABPersonMiddleNameProperty:
       return "middle name"
+    case kABPersonPrefixProperty:
+      return "name prefix"
+    case kABPersonSuffixProperty:
+      return "name suffix"
+    case kABPersonNicknameProperty:
+      return "nickname"
+    case kABPersonOrganizationProperty:
+      return "organization"
     case kABPersonJobTitleProperty:
       return "job title"
     case kABPersonDepartmentProperty:
       return "department"
-    case kABPersonOrganizationProperty:
-      return "organization"
     case kABPersonEmailProperty:
       return "email"
     case kABPersonPhoneProperty:
@@ -78,6 +84,10 @@ struct Errors {
       return "URL"
     case kABPersonAddressProperty:
       return "address"
+    case kABPersonInstantMessageProperty:
+      return "instant message"
+    case kABPersonSocialProfileProperty:
+      return "social profile"
     default:
       return "unknown"
     }
