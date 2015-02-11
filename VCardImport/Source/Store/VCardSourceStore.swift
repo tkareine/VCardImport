@@ -102,7 +102,11 @@ class VCardSourceStore {
       return (JSONSerialization.decode(sourcesData) as [[String: AnyObject]])
         .map { VCardSource.fromDictionary($0) }
     } else {
+#if DEFAULT_SOURCES
+      return makeDefaultSources()
+#else
       return nil
+#endif
     }
   }
 
@@ -128,4 +132,21 @@ class VCardSourceStore {
     }
     self.store = store
   }
+
+#if DEFAULT_SOURCES
+  private func makeDefaultSources() -> [VCardSource] {
+    return [
+      VCardSource(
+        name: "Body Corp",
+        connection: VCardSource.Connection(
+          url: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf"),
+        isEnabled: true),
+      VCardSource(
+        name: "Cold Temp",
+        connection: VCardSource.Connection(
+          url: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf"),
+        isEnabled: true)
+    ]
+  }
+#endif
 }
