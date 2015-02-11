@@ -1,4 +1,4 @@
-# <a href="https://itunes.apple.com/fi/app/vcard-turbo/id961567696"><img src="Resources/vt-rounded-24@2x.png?raw=true" width="24" height="24"></a> vCard Turbo
+# <a href="https://itunes.apple.com/fi/app/vcard-turbo/id961567696"><img src="Resources/vcard-turbo-rounded-24@2x.png?raw=true" width="24" height="24"></a> vCard Turbo
 
 Keep your organization's contacts up to date by importing contacts
 from vCard files located at remote servers.
