@@ -85,7 +85,7 @@ struct VCardSource {
     let username: String
     let password: String
 
-    init(url: String, username: String, password: String) {
+    init(url: String, username: String = "", password: String = "") {
       self.url = url.trimmed  // needed by `toURL`
       self.username = username
       self.password = password
@@ -154,10 +154,7 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return self(
-      url: dictionary["url"] as String,
-      username: "",
-      password: "")
+    return self(url: dictionary["url"] as String)
   }
 }
 
