@@ -54,6 +54,7 @@ class URLConnection {
       serializer: Alamofire.Request.responseDataSerializer(),
       completionHandler: { _, response, _, error in
         if let err = error {
+          NSLog("%@ request error <%@>: %@", method.rawValue, url, err)
           promise.reject(Errors.describeErrorForNSURLRequest(err))
         } else if let res = response {
           if self.isSuccessStatusCode(res.statusCode) {
@@ -103,6 +104,7 @@ class URLConnection {
       serializer: Alamofire.Request.responseDataSerializer(),
       completionHandler: { _, response, _, error in
         if let err = error {
+          NSLog("Download error <%@>: %@", url, err)
           promise.reject(Errors.describeErrorForNSURLRequest(err))
         } else if let res = response {
           if self.isSuccessStatusCode(res.statusCode) {

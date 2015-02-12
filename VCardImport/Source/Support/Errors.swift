@@ -52,12 +52,22 @@ struct Errors {
 
   static func describeErrorForNSURLRequest(error: NSError) -> String {
     switch error.code {
-    case NSURLErrorTimedOut | NSURLErrorUserCancelledAuthentication:
+    case NSURLErrorTimedOut,
+         NSURLErrorUserCancelledAuthentication:
       return "Response timed out"
     case NSURLErrorCancelled:
       return "Cancelled (authentication rejected?)"
-    case NSURLErrorNotConnectedToInternet | NSURLErrorNetworkConnectionLost:
+    case NSURLErrorNotConnectedToInternet,
+         NSURLErrorNetworkConnectionLost:
       return "No internet connection"
+    case NSURLErrorSecureConnectionFailed,
+         NSURLErrorCannotLoadFromNetwork:
+      return "Secure connection failed"
+    case NSURLErrorServerCertificateHasBadDate,
+         NSURLErrorServerCertificateUntrusted,
+         NSURLErrorServerCertificateHasUnknownRoot,
+         NSURLErrorServerCertificateNotYetValid:
+      return "Invalid server certificate"
     default:
       return Config.Net.GenericErrorDescription
     }
