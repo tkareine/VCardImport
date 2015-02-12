@@ -98,7 +98,7 @@ class VCardToolbar: UIView {
     button.setTitle(title, forState: .Normal)
     if let label = button.titleLabel {
       let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-      label.font = bodyFont.fontWithSize(16)
+      label.font = bodyFont.fontWithSize(17)
     }
     button.contentHorizontalAlignment = labelAlignment
     return button
