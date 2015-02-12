@@ -26,12 +26,7 @@ class Config
   end
 
   def get_basic_auth_from_env
-    env = ENV.fetch("RPROXY_BASIC_AUTH", "")
-    if env
-      env.split(":", 2)
-    else
-      nil
-    end
+    ENV.fetch("RPROXY_BASIC_AUTH", "").split(":", 2)
   end
 
   def get_delete_cache_headers_from_env
