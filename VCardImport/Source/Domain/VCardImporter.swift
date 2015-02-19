@@ -37,14 +37,12 @@ class VCardImporter {
 
     QueueExecution.async(QueueExecution.backgroundQueue) {
       var error: NSError?
-      var addressBookOpt: ABAddressBook? = self.makeAddressBook(&error)
+      let addressBook: AddressBook! = AddressBook(error: &error)
 
-      if addressBookOpt == nil {
+      if addressBook == nil {
         QueueExecution.async(self.queue) { self.onComplete(error!) }
         return
       }
-
-      let addressBook: ABAddressBook = addressBookOpt!
 
       let sourceImports: [(VCardSource, Future<SourceImportResult>)] = sources.map { source in
         (source, self.checkAndDownloadSource(source))
@@ -75,17 +73,12 @@ class VCardImporter {
           continue
         }
 
-        let existingRecords: [ABRecord] = ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
-
         let recordDiff = RecordDifferences.resolveBetween(
-          oldRecords: existingRecords,
+          oldRecords: addressBook.loadRecords(),
           newRecords: loadedRecords)
 
         if !recordDiff.additions.isEmpty {
-          let isSuccess = self.addRecords(
-            recordDiff.additions,
-            toAddressBook: addressBook,
-            error: &error)
+          let isSuccess = addressBook.addRecords(recordDiff.additions, error: &error)
           if !isSuccess {
             QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
@@ -100,14 +93,9 @@ class VCardImporter {
           }
         }
 
-        if ABAddressBookHasUnsavedChanges(addressBook) {
-          var abError: Unmanaged<CFError>?
-          let isSaved = ABAddressBookSave(addressBook, &abError)
-
+        if addressBook.hasUnsavedChanges {
+          let isSaved = addressBook.save(error: &error)
           if !isSaved {
-            if abError != nil {
-              error = Errors.fromCFError(abError!.takeRetainedValue())
-            }
             QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
@@ -131,87 +119,6 @@ class VCardImporter {
 
       QueueExecution.async(self.queue) { self.onComplete(nil) }
     }
-  }
-
-  private func makeAddressBook(error: NSErrorPointer) -> ABAddressBook? {
-    func make() -> ABAddressBook? {
-      var abError: Unmanaged<CFError>?
-      let ab: Unmanaged<ABAddressBook>? = ABAddressBookCreateWithOptions(nil, &abError)
-
-      if let abRef = ab {
-        return abRef.takeRetainedValue()
-      }
-
-      if error != nil && abError != nil {
-        error.memory = Errors.fromCFError(abError!.takeRetainedValue())
-      }
-
-      return nil
-    }
-
-    var authStatus = ABAddressBookGetAuthorizationStatus()
-    var addressBook: ABAddressBook?
-
-    if authStatus == .NotDetermined {
-      if let ab: ABAddressBook = make() {
-        addressBook = ab
-        authStatus = requestAddressBookAuthorizationAndWaitResult(ab)
-      }
-    }
-
-    if authStatus != .Authorized {
-      if error != nil {
-        error.memory = Errors.addressBookAccessDeniedOrRestricted()
-      }
-
-      return nil
-    }
-
-    if let ab: ABAddressBook = addressBook {
-      return ab
-    } else {
-      return make()
-    }
-  }
-
-  private func requestAddressBookAuthorizationAndWaitResult(
-    addressBook: ABAddressBook)
-    -> ABAuthorizationStatus
-  {
-    var authResolution = false
-    let semaphore = Semaphore()
-
-    ABAddressBookRequestAccessWithCompletion(addressBook) { isGranted, _error in
-      authResolution = isGranted
-      semaphore.signal()
-    }
-
-    semaphore.wait(timeout: 30_000)
-
-    return authResolution ? .Authorized : .Denied
-  }
-
-  private func addRecords(
-    records: [ABRecord],
-    toAddressBook addressBook: ABAddressBook,
-    error: NSErrorPointer)
-    -> Bool
-  {
-    for record in records {
-      var abError: Unmanaged<CFError>?
-
-      let isAdded = ABAddressBookAddRecord(addressBook, record, &abError)
-
-      if !isAdded {
-        if error != nil && abError != nil {
-          error.memory = Errors.fromCFError(abError!.takeRetainedValue())
-        }
-
-        return false
-      }
-    }
-
-    return true
   }
 
   private func changeRecords(changeSets: [RecordChangeSet], error: NSErrorPointer) -> Bool {
