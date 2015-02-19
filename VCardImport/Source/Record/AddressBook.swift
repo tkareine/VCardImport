@@ -67,7 +67,9 @@ class AddressBook {
   }
 
   func loadRecords() -> [ABRecord] {
-    return ABAddressBookCopyArrayOfAllPeople(addressBook).takeRetainedValue()
+    let defaultSource: ABRecord = ABAddressBookCopyDefaultSource(addressBook).takeRetainedValue()
+    return ABAddressBookCopyArrayOfAllPeopleInSource(addressBook, defaultSource)
+      .takeRetainedValue()
   }
 
   func addRecords(records: [ABRecord], error: NSErrorPointer) -> Bool {
