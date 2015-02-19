@@ -10,7 +10,7 @@ class VCardImporter {
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
   private let urlConnection: URLConnection
-  private let queue: dispatch_queue_t
+  private let queue: QueueExecution.Queue
 
   class func builder() -> Builder {
     return Builder()
@@ -21,7 +21,7 @@ class VCardImporter {
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
     urlConnection: URLConnection,
-    queue: dispatch_queue_t)
+    queue: QueueExecution.Queue)
   {
     self.onSourceDownload = onSourceDownload
     self.onSourceComplete = onSourceComplete
@@ -312,7 +312,7 @@ class VCardImporter {
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
     private var urlConnection: URLConnection?
-    private var queue: dispatch_queue_t?
+    private var queue: QueueExecution.Queue?
 
     func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
       self.onSourceDownload = callback
@@ -334,7 +334,7 @@ class VCardImporter {
       return self
     }
 
-    func queueTo(queue: dispatch_queue_t) -> Builder {
+    func queueTo(queue: QueueExecution.Queue) -> Builder {
       self.queue = queue
       return self
     }
