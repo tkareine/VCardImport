@@ -79,7 +79,7 @@ class CoreExtensionTests: XCTestCase {
   func testFindElement() {
     XCTAssert(findElement([1, 2, 3, 4], { $0 % 2 == 0}) == 2)
 
-    let pair = findElement(["a": 1, "b": 2, "c": 4]) { (k, v) in v % 2 == 0 }
+    let pair = findElement(["a": 1, "b": 2, "c": 5]) { (k, v) in v % 2 == 0 }
     XCTAssert(pair != nil)
     XCTAssertEqual(pair!.0, "b")
     XCTAssertEqual(pair!.1, 2)
