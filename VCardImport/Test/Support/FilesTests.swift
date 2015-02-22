@@ -10,6 +10,19 @@ class FilesTests: XCTestCase {
     XCTAssertFalse(exists(tempPath))
   }
 
+  func testCopy() {
+    Files.withTempURL { source -> Void in
+      self.touch(source)
+      XCTAssertTrue(self.exists(source))
+
+      Files.withTempURL { destination -> Void in
+        Files.copy(from: source, to: destination)
+        XCTAssertTrue(self.exists(source))
+        XCTAssertTrue(self.exists(destination))
+      }
+    }
+  }
+
   func testMove() {
     Files.withTempURL { source -> Void in
       self.touch(source)
