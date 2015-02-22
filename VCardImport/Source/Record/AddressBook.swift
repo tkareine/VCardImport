@@ -1,7 +1,12 @@
 import AddressBook
+import Foundation
 
 class AddressBook {
   private let addressBook: ABAddressBook!
+
+  var _abAddressBook: ABAddressBook {
+    return addressBook
+  }
 
   var hasUnsavedChanges: Bool {
     return ABAddressBookHasUnsavedChanges(addressBook)

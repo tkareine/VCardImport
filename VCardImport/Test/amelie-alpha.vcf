@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//Mac OS X 10.10.2//EN
+N:Alpha;Amelie;;;
+FN:Amelie Alpha
+ORG:VCardImport Tests;
+EMAIL;type=INTERNET;type=HOME;type=pref:amelie.alpha@example.com
+TEL;type=CELL;type=VOICE;type=pref:5551001001
+X-ABUID:D69C71E5-4A6F-4B9B-97FC-4F9F5770C907:ABPerson
+END:VCARD

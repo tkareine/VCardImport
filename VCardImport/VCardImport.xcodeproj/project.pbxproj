@@ -31,10 +31,16 @@
 		E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */; };
 		E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97F0C361A86C644005C9B0B /* RecordNameTests.swift */; };
 		E980DB3C1A8D3D3300D479AE /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E980DB3A1A8D3CF900D479AE /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E9828EA71A99DFA100757D18 /* VCardImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EA61A99DFA100757D18 /* VCardImporterTests.swift */; };
 		E9828EAA1A99E27C00757D18 /* VCardImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */; };
 		E9828EAB1A99E2B700757D18 /* VCardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */; };
 		E9828EAE1A99E67C00757D18 /* URLConnectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EAD1A99E67C00757D18 /* URLConnectable.swift */; };
 		E9828EB11A99E73600757D18 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EB01A99E73600757D18 /* Request.swift */; };
+		E9828EB31A99F10E00757D18 /* AddressBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97D05C81A96806500740659 /* AddressBook.swift */; };
+		E9828EB41A99F12800757D18 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EB01A99E73600757D18 /* Request.swift */; };
+		E9828EB51A99F12B00757D18 /* URLConnectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EAD1A99E67C00757D18 /* URLConnectable.swift */; };
+		E9828EB91A9A6B1100757D18 /* amelie-alpha.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E9828EB81A9A6B1100757D18 /* amelie-alpha.vcf */; };
+		E9828EBB1A9A6DDD00757D18 /* AddressBookExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */; };
 		E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D719E9C76F00219305 /* AppDelegate.swift */; };
 		E983F1DA19E9C76F00219305 /* VCardSourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */; };
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
@@ -147,8 +153,11 @@
 		E97D05C81A96806500740659 /* AddressBook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBook.swift; path = Record/AddressBook.swift; sourceTree = "<group>"; };
 		E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardImporter.swift; path = Domain/VCardImporter.swift; sourceTree = "<group>"; };
 		E97F0C361A86C644005C9B0B /* RecordNameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordNameTests.swift; path = Record/RecordNameTests.swift; sourceTree = "<group>"; };
+		E9828EA61A99DFA100757D18 /* VCardImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardImporterTests.swift; path = Domain/VCardImporterTests.swift; sourceTree = "<group>"; };
 		E9828EAD1A99E67C00757D18 /* URLConnectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLConnectable.swift; path = Net/URLConnectable.swift; sourceTree = "<group>"; };
 		E9828EB01A99E73600757D18 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Net/Request.swift; sourceTree = "<group>"; };
+		E9828EB81A9A6B1100757D18 /* amelie-alpha.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "amelie-alpha.vcf"; sourceTree = "<group>"; };
+		E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBookExtension.swift; path = Domain/AddressBookExtension.swift; sourceTree = "<group>"; };
 		E983F1D219E9C76F00219305 /* vCard Turbo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "vCard Turbo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = UI/AppDelegate.swift; sourceTree = "<group>"; };
@@ -283,6 +292,7 @@
 			children = (
 				E996101A1A894B5C00D52ECF /* aa-60.png */,
 				E996101C1A89524200D52ECF /* bb-60.png */,
+				E9828EB81A9A6B1100757D18 /* amelie-alpha.vcf */,
 				E983F1EC19E9C76F00219305 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -389,7 +399,9 @@
 		E9F0D6A31A78C007002191E9 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */,
 				E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */,
+				E9828EA61A99DFA100757D18 /* VCardImporterTests.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -515,6 +527,7 @@
 			files = (
 				E996101B1A894B5C00D52ECF /* aa-60.png in Resources */,
 				E996101D1A89524200D52ECF /* bb-60.png in Resources */,
+				E9828EB91A9A6B1100757D18 /* amelie-alpha.vcf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,6 +553,9 @@
 				E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */,
 				E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */,
 				E9F5E8B11A7568A000400291 /* VCardImportProgress.swift in Sources */,
+				E9828EB11A99E73600757D18 /* Request.swift in Sources */,
+				E9828EAE1A99E67C00757D18 /* URLConnectable.swift in Sources */,
+				E9C46E731A4A3C98004BD769 /* URLConnection.swift in Sources */,
 				E97D05C91A96806500740659 /* AddressBook.swift in Sources */,
 				E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */,
 				E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */,
@@ -550,9 +566,6 @@
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
 				E94C0D661A7442E40005C472 /* KeychainItemWrapper.m in Sources */,
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
-				E9828EB11A99E73600757D18 /* Request.swift in Sources */,
-				E9828EAE1A99E67C00757D18 /* URLConnectable.swift in Sources */,
-				E9C46E731A4A3C98004BD769 /* URLConnection.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
 				E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */,
 				E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */,
@@ -580,6 +593,9 @@
 				E9EF16511A61DFC400CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */,
 				E975804B1A75FE94008A70E9 /* VCardImportProgress.swift in Sources */,
+				E9828EB41A99F12800757D18 /* Request.swift in Sources */,
+				E9828EB51A99F12B00757D18 /* URLConnectable.swift in Sources */,
+				E9828EB31A99F10E00757D18 /* AddressBook.swift in Sources */,
 				E9F228A01A43934B00A10190 /* RecordChangeSet.swift in Sources */,
 				E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */,
 				E94897411A47448C004BA838 /* RecordName.swift in Sources */,
@@ -594,7 +610,9 @@
 				E9F2289C1A43819200A10190 /* RecordDifferencesTests.swift in Sources */,
 				E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */,
 				E975804A1A75FE26008A70E9 /* VCardImportProgressTests.swift in Sources */,
+				E9828EBB1A9A6DDD00757D18 /* AddressBookExtension.swift in Sources */,
 				E9AD7D0F1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift in Sources */,
+				E9828EA71A99DFA100757D18 /* VCardImporterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
