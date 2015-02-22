@@ -31,6 +31,10 @@
 		E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */; };
 		E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97F0C361A86C644005C9B0B /* RecordNameTests.swift */; };
 		E980DB3C1A8D3D3300D479AE /* Alamofire.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E980DB3A1A8D3CF900D479AE /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E9828EAA1A99E27C00757D18 /* VCardImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */; };
+		E9828EAB1A99E2B700757D18 /* VCardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */; };
+		E9828EAE1A99E67C00757D18 /* URLConnectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EAD1A99E67C00757D18 /* URLConnectable.swift */; };
+		E9828EB11A99E73600757D18 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9828EB01A99E73600757D18 /* Request.swift */; };
 		E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D719E9C76F00219305 /* AppDelegate.swift */; };
 		E983F1DA19E9C76F00219305 /* VCardSourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */; };
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
@@ -143,6 +147,8 @@
 		E97D05C81A96806500740659 /* AddressBook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBook.swift; path = Record/AddressBook.swift; sourceTree = "<group>"; };
 		E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardImporter.swift; path = Domain/VCardImporter.swift; sourceTree = "<group>"; };
 		E97F0C361A86C644005C9B0B /* RecordNameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordNameTests.swift; path = Record/RecordNameTests.swift; sourceTree = "<group>"; };
+		E9828EAD1A99E67C00757D18 /* URLConnectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLConnectable.swift; path = Net/URLConnectable.swift; sourceTree = "<group>"; };
+		E9828EB01A99E73600757D18 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Net/Request.swift; sourceTree = "<group>"; };
 		E983F1D219E9C76F00219305 /* vCard Turbo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "vCard Turbo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = UI/AppDelegate.swift; sourceTree = "<group>"; };
@@ -162,7 +168,7 @@
 		E9C46E6B1A4A3C3F004BD769 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Future.swift; path = ToyFuture/Future.swift; sourceTree = "<group>"; };
 		E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Semaphore.swift; path = ToyFuture/Semaphore.swift; sourceTree = "<group>"; };
 		E9C46E6D1A4A3C3F004BD769 /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Try.swift; path = ToyFuture/Try.swift; sourceTree = "<group>"; };
-		E9C46E721A4A3C98004BD769 /* URLConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLConnection.swift; path = Support/URLConnection.swift; sourceTree = "<group>"; };
+		E9C46E721A4A3C98004BD769 /* URLConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLConnection.swift; path = Net/URLConnection.swift; sourceTree = "<group>"; };
 		E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreExtension.swift; path = Support/CoreExtension.swift; sourceTree = "<group>"; };
 		E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreExtensionTests.swift; path = Support/CoreExtensionTests.swift; sourceTree = "<group>"; };
 		E9EB13111A3EB4C2002BC521 /* Records.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Records.swift; path = Record/Records.swift; sourceTree = "<group>"; };
@@ -205,6 +211,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		E9828EAC1A99E52100757D18 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				E9828EB01A99E73600757D18 /* Request.swift */,
+				E9828EAD1A99E67C00757D18 /* URLConnectable.swift */,
+				E9C46E721A4A3C98004BD769 /* URLConnection.swift */,
+			);
+			name = Net;
+			sourceTree = "<group>";
+		};
 		E983F1C919E9C76F00219305 = {
 			isa = PBXGroup;
 			children = (
@@ -228,6 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				E9F0D69C1A78BA68002191E9 /* Domain */,
+				E9828EAC1A99E52100757D18 /* Net */,
 				E9F0D69B1A78B7CB002191E9 /* Record */,
 				E9F0D6A01A78BDE3002191E9 /* Store */,
 				E9F0D69D1A78BA7A002191E9 /* Support */,
@@ -316,7 +333,6 @@
 				E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */,
 				E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */,
 				E969253F1A4F7CF000B6427A /* QueueExecution.swift */,
-				E9C46E721A4A3C98004BD769 /* URLConnection.swift */,
 				E9F5E8B01A7568A000400291 /* VCardImportProgress.swift */,
 			);
 			name = Support;
@@ -523,7 +539,6 @@
 				E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */,
 				E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */,
-				E9C46E731A4A3C98004BD769 /* URLConnection.swift in Sources */,
 				E9F5E8B11A7568A000400291 /* VCardImportProgress.swift in Sources */,
 				E97D05C91A96806500740659 /* AddressBook.swift in Sources */,
 				E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */,
@@ -535,6 +550,9 @@
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
 				E94C0D661A7442E40005C472 /* KeychainItemWrapper.m in Sources */,
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
+				E9828EB11A99E73600757D18 /* Request.swift in Sources */,
+				E9828EAE1A99E67C00757D18 /* URLConnectable.swift in Sources */,
+				E9C46E731A4A3C98004BD769 /* URLConnection.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
 				E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */,
 				E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */,
@@ -567,6 +585,8 @@
 				E94897411A47448C004BA838 /* RecordName.swift in Sources */,
 				E9F2289F1A43934B00A10190 /* Records.swift in Sources */,
 				E9AD7D101A69F4DC00F1B668 /* ModifiedHeaderStamp.swift in Sources */,
+				E9828EAA1A99E27C00757D18 /* VCardImporter.swift in Sources */,
+				E9828EAB1A99E2B700757D18 /* VCardSource.swift in Sources */,
 				E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */,
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
 				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,

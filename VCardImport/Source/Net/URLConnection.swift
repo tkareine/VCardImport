@@ -1,11 +1,7 @@
 import Foundation
 import Alamofire
 
-class URLConnection {
-  typealias Headers = [String: String]
-  typealias ProgressBytes = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)
-  typealias OnProgressCallback = ProgressBytes -> Void
-
+class URLConnection: URLConnectable {
   private let DefaultHeaders = [
     "User-Agent": "\(Config.Executable)/\(Config.BundleIdentifier) (\(Config.Version); OS \(Config.OS))"
   ]
@@ -27,11 +23,11 @@ class URLConnection {
   }
 
   func request(
-    method: Method,
+    method: Request.Method,
     url: NSURL,
-    headers: Headers = [:],
+    headers: Request.Headers = [:],
     credential: NSURLCredential? = nil,
-    onProgress: OnProgressCallback? = nil)
+    onProgress: Request.OnProgressCallback? = nil)
     -> Future<NSHTTPURLResponse>
   {
     var request = Alamofire.request(makeURLRequest(
@@ -72,7 +68,7 @@ class URLConnection {
 
   func head(
     url: NSURL,
-    headers: Headers = [:],
+    headers: Request.Headers = [:],
     credential: NSURLCredential? = nil)
     -> Future<NSHTTPURLResponse>
   {
@@ -82,9 +78,9 @@ class URLConnection {
   func download(
     url: NSURL,
     to destination: NSURL,
-    headers: Headers = [:],
+    headers: Request.Headers = [:],
     credential: NSURLCredential? = nil,
-    onProgress: OnProgressCallback? = nil)
+    onProgress: Request.OnProgressCallback? = nil)
     -> Future<NSURL>
   {
     var request = Alamofire.download(makeURLRequest(url: url, headers: headers), { _, _ in destination })
@@ -124,8 +120,8 @@ class URLConnection {
 
   private func makeURLRequest(
     #url: NSURL,
-    method: Method = .GET,
-    headers: Headers = [:])
+    method: Request.Method = .GET,
+    headers: Request.Headers = [:])
     -> NSURLRequest
   {
     let request = NSMutableURLRequest(URL: url)
@@ -141,10 +137,5 @@ class URLConnection {
 
   private func isSuccessStatusCode(code: Int) -> Bool {
     return contains(SuccessStatusCodes, code)
-  }
-
-  enum Method: String {
-    case HEAD = "HEAD"
-    case GET = "GET"
   }
 }

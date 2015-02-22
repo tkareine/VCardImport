@@ -2,14 +2,14 @@ import Foundation
 import AddressBook
 
 class VCardImporter {
-  typealias OnSourceDownloadCallback = (VCardSource, URLConnection.ProgressBytes) -> Void
+  typealias OnSourceDownloadCallback = (VCardSource, Request.ProgressBytes) -> Void
   typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, ModifiedHeaderStamp?, NSError?) -> Void
   typealias OnCompleteCallback = NSError? -> Void
 
   private let onSourceDownload: OnSourceDownloadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
-  private let urlConnection: URLConnection
+  private let urlConnection: URLConnectable
   private let queue: QueueExecution.Queue
 
   class func builder() -> Builder {
@@ -20,7 +20,7 @@ class VCardImporter {
     onSourceDownload: OnSourceDownloadCallback,
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
-    urlConnection: URLConnection,
+    urlConnection: URLConnectable,
     queue: QueueExecution.Queue)
   {
     self.onSourceDownload = onSourceDownload
@@ -178,7 +178,7 @@ class VCardImporter {
 
   private func downloadSource(source: VCardSource) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
-    let onProgressCallback: URLConnection.OnProgressCallback = { progressBytes in
+    let onProgressCallback: Request.OnProgressCallback = { progressBytes in
       QueueExecution.async(QueueExecution.mainQueue) {
         self.onSourceDownload(source, progressBytes)
       }
@@ -218,7 +218,7 @@ class VCardImporter {
     private var onSourceDownload: OnSourceDownloadCallback?
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
-    private var urlConnection: URLConnection?
+    private var urlConnection: URLConnectable?
     private var queue: QueueExecution.Queue?
 
     func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
@@ -236,7 +236,7 @@ class VCardImporter {
       return self
     }
 
-    func connectWith(urlConnection: URLConnection) -> Builder {
+    func connectWith(urlConnection: URLConnectable) -> Builder {
       self.urlConnection = urlConnection
       return self
     }

@@ -17,7 +17,7 @@ class VCardSourceDetailViewController: UIViewController {
 
   private let source: VCardSource
   private let isNewSource: Bool
-  private let urlConnection: URLConnection
+  private let urlConnection: URLConnectable
   private let doneCallback: VCardSource -> Void
   private let textFieldDelegate: ProxyTextFieldDelegate
 
@@ -36,7 +36,7 @@ class VCardSourceDetailViewController: UIViewController {
   init(
     source: VCardSource,
     isNewSource: Bool,
-    urlConnection: URLConnection,
+    urlConnection: URLConnectable,
     doneCallback: VCardSource -> Void)
   {
     self.source = source

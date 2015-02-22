@@ -2,7 +2,7 @@ import UIKit
 
 class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private let dataSource: VCardSourcesDataSource
-  private let urlConnection: URLConnection
+  private let urlConnection: URLConnectable
 
   private var toolbar: VCardToolbar!
   private var tableView: UITableView!
