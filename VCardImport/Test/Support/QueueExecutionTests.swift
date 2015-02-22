@@ -15,7 +15,7 @@ class QueueExecutionTests: XCTestCase {
     QueueExecution.after(50, queue) { debouncer("d") }
     QueueExecution.after(200, queue) { expectation.fulfill() }
 
-    waitForExpectationsWithTimeout(250, handler: nil)
+    waitForExpectationsWithTimeout(1, handler: nil)
     XCTAssertEqual(inputs, ["d"])
   }
 
