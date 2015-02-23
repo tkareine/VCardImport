@@ -62,7 +62,7 @@ class VCardImporter {
               self.onSourceComplete(source, (0, 0), nil, nil)
             }
             continue
-          case .Updated(let records, let stamp):
+          case .Changed(let records, let stamp):
             loadedRecords = records
             modifiedHeaderStamp = stamp
           }
@@ -166,13 +166,13 @@ class VCardImporter {
 
         if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
           if oldStamp == newStamp {
-            NSLog("vCard source %@: remote hasn't changed (\(oldStamp))", source.name)
+            NSLog("vCard source %@: remote is unchanged since last import (\(oldStamp))", source.name)
             return Future.succeeded(.Unchanged)
           }
         }
 
         NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
-        return self.downloadSource(source).map { records in .Updated(records, newStamp) }
+        return self.downloadSource(source).map { records in .Changed(records, newStamp) }
       }
   }
 
@@ -211,7 +211,7 @@ class VCardImporter {
 
   private enum SourceImportResult {
     case Unchanged
-    case Updated([ABRecord], ModifiedHeaderStamp?)
+    case Changed([ABRecord], ModifiedHeaderStamp?)
   }
 
   class Builder {
