@@ -4,7 +4,9 @@ PRODID:-//Apple Inc.//Mac OS X 10.10.2//EN
 N:Alpha;Amelie;;;
 FN:Amelie Alpha
 ORG:VCardImport Tests;
+TITLE:Test Subject
 EMAIL;type=INTERNET;type=HOME;type=pref:amelie.alpha@example.com
 TEL;type=CELL;type=VOICE;type=pref:5551001001
+UID:d69c71e5-4a6f-4b9b-97fc-4f9f5770c907
 X-ABUID:D69C71E5-4A6F-4B9B-97FC-4F9F5770C907:ABPerson
 END:VCARD
