@@ -3,13 +3,13 @@ import XCTest
 
 class RecordNameTests: XCTestCase {
   func testEqualityAndHashValue() {
-    let leon0 = RecordName.of(makePersonRecord(firstName: "Leon", lastName: "Kennedy"))!
-    let leon1 = RecordName.of(makePersonRecord(firstName: "Leon", lastName: "Kennedy"))!
-    let jill = RecordName.of(makePersonRecord(firstName: "Jill", lastName: "Valentine"))!
-    let umbrella0 = RecordName.of(makeOrganizationRecord(name: "Umbrella"))!
-    let umbrella1 = RecordName.of(makeOrganizationRecord(name: "Umbrella"))!
-    let umbrellaP = RecordName.of(makePersonRecord(firstName: "Umbrella", lastName: ""))!
-    let rpd = RecordName.of(makeOrganizationRecord(name: "RPD"))!
+    let leon0 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy"))!
+    let leon1 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy"))!
+    let jill = RecordName.of(TestRecords.makePerson(firstName: "Jill", lastName: "Valentine"))!
+    let umbrella0 = RecordName.of(TestRecords.makeOrganization(name: "Umbrella"))!
+    let umbrella1 = RecordName.of(TestRecords.makeOrganization(name: "Umbrella"))!
+    let umbrellaP = RecordName.of(TestRecords.makePerson(firstName: "Umbrella", lastName: ""))!
+    let rpd = RecordName.of(TestRecords.makeOrganization(name: "RPD"))!
 
     XCTAssert(leon0 == leon0)
     XCTAssert(leon0 == leon1)
@@ -34,24 +34,10 @@ class RecordNameTests: XCTestCase {
   }
 
   func testEmptyNameReturnsNil() {
-    XCTAssertNil(RecordName.of(makePersonRecord(firstName: "", lastName: "")))
-    XCTAssertNotNil(RecordName.of(makePersonRecord(firstName: "Jill", lastName: "")))
-    XCTAssertNotNil(RecordName.of(makePersonRecord(firstName: "", lastName: "Valentine")))
+    XCTAssertNil(RecordName.of(TestRecords.makePerson(firstName: "", lastName: "")))
+    XCTAssertNotNil(RecordName.of(TestRecords.makePerson(firstName: "Jill", lastName: "")))
+    XCTAssertNotNil(RecordName.of(TestRecords.makePerson(firstName: "", lastName: "Valentine")))
 
-    XCTAssertNil(RecordName.of(makeOrganizationRecord(name: "")))
-  }
-
-  private func makePersonRecord(#firstName: NSString, lastName: NSString) -> ABRecord {
-    let record: ABRecord = ABPersonCreate().takeRetainedValue()
-    Records.setValue(firstName, toSingleValueProperty: kABPersonFirstNameProperty, of: record)
-    Records.setValue(lastName, toSingleValueProperty: kABPersonLastNameProperty, of: record)
-    return record
-  }
-
-  private func makeOrganizationRecord(#name: NSString) -> ABRecord {
-    let record: ABRecord = ABPersonCreate().takeRetainedValue()
-    Records.setValue(kABPersonKindOrganization, toSingleValueProperty: kABPersonKindProperty, of: record)
-    Records.setValue(name, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
-    return record
+    XCTAssertNil(RecordName.of(TestRecords.makeOrganization(name: "")))
   }
 }
