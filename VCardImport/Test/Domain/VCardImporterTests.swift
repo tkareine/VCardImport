@@ -14,10 +14,10 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let importer = makeVCardImporter(
       onSourceDownload: { _, _ in () },
-      onSourceComplete: { source, changes, stamp, error in
+      onSourceComplete: { source, changeResult, stamp, error in
         XCTAssertNil(error)
-        XCTAssertEqual(changes!.additions, 1)
-        XCTAssertEqual(changes!.changes, 0)
+        XCTAssertEqual(changeResult!.additions, 1)
+        XCTAssertEqual(changeResult!.updates, 0)
       },
       onComplete: { error in
         XCTAssertNil(error)

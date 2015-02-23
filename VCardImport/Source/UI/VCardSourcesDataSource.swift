@@ -21,7 +21,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     return vcardSourceStore.filterEnabled
   }
 
-  func setVCardSourceFailureStatus(source: VCardSource, error: NSError) {
+  func setVCardSourceErrorStatus(source: VCardSource, error: NSError) {
     setVCardSourceStatus(
       false,
       message: error.localizedDescription,
@@ -29,44 +29,23 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
       to: source)
   }
 
-  func setVCardSourceSuccessStatus(
+  func setVCardSourceChangedStatus(
     source: VCardSource,
-    changes: (Int, Int),
+    changeResult: ChangedRecordsResult,
     modifiedHeaderStamp: ModifiedHeaderStamp?)
   {
-    var status: String
-
-    let (additions, updates) = changes
-    if additions == 0 && updates == 0 {
-      status = "Nothing to change"
-    } else {
-      var additionsStatus: String
-      switch additions {
-      case 0:
-        additionsStatus = "No additions"
-      case 1:
-        additionsStatus = "1 addition"
-      default:
-        additionsStatus = "\(additions) additions"
-      }
-
-      var updatesStatus: String
-      switch updates {
-      case 0:
-        updatesStatus = "no updates"
-      case 1:
-        updatesStatus = "1 update"
-      default:
-        updatesStatus = "\(updates) updates"
-      }
-
-      status = "\(additionsStatus), \(updatesStatus)"
-    }
-
     setVCardSourceStatus(
       true,
-      message: status,
+      message: changeResult.description,
       modifiedHeaderStamp: modifiedHeaderStamp,
+      to: source)
+  }
+
+  func setVCardSourceUnchangedStatus(source: VCardSource) {
+    setVCardSourceStatus(
+      true,
+      message: "Remote is unchanged since last import",
+      modifiedHeaderStamp: nil,
       to: source)
   }
 

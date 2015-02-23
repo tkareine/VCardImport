@@ -30,15 +30,19 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           }
         }
       }
-      .onSourceComplete { [weak self] source, changes, modifiedHeaderStamp, error in
+      .onSourceComplete { [weak self] source, changeResult, modifiedHeaderStamp, error in
         if let s = self {
           if let err = error {
-            s.dataSource.setVCardSourceFailureStatus(source, error: err)
+            s.dataSource.setVCardSourceErrorStatus(source, error: err)
           } else {
-            s.dataSource.setVCardSourceSuccessStatus(
-              source,
-              changes: changes!,
-              modifiedHeaderStamp: modifiedHeaderStamp)
+            if let ch = changeResult {
+              s.dataSource.setVCardSourceChangedStatus(
+                source,
+                changeResult: ch,
+                modifiedHeaderStamp: modifiedHeaderStamp)
+            } else {
+              s.dataSource.setVCardSourceUnchangedStatus(source)
+            }
           }
           s.inProgress(.Completed, forSource: source)
           s.reloadTableViewSourceRow(source)

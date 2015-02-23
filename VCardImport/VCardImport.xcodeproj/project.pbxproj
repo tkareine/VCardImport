@@ -16,6 +16,8 @@
 		E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
+		E943DB581A9BBD35002C92D4 /* ChangedRecordsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */; };
+		E943DB5A1A9BC4F7002C92D4 /* ChangedRecordsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
 		E94897411A47448C004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -139,6 +141,7 @@
 		E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyTextFieldDelegate.swift; path = UI/ProxyTextFieldDelegate.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONSerialization.swift; path = Support/JSONSerialization.swift; sourceTree = "<group>"; };
 		E9401B841A7413570078AD51 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = ../Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
+		E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChangedRecordsResult.swift; path = Domain/ChangedRecordsResult.swift; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Files.swift; path = Support/Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordName.swift; path = Record/RecordName.swift; sourceTree = "<group>"; };
 		E94C0D631A74428D0005C472 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeychainItemWrapper.h; path = Store/KeychainItemWrapper.h; sourceTree = "<group>"; };
@@ -324,6 +327,7 @@
 		E9F0D69C1A78BA68002191E9 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */,
 				E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */,
 				E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */,
 				E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */,
@@ -561,6 +565,7 @@
 				E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
+				E943DB581A9BBD35002C92D4 /* ChangedRecordsResult.swift in Sources */,
 				E9AF05231A69D4F4003860EF /* ModifiedHeaderStamp.swift in Sources */,
 				E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */,
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
@@ -600,6 +605,7 @@
 				E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */,
 				E94897411A47448C004BA838 /* RecordName.swift in Sources */,
 				E9F2289F1A43934B00A10190 /* Records.swift in Sources */,
+				E943DB5A1A9BC4F7002C92D4 /* ChangedRecordsResult.swift in Sources */,
 				E9AD7D101A69F4DC00F1B668 /* ModifiedHeaderStamp.swift in Sources */,
 				E9828EAA1A99E27C00757D18 /* VCardImporter.swift in Sources */,
 				E9828EAB1A99E2B700757D18 /* VCardSource.swift in Sources */,

@@ -3,7 +3,7 @@ import AddressBook
 
 class VCardImporter {
   typealias OnSourceDownloadCallback = (VCardSource, Request.ProgressBytes) -> Void
-  typealias OnSourceCompleteCallback = (VCardSource, (additions: Int, changes: Int)?, ModifiedHeaderStamp?, NSError?) -> Void
+  typealias OnSourceCompleteCallback = (VCardSource, ChangedRecordsResult?, ModifiedHeaderStamp?, NSError?) -> Void
   typealias OnCompleteCallback = NSError? -> Void
 
   private let onSourceDownload: OnSourceDownloadCallback
@@ -59,7 +59,7 @@ class VCardImporter {
           switch res() {
           case .Unchanged:
             QueueExecution.async(self.queue) {
-              self.onSourceComplete(source, (0, 0), nil, nil)
+              self.onSourceComplete(source, nil, nil, nil)
             }
             continue
           case .Changed(let records, let stamp):
@@ -105,14 +105,16 @@ class VCardImporter {
           QueueExecution.async(self.queue) {
             self.onSourceComplete(
               source,
-              (recordDiff.additions.count, recordDiff.changes.count),
+              ChangedRecordsResult(
+                additions: recordDiff.additions.count,
+                updates: recordDiff.changes.count),
               modifiedHeaderStamp,
               nil)
           }
         } else {
           NSLog("vCard source %@: no contacts to add or update", source.name)
           QueueExecution.async(self.queue) {
-            self.onSourceComplete(source, (0, 0), modifiedHeaderStamp, nil)
+            self.onSourceComplete(source, ChangedRecordsResult.empty(), modifiedHeaderStamp, nil)
           }
         }
       }
