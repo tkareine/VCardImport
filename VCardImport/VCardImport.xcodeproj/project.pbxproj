@@ -160,7 +160,7 @@
 		E9828EAD1A99E67C00757D18 /* URLConnectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLConnectable.swift; path = Net/URLConnectable.swift; sourceTree = "<group>"; };
 		E9828EB01A99E73600757D18 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Net/Request.swift; sourceTree = "<group>"; };
 		E9828EB81A9A6B1100757D18 /* amelie-alpha.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "amelie-alpha.vcf"; sourceTree = "<group>"; };
-		E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBookExtension.swift; path = Domain/AddressBookExtension.swift; sourceTree = "<group>"; };
+		E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBookExtension.swift; path = Record/AddressBookExtension.swift; sourceTree = "<group>"; };
 		E983F1D219E9C76F00219305 /* vCard Turbo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "vCard Turbo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1D619E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E983F1D719E9C76F00219305 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = UI/AppDelegate.swift; sourceTree = "<group>"; };
@@ -394,6 +394,7 @@
 		E9F0D6A21A78C000002191E9 /* Record */ = {
 			isa = PBXGroup;
 			children = (
+				E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */,
 				E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */,
 				E97F0C361A86C644005C9B0B /* RecordNameTests.swift */,
 			);
@@ -403,7 +404,6 @@
 		E9F0D6A31A78C007002191E9 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				E9828EBA1A9A6DDD00757D18 /* AddressBookExtension.swift */,
 				E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */,
 				E9828EA61A99DFA100757D18 /* VCardImporterTests.swift */,
 			);
@@ -613,10 +613,10 @@
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
 				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,
 				E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */,
-				E9F2289C1A43819200A10190 /* RecordDifferencesTests.swift in Sources */,
-				E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */,
 				E975804A1A75FE26008A70E9 /* VCardImportProgressTests.swift in Sources */,
 				E9828EBB1A9A6DDD00757D18 /* AddressBookExtension.swift in Sources */,
+				E9F2289C1A43819200A10190 /* RecordDifferencesTests.swift in Sources */,
+				E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */,
 				E9AD7D0F1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift in Sources */,
 				E9828EA71A99DFA100757D18 /* VCardImporterTests.swift in Sources */,
 			);
