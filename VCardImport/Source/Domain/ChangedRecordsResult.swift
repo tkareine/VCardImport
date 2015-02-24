@@ -34,7 +34,7 @@ extension ChangedRecordsResult: Printable {
       case 0:
         updatesStatus = "no updates"
       case 1:
-        updatesStatus = "1 change"
+        updatesStatus = "1 update"
       default:
         updatesStatus = "\(updates) updates"
       }
