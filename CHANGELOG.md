@@ -1,5 +1,7 @@
 # Upcoming
 
+* Show the number of contacts skipped from importing in the table cell
+  of the vCard source
 * Consider only records from local address book for importing, fixing
   attempts to change read-only records (such as those imported from
   Facebook)
