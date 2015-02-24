@@ -180,10 +180,10 @@ class VCardImporterTests: XCTestCase {
   }
 
   /**
-    Thread synchronization note: We need to reinstantiate the address book
-    object after running `VCardImporter#import` to ensure we see the latest
-    state of the address book. This is because VCardImporter accesses the
-    address book from a different thread.
+    Thread synchronization note: We need to recreate the address book object
+    after running `VCardImporter#importFrom` in order to ensure we see the
+    latest state of the address book. This is because VCardImporter accesses the
+    address book from a background thread.
   */
   private func makeAddressBook() -> AddressBook {
     var error: NSError?
