@@ -3,18 +3,8 @@ import XCTest
 
 class VCardImporterTests: XCTestCase {
   let TestOrganization = "VCardImport Tests"
-
-  let firstSource = VCardSource(
-    name: "First Source",
-    connection: VCardSource.Connection(
-      url: "https://example.com/vcards/first.vcf"),
-    isEnabled: true)
-
-  let secondSource = VCardSource(
-    name: "Second Source",
-    connection: VCardSource.Connection(
-      url: "https://example.com/vcards/second.vcf"),
-    isEnabled: true)
+  let OneTestRecordVCardFile = "amelie-alpha"
+  let DuplicateTestRecordsVCardFile = "amelie-alpha-3x"
 
   override func setUp() {
     super.setUp()
@@ -24,14 +14,15 @@ class VCardImporterTests: XCTestCase {
   func testAddsRecordToAddressBook() {
     let importSourceCompletionExpectation = expectationWithDescription("import source completion")
     let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      onSourceDownload: { _, _ in () },
-      onSourceComplete: { source, changeResult, _, error in
+      usingVCardFile: OneTestRecordVCardFile,
+      onSourceComplete: { src, recordDiff, _, error in
         XCTAssertNil(error)
-        XCTAssertEqual(source.id, self.firstSource.id)
-        XCTAssertEqual(changeResult!.additions, 1)
-        XCTAssertEqual(changeResult!.updates, 0)
+        XCTAssertEqual(src.id, source.id)
+        XCTAssertEqual(recordDiff!.additions.count, 1)
+        XCTAssertEqual(recordDiff!.changes.count, 0)
         importSourceCompletionExpectation.fulfill()
       },
       onComplete: { error in
@@ -39,7 +30,7 @@ class VCardImporterTests: XCTestCase {
         importCompletionExpectation.fulfill()
       })
 
-    importer.importFrom([firstSource])
+    importer.importFrom([source])
 
     waitForExpectationsWithTimeout(1, handler: nil)
 
@@ -66,14 +57,15 @@ class VCardImporterTests: XCTestCase {
 
     let importSourceCompletionExpectation = expectationWithDescription("import source completion")
     let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      onSourceDownload: { _, _ in () },
-      onSourceComplete: { src, changeResult, _, error in
+      usingVCardFile: OneTestRecordVCardFile,
+      onSourceComplete: { src, recordDiff, _, error in
         XCTAssertNil(error)
-        XCTAssertEqual(src.id, self.firstSource.id)
-        XCTAssertEqual(changeResult!.additions, 0)
-        XCTAssertEqual(changeResult!.updates, 1)
+        XCTAssertEqual(src.id, source.id)
+        XCTAssertEqual(recordDiff!.additions.count, 0)
+        XCTAssertEqual(recordDiff!.changes.count, 1)
         importSourceCompletionExpectation.fulfill()
       },
       onComplete: { error in
@@ -81,7 +73,7 @@ class VCardImporterTests: XCTestCase {
         importCompletionExpectation.fulfill()
       })
 
-    importer.importFrom([firstSource])
+    importer.importFrom([source])
 
     waitForExpectationsWithTimeout(1, handler: nil)
 
@@ -105,12 +97,15 @@ class VCardImporterTests: XCTestCase {
 
   func testSameRecordGetsAddedOnlyOnce() {
     let importCompletionExpectation = expectationWithDescription("import completion")
-    var sourceCompletions: [String: ChangedRecordsResult] = [:]
+    let firstSource = makeVCardSource("first")
+    let secondSource = makeVCardSource("second")
+    var sourceCompletions: [String: RecordDifferences] = [:]
 
     let importer = makeVCardImporter(
-      onSourceDownload: { _, _ in () },
-      onSourceComplete: { source, changeResult, _, error in
-        sourceCompletions[source.id] = changeResult
+      usingVCardFile: OneTestRecordVCardFile,
+      onSourceComplete: { source, recordDiff, _, error in
+        XCTAssertNil(error)
+        sourceCompletions[source.id] = recordDiff!
       },
       onComplete: { error in
         XCTAssertNil(error)
@@ -122,12 +117,12 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
 
     let firstSourceChangeResult = sourceCompletions[firstSource.id]!
-    XCTAssertEqual(firstSourceChangeResult.additions, 1)
-    XCTAssertEqual(firstSourceChangeResult.updates, 0)
+    XCTAssertEqual(firstSourceChangeResult.additions.count, 1)
+    XCTAssertEqual(firstSourceChangeResult.changes.count, 0)
 
     let secondSourceChangeResult = sourceCompletions[secondSource.id]!
-    XCTAssertEqual(secondSourceChangeResult.additions, 0)
-    XCTAssertEqual(secondSourceChangeResult.updates, 0)
+    XCTAssertEqual(secondSourceChangeResult.additions.count, 0)
+    XCTAssertEqual(secondSourceChangeResult.changes.count, 0)
 
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
@@ -145,12 +140,15 @@ class VCardImporterTests: XCTestCase {
       phones: [(kABPersonPhoneIPhoneLabel, "5551001002")])
 
     let importCompletionExpectation = expectationWithDescription("import completion")
-    var sourceCompletions: [String: ChangedRecordsResult] = [:]
+    let firstSource = makeVCardSource("first")
+    let secondSource = makeVCardSource("second")
+    var sourceCompletions: [String: RecordDifferences] = [:]
 
     let importer = makeVCardImporter(
-      onSourceDownload: { _, _ in () },
-      onSourceComplete: { source, changeResult, _, error in
-        sourceCompletions[source.id] = changeResult
+      usingVCardFile: OneTestRecordVCardFile,
+      onSourceComplete: { source, recordDiff, _, error in
+        XCTAssertNil(error)
+        sourceCompletions[source.id] = recordDiff!
       },
       onComplete: { error in
         XCTAssertNil(error)
@@ -162,12 +160,12 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
 
     let firstSourceChangeResult = sourceCompletions[firstSource.id]!
-    XCTAssertEqual(firstSourceChangeResult.additions, 0)
-    XCTAssertEqual(firstSourceChangeResult.updates, 1)
+    XCTAssertEqual(firstSourceChangeResult.additions.count, 0)
+    XCTAssertEqual(firstSourceChangeResult.changes.count, 1)
 
     let secondSourceChangeResult = sourceCompletions[secondSource.id]!
-    XCTAssertEqual(secondSourceChangeResult.additions, 0)
-    XCTAssertEqual(secondSourceChangeResult.updates, 0)
+    XCTAssertEqual(secondSourceChangeResult.additions.count, 0)
+    XCTAssertEqual(secondSourceChangeResult.changes.count, 0)
 
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
@@ -177,6 +175,62 @@ class VCardImporterTests: XCTestCase {
 
     let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record) as [(NSString, NSObject)]!
     XCTAssertEqual(phones.count, 2)
+  }
+
+  func testSkipsNewRecordsFromVCardFileDueToDuplicateNames() {
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
+
+    let importer = makeVCardImporter(
+      usingVCardFile: DuplicateTestRecordsVCardFile,
+      onSourceComplete: { src, recordDiff, _, error in
+        XCTAssertNil(error)
+        XCTAssertEqual(src.id, source.id)
+        XCTAssertEqual(recordDiff!.additions.count, 0)
+        XCTAssertEqual(recordDiff!.changes.count, 0)
+        XCTAssertEqual(recordDiff!.countSkippedNewRecordsWithDuplicateNames, 3)
+        XCTAssertEqual(recordDiff!.countSkippedAmbiguousMatchesToExistingRecords, 0)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testSkipsUpdateToExistingRecordDueToAmbiguousNameMatch() {
+    addTestRecordToAddressBook(jobTitle: "Existing Test Subject")
+    addTestRecordToAddressBook(jobTitle: "Duplicated Test Subject")
+    addTestRecordToAddressBook(jobTitle: "Another Duplicated Test Subject")
+
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
+
+    let importer = makeVCardImporter(
+      usingVCardFile: OneTestRecordVCardFile,
+      onSourceComplete: { src, recordDiff, _, error in
+        XCTAssertNil(error)
+        XCTAssertEqual(src.id, source.id)
+        XCTAssertEqual(recordDiff!.additions.count, 0)
+        XCTAssertEqual(recordDiff!.changes.count, 0)
+        XCTAssertEqual(recordDiff!.countSkippedNewRecordsWithDuplicateNames, 0)
+        XCTAssertEqual(recordDiff!.countSkippedAmbiguousMatchesToExistingRecords, 3)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
   }
 
   /**
@@ -225,7 +279,7 @@ class VCardImporterTests: XCTestCase {
 
   private func addTestRecordToAddressBook(
     #jobTitle: NSString,
-    phones: [(NSString, NSString)])
+    phones: [(NSString, NSString)]? = nil)
   {
     let record: ABRecord = TestRecords.makePerson(
       firstName: "Amelie",
@@ -245,22 +299,36 @@ class VCardImporterTests: XCTestCase {
     }
   }
 
+  func makeVCardSource(_ name: String = "amelie-alpha") -> VCardSource {
+    return VCardSource(
+      name: name,
+      connection: VCardSource.Connection(
+        url: "https://example.com/vcards/\(name).vcf"),
+      isEnabled: true)
+  }
+
   private func makeVCardImporter(
-    #onSourceDownload: VCardImporter.OnSourceDownloadCallback,
+    usingVCardFile vcardFile: String,
     onSourceComplete: VCardImporter.OnSourceCompleteCallback,
     onComplete: VCardImporter.OnCompleteCallback)
     -> VCardImporter
   {
     return VCardImporter.builder()
-      .connectWith(FakeURLConnection())
+      .connectWith(FakeURLConnection(using: vcardFile))
       .queueTo(QueueExecution.mainQueue)
-      .onSourceDownload(onSourceDownload)
+      .onSourceDownload({ _, _ in () })
       .onSourceComplete(onSourceComplete)
       .onComplete(onComplete)
       .build()
   }
 
   private class FakeURLConnection: URLConnectable {
+    let vcardFile: String
+
+    init(using vcardFile: String) {
+      self.vcardFile = vcardFile
+    }
+
     func request(
       method: Request.Method,
       url: NSURL,
@@ -294,7 +362,8 @@ class VCardImporterTests: XCTestCase {
       -> Future<NSURL>
     {
       let dst = Files.tempURL()
-      let src = NSBundle(forClass: VCardImporterTests.self).URLForResource("amelie-alpha", withExtension: "vcf")!
+      let src = NSBundle(forClass: VCardImporterTests.self)
+        .URLForResource(vcardFile, withExtension: "vcf")!
       Files.copy(from: src, to: dst)
       return Future.succeeded(dst)
     }

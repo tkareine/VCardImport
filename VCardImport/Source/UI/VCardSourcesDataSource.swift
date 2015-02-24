@@ -31,12 +31,12 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
 
   func setVCardSourceChangedStatus(
     source: VCardSource,
-    changeResult: ChangedRecordsResult,
+    recordDifferences: RecordDifferences,
     modifiedHeaderStamp: ModifiedHeaderStamp?)
   {
     setVCardSourceStatus(
       true,
-      message: changeResult.description,
+      message: recordDifferences.description,
       modifiedHeaderStamp: modifiedHeaderStamp,
       to: source)
   }

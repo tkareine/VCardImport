@@ -422,6 +422,33 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(valueChanges.first!.1, newAddr)
   }
 
+  func testDescriptionWithoutChanges() {
+    let recordDiff = RecordDifferences(
+      additions: [],
+      changes: [],
+      countSkippedNewRecordsWithDuplicateNames: 0,
+      countSkippedAmbiguousMatchesToExistingRecords: 0)
+    let description = recordDiff.description
+
+    XCTAssertEqual(description, "Nothing to change")
+  }
+
+  func testDescriptionWithChanges() {
+    let record: ABRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
+    let recordDiff = RecordDifferences(
+      additions: [record],
+      changes: [],
+      countSkippedNewRecordsWithDuplicateNames: 2,
+      countSkippedAmbiguousMatchesToExistingRecords: 3)
+    let description = recordDiff.description
+
+    XCTAssertEqual(description,
+      "1 addition" +
+      ", no updates" +
+      ", skipped 2 contacts in vCard file due to duplicate names" +
+      ", skipped updates to 3 contacts due to ambiguous name matches")
+  }
+
   private func makeAddress(
     #street: String,
     zip: String,

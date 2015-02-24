@@ -16,14 +16,13 @@
 		E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
-		E943DB581A9BBD35002C92D4 /* ChangedRecordsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */; };
-		E943DB5A1A9BC4F7002C92D4 /* ChangedRecordsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
 		E94897411A47448C004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
 		E94C0D661A7442E40005C472 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C0D651A7442E40005C472 /* KeychainItemWrapper.m */; };
 		E95E95AD19F4380F002D864B /* VCardSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */; };
 		E95E95AF19F43862002D864B /* VCardSourceDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E95E95AE19F43862002D864B /* VCardSourceDetailView.xib */; };
+		E965C1B11A9D22750013759D /* amelie-alpha-3x.vcf in Resources */ = {isa = PBXBuildFile; fileRef = E965C1B01A9D22750013759D /* amelie-alpha-3x.vcf */; };
 		E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = E969253F1A4F7CF000B6427A /* QueueExecution.swift */; };
 		E975804A1A75FE26008A70E9 /* VCardImportProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97580491A75FE26008A70E9 /* VCardImportProgressTests.swift */; };
 		E975804B1A75FE94008A70E9 /* VCardImportProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5E8B01A7568A000400291 /* VCardImportProgress.swift */; };
@@ -142,7 +141,6 @@
 		E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyTextFieldDelegate.swift; path = UI/ProxyTextFieldDelegate.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONSerialization.swift; path = Support/JSONSerialization.swift; sourceTree = "<group>"; };
 		E9401B841A7413570078AD51 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = ../Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
-		E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChangedRecordsResult.swift; path = Domain/ChangedRecordsResult.swift; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Files.swift; path = Support/Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordName.swift; path = Record/RecordName.swift; sourceTree = "<group>"; };
 		E94C0D631A74428D0005C472 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeychainItemWrapper.h; path = Store/KeychainItemWrapper.h; sourceTree = "<group>"; };
@@ -150,6 +148,7 @@
 		E94C0D651A7442E40005C472 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeychainItemWrapper.m; path = Store/KeychainItemWrapper.m; sourceTree = "<group>"; };
 		E95E95AC19F4380F002D864B /* VCardSourceDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceDetailViewController.swift; path = UI/VCardSourceDetailViewController.swift; sourceTree = "<group>"; };
 		E95E95AE19F43862002D864B /* VCardSourceDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = VCardSourceDetailView.xib; path = UI/VCardSourceDetailView.xib; sourceTree = "<group>"; };
+		E965C1B01A9D22750013759D /* amelie-alpha-3x.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "amelie-alpha-3x.vcf"; sourceTree = "<group>"; };
 		E969253F1A4F7CF000B6427A /* QueueExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QueueExecution.swift; path = Support/QueueExecution.swift; sourceTree = "<group>"; };
 		E97580491A75FE26008A70E9 /* VCardImportProgressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardImportProgressTests.swift; path = Support/VCardImportProgressTests.swift; sourceTree = "<group>"; };
 		E97B6C0A1A34A1F100B4D3E6 /* VCardSourceStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceStore.swift; path = Store/VCardSourceStore.swift; sourceTree = "<group>"; };
@@ -298,6 +297,7 @@
 				E996101A1A894B5C00D52ECF /* aa-60.png */,
 				E996101C1A89524200D52ECF /* bb-60.png */,
 				E9828EB81A9A6B1100757D18 /* amelie-alpha.vcf */,
+				E965C1B01A9D22750013759D /* amelie-alpha-3x.vcf */,
 				E983F1EC19E9C76F00219305 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -329,7 +329,6 @@
 		E9F0D69C1A78BA68002191E9 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				E943DB571A9BBD35002C92D4 /* ChangedRecordsResult.swift */,
 				E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */,
 				E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */,
 				E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */,
@@ -535,6 +534,7 @@
 				E996101B1A894B5C00D52ECF /* aa-60.png in Resources */,
 				E996101D1A89524200D52ECF /* bb-60.png in Resources */,
 				E9828EB91A9A6B1100757D18 /* amelie-alpha.vcf in Resources */,
+				E965C1B11A9D22750013759D /* amelie-alpha-3x.vcf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -568,7 +568,6 @@
 				E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */,
 				E94897401A473E0D004BA838 /* RecordName.swift in Sources */,
 				E9EB13121A3EB4C2002BC521 /* Records.swift in Sources */,
-				E943DB581A9BBD35002C92D4 /* ChangedRecordsResult.swift in Sources */,
 				E9AF05231A69D4F4003860EF /* ModifiedHeaderStamp.swift in Sources */,
 				E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */,
 				E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */,
@@ -608,7 +607,6 @@
 				E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */,
 				E94897411A47448C004BA838 /* RecordName.swift in Sources */,
 				E9F2289F1A43934B00A10190 /* Records.swift in Sources */,
-				E943DB5A1A9BC4F7002C92D4 /* ChangedRecordsResult.swift in Sources */,
 				E9AD7D101A69F4DC00F1B668 /* ModifiedHeaderStamp.swift in Sources */,
 				E9828EAA1A99E27C00757D18 /* VCardImporter.swift in Sources */,
 				E9828EAB1A99E2B700757D18 /* VCardSource.swift in Sources */,
