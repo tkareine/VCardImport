@@ -1,0 +1,20 @@
+PODS:
+  - Alamofire (1.1.4)
+
+DEPENDENCIES:
+  - Alamofire (from `https://github.com/tkareine/Alamofire.git`, branch `issue-331-workaround`)
+
+EXTERNAL SOURCES:
+  Alamofire:
+    :branch: issue-331-workaround
+    :git: https://github.com/tkareine/Alamofire.git
+
+CHECKOUT OPTIONS:
+  Alamofire:
+    :commit: f0202510a3247908762b4d755abdf4f32adcf041
+    :git: https://github.com/tkareine/Alamofire.git
+
+SPEC CHECKSUMS:
+  Alamofire: 6a2cbaebe78a6d469bc55ee37f0a24ba22af76ac
+
+COCOAPODS: 0.36.0.rc.1
