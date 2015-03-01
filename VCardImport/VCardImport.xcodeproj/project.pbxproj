@@ -10,13 +10,13 @@
 		8AD31A8ED4BE4362183F13A7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
-		E907C6A91A6B382700612C90 /* FutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* FutureExtension.swift */; };
+		E907C6A91A6B382700612C90 /* MiniFutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* MiniFutureExtension.swift */; };
 		E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */; };
 		E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */; };
 		E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = E969253F1A4F7CF000B6427A /* QueueExecution.swift */; };
 		E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
-		E927AD4C1AA305BD00C5CA27 /* FutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* FutureExtension.swift */; };
+		E927AD4C1AA305BD00C5CA27 /* MiniFutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* MiniFutureExtension.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -110,7 +110,7 @@
 		D15622EB2A83307462D1086A /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E90684AB1A589F0700728D0B /* VCardSourceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceCell.swift; path = UI/VCardSourceCell.swift; sourceTree = "<group>"; };
 		E90684B01A58B17900728D0B /* DictionaryConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryConvertible.swift; path = Support/DictionaryConvertible.swift; sourceTree = "<group>"; };
-		E907C6A81A6B382700612C90 /* FutureExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FutureExtension.swift; path = Support/FutureExtension.swift; sourceTree = "<group>"; };
+		E907C6A81A6B382700612C90 /* MiniFutureExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiniFutureExtension.swift; path = Support/MiniFutureExtension.swift; sourceTree = "<group>"; };
 		E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextFieldValidator.swift; path = UI/TextFieldValidator.swift; sourceTree = "<group>"; };
 		E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QueueExecutionTests.swift; path = Support/QueueExecutionTests.swift; sourceTree = "<group>"; };
 		E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyTextFieldDelegate.swift; path = UI/ProxyTextFieldDelegate.swift; sourceTree = "<group>"; };
@@ -313,9 +313,9 @@
 				E90684B01A58B17900728D0B /* DictionaryConvertible.swift */,
 				E9F31E111A0FD2570015509F /* Errors.swift */,
 				E947E1581A4F87A200513F77 /* Files.swift */,
-				E907C6A81A6B382700612C90 /* FutureExtension.swift */,
 				E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */,
 				E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */,
+				E907C6A81A6B382700612C90 /* MiniFutureExtension.swift */,
 				E969253F1A4F7CF000B6427A /* QueueExecution.swift */,
 				E9F5E8B01A7568A000400291 /* VCardImportProgress.swift */,
 			);
@@ -595,9 +595,9 @@
 				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E947E1591A4F87A200513F77 /* Files.swift in Sources */,
-				E907C6A91A6B382700612C90 /* FutureExtension.swift in Sources */,
 				E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */,
+				E907C6A91A6B382700612C90 /* MiniFutureExtension.swift in Sources */,
 				E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */,
 				E9F5E8B11A7568A000400291 /* VCardImportProgress.swift in Sources */,
 				E9828EB11A99E73600757D18 /* Request.swift in Sources */,
@@ -633,8 +633,8 @@
 				E9AD7D111A69F7A700F1B668 /* DictionaryConvertible.swift in Sources */,
 				E9F228A21A43938E00A10190 /* Errors.swift in Sources */,
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
-				E927AD4C1AA305BD00C5CA27 /* FutureExtension.swift in Sources */,
 				E9EF16511A61DFC400CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
+				E927AD4C1AA305BD00C5CA27 /* MiniFutureExtension.swift in Sources */,
 				E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */,
 				E975804B1A75FE94008A70E9 /* VCardImportProgress.swift in Sources */,
 				E9828EB41A99F12800757D18 /* Request.swift in Sources */,
