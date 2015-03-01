@@ -19,7 +19,7 @@ class TextFieldValidator<T> {
   private weak var textField: UITextField?
   private weak var textFieldDelegate: ProxyTextFieldDelegate?
 
-  private let switcher: (Future<T> -> Future<T>) = QueueExecution.makeSwitchLatest()
+  private let switcher = Future<T>.makeSwitchLatest()
   private let validationDebouncer: (String -> Void)!
 
   init(

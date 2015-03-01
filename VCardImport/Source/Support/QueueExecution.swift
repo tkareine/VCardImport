@@ -1,5 +1,4 @@
 import Dispatch
-import MiniFuture
 
 struct QueueExecution {
   typealias Queue = dispatch_queue_t
@@ -45,22 +44,5 @@ struct QueueExecution {
     }
 
     return later
-  }
-
-  static func makeSwitchLatest<T>() -> (Future<T> -> Future<T>) {
-    var lastFuture: Future<T>?
-
-    func latest(future: Future<T>) -> Future<T> {
-      lastFuture = future
-      let guard = Future<T>.promise()
-      future.onComplete { result in
-        if future === lastFuture {
-          guard.complete(result)
-        }
-      }
-      return guard
-    }
-
-    return latest
   }
 }
