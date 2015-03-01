@@ -1,4 +1,5 @@
 import Foundation
+import MiniFuture
 
 protocol URLConnectable {
   func request(

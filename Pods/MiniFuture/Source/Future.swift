@@ -31,19 +31,19 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  public class func async(block: () -> Try<T>) -> Future<T> {
+  public class func async(block: () -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
-  public class func succeeded(val: T) -> Future<T> {
+  public class func succeeded(val: T) -> ImmediateFuture<T> {
     return fromTry(.Success(val))
   }
 
-  public class func failed(val: String) -> Future<T> {
+  public class func failed(val: String) -> ImmediateFuture<T> {
     return fromTry(.Failure(val))
   }
 
-  public class func fromTry(val: Try<T>) -> Future<T> {
+  public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
     return ImmediateFuture(val)
   }
 

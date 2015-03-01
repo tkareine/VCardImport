@@ -1,4 +1,5 @@
 import Foundation
+import MiniFuture
 
 extension PromiseFuture {
   func reject(response: NSHTTPURLResponse) {

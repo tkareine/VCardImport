@@ -71,7 +71,7 @@ job title values for the same person from other sources.
   functionality (ensuring that only the response corresponding to the
   last URL validation request gets counted in, tackling the problem of
   interleaved responses).
-* Uses [Futures](https://github.com/tkareine/ToyFuture) for handling
+* Uses [Futures](https://github.com/tkareine/MiniFuture) for handling
   complex asynchronous tasks and their dependencies to each other.
 * Stores nonsensitive user data to `NSUserDefaults`, JSON encoded.
 * Stores sensitive user data (usernames and passwords, currently) to

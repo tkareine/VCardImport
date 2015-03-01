@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8AD31A8ED4BE4362183F13A7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
 		E907C6A91A6B382700612C90 /* FutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* FutureExtension.swift */; };
@@ -15,6 +16,7 @@
 		E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = E969253F1A4F7CF000B6427A /* QueueExecution.swift */; };
 		E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
+		E927AD4C1AA305BD00C5CA27 /* FutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* FutureExtension.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -53,16 +55,8 @@
 		E9AD7D0F1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */; };
 		E9AD7D101A69F4DC00F1B668 /* ModifiedHeaderStamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */; };
 		E9AD7D111A69F7A700F1B668 /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
-		E9AF051E1A69BFCF003860EF /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6B1A4A3C3F004BD769 /* Future.swift */; };
-		E9AF051F1A69BFD1003860EF /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6D1A4A3C3F004BD769 /* Try.swift */; };
-		E9AF05201A69BFDC003860EF /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */; };
-		E9AF05211A69BFE2003860EF /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6A1A4A3C3F004BD769 /* Condition.swift */; };
 		E9AF05231A69D4F4003860EF /* ModifiedHeaderStamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */; };
 		E9B9B9F41A5BF653004C53CA /* VCardToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B9B9F31A5BF653004C53CA /* VCardToolbar.swift */; };
-		E9C46E6E1A4A3C3F004BD769 /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6A1A4A3C3F004BD769 /* Condition.swift */; };
-		E9C46E6F1A4A3C3F004BD769 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6B1A4A3C3F004BD769 /* Future.swift */; };
-		E9C46E701A4A3C3F004BD769 /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */; };
-		E9C46E711A4A3C3F004BD769 /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E6D1A4A3C3F004BD769 /* Try.swift */; };
 		E9C46E731A4A3C98004BD769 /* URLConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E721A4A3C98004BD769 /* URLConnection.swift */; };
 		E9CF04B21A3CE02A00A13EF6 /* CoreExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */; };
 		E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */; };
@@ -156,10 +150,6 @@
 		E9AD7D0E1A69EE4100F1B668 /* ModifiedHeaderStampTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModifiedHeaderStampTests.swift; path = Domain/ModifiedHeaderStampTests.swift; sourceTree = "<group>"; };
 		E9AF05221A69D4F4003860EF /* ModifiedHeaderStamp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModifiedHeaderStamp.swift; path = Domain/ModifiedHeaderStamp.swift; sourceTree = "<group>"; };
 		E9B9B9F31A5BF653004C53CA /* VCardToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardToolbar.swift; path = UI/VCardToolbar.swift; sourceTree = "<group>"; };
-		E9C46E6A1A4A3C3F004BD769 /* Condition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Condition.swift; path = ToyFuture/Condition.swift; sourceTree = "<group>"; };
-		E9C46E6B1A4A3C3F004BD769 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Future.swift; path = ToyFuture/Future.swift; sourceTree = "<group>"; };
-		E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Semaphore.swift; path = ToyFuture/Semaphore.swift; sourceTree = "<group>"; };
-		E9C46E6D1A4A3C3F004BD769 /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Try.swift; path = ToyFuture/Try.swift; sourceTree = "<group>"; };
 		E9C46E721A4A3C98004BD769 /* URLConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLConnection.swift; path = Net/URLConnection.swift; sourceTree = "<group>"; };
 		E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreExtension.swift; path = Support/CoreExtension.swift; sourceTree = "<group>"; };
 		E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreExtensionTests.swift; path = Support/CoreExtensionTests.swift; sourceTree = "<group>"; };
@@ -190,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AD31A8ED4BE4362183F13A7 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,7 +242,6 @@
 				E9F0D69B1A78B7CB002191E9 /* Record */,
 				E9F0D6A01A78BDE3002191E9 /* Store */,
 				E9F0D69D1A78BA7A002191E9 /* Support */,
-				E9F0D6981A78B7A8002191E9 /* ToyFuture */,
 				E9F0D69F1A78BA9F002191E9 /* UI */,
 				E94C0D641A7442E30005C472 /* Bridging-Header.h */,
 				E9F9D85F1A361C1B0054DCB8 /* Config.swift */,
@@ -291,17 +281,6 @@
 				E983F1EC19E9C76F00219305 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		E9F0D6981A78B7A8002191E9 /* ToyFuture */ = {
-			isa = PBXGroup;
-			children = (
-				E9C46E6A1A4A3C3F004BD769 /* Condition.swift */,
-				E9C46E6B1A4A3C3F004BD769 /* Future.swift */,
-				E9C46E6C1A4A3C3F004BD769 /* Semaphore.swift */,
-				E9C46E6D1A4A3C3F004BD769 /* Try.swift */,
-			);
-			name = ToyFuture;
 			sourceTree = "<group>";
 		};
 		E9F0D69B1A78B7CB002191E9 /* Record */ = {
@@ -430,9 +409,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E983F1F419E9C76F00219305 /* Build configuration list for PBXNativeTarget "Test" */;
 			buildPhases = (
+				2A89BE5DB65037F131A2DB07 /* Check Pods Manifest.lock */,
 				E983F1E319E9C76F00219305 /* Sources */,
 				E983F1E419E9C76F00219305 /* Frameworks */,
 				E983F1E519E9C76F00219305 /* Resources */,
+				94DA40578FCA5AF98077DD1C /* Embed Pods Frameworks */,
+				AF832F9943FF5BA20F1F9744 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -525,6 +507,21 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		2A89BE5DB65037F131A2DB07 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		368C673F8FBAD7266393CC65 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -538,6 +535,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		94DA40578FCA5AF98077DD1C /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AF832F9943FF5BA20F1F9744 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C961B8CBEADCE21A59886CFE /* Check Pods Manifest.lock */ = {
@@ -563,10 +590,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9F9D8601A361C1B0054DCB8 /* Config.swift in Sources */,
-				E9C46E6E1A4A3C3F004BD769 /* Condition.swift in Sources */,
-				E9C46E6F1A4A3C3F004BD769 /* Future.swift in Sources */,
-				E9C46E701A4A3C3F004BD769 /* Semaphore.swift in Sources */,
-				E9C46E711A4A3C3F004BD769 /* Try.swift in Sources */,
 				E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */,
 				E9CF04B21A3CE02A00A13EF6 /* CoreExtension.swift in Sources */,
 				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
@@ -606,14 +629,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E91E62011A6B082F00543A40 /* Config.swift in Sources */,
-				E9AF05211A69BFE2003860EF /* Condition.swift in Sources */,
-				E9AF051E1A69BFCF003860EF /* Future.swift in Sources */,
-				E9AF05201A69BFDC003860EF /* Semaphore.swift in Sources */,
-				E9AF051F1A69BFD1003860EF /* Try.swift in Sources */,
 				E9CF04B51A3CE40E00A13EF6 /* CoreExtension.swift in Sources */,
 				E9AD7D111A69F7A700F1B668 /* DictionaryConvertible.swift in Sources */,
 				E9F228A21A43938E00A10190 /* Errors.swift in Sources */,
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
+				E927AD4C1AA305BD00C5CA27 /* FutureExtension.swift in Sources */,
 				E9EF16511A61DFC400CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */,
 				E975804B1A75FE94008A70E9 /* VCardImportProgress.swift in Sources */,
@@ -790,6 +810,7 @@
 		};
 		E983F1F519E9C76F00219305 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6E1FE9330B4AD96D644FDB37 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -809,6 +830,7 @@
 		};
 		E983F1F619E9C76F00219305 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1FB67E41FDADE55F0C0843B0 /* Pods.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (

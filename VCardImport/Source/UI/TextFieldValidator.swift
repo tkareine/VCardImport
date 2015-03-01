@@ -1,4 +1,5 @@
 import UIKit
+import MiniFuture
 
 class TextFieldValidator<T> {
   typealias SyncValidator = String -> Try<T>

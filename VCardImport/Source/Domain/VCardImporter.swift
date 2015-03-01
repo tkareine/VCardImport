@@ -1,5 +1,6 @@
 import Foundation
 import AddressBook
+import MiniFuture
 
 class VCardImporter {
   typealias OnSourceDownloadCallback = (VCardSource, Request.ProgressBytes) -> Void

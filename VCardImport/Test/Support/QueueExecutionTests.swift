@@ -1,3 +1,4 @@
+import MiniFuture
 import XCTest
 
 class QueueExecutionTests: XCTestCase {

@@ -1,5 +1,6 @@
 import AddressBook
 import Foundation
+import MiniFuture
 
 class AddressBook {
   private let addressBook: ABAddressBook!

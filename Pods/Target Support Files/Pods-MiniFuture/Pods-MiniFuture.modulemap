@@ -1,0 +1,6 @@
+framework module MiniFuture {
+  umbrella header "Pods-MiniFuture-umbrella.h"
+
+  export *
+  module * { export * }
+}

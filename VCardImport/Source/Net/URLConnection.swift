@@ -1,5 +1,6 @@
 import Foundation
 import Alamofire
+import MiniFuture
 
 class URLConnection: URLConnectable {
   private let DefaultHeaders = [

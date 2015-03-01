@@ -1,4 +1,5 @@
 import Dispatch
+import MiniFuture
 
 struct QueueExecution {
   typealias Queue = dispatch_queue_t

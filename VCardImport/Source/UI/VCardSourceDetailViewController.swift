@@ -1,4 +1,5 @@
 import UIKit
+import MiniFuture
 
 class VCardSourceDetailViewController: UIViewController {
   @IBOutlet weak var noticeLabel: UILabel!

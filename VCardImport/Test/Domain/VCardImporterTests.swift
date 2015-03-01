@@ -1,4 +1,5 @@
 import AddressBook
+import MiniFuture
 import XCTest
 
 class VCardImporterTests: XCTestCase {
