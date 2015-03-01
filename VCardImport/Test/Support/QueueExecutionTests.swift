@@ -1,10 +1,9 @@
-import MiniFuture
 import XCTest
 
 class QueueExecutionTests: XCTestCase {
   func testDebouncer() {
     let expectation = expectationWithDescription("debouncer")
-    let queue = dispatch_queue_create("test debouncer", DISPATCH_QUEUE_SERIAL)
+    let queue = QueueExecution.makeSerialQueue("TestDebouncer")
     var inputs: [String] = []
     let debouncer: String -> Void = QueueExecution.makeDebouncer(100, queue) { input in
       inputs.append(input)

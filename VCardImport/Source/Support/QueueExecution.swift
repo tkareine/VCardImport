@@ -4,8 +4,12 @@ struct QueueExecution {
   typealias OnceToken = dispatch_once_t
   typealias Queue = dispatch_queue_t
 
-  static let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+  static let concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
   static let mainQueue = dispatch_get_main_queue()
+
+  static func makeSerialQueue(id: String) -> Queue {
+    return dispatch_queue_create("\(Config.BundleIdentifier).\(id)", DISPATCH_QUEUE_SERIAL)
+  }
 
   static func sync(queue: Queue, block: () -> Void) {
     dispatch_sync(queue, block)

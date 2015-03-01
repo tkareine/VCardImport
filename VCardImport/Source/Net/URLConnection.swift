@@ -47,7 +47,7 @@ class URLConnection: URLConnectable {
     let promise = Future<NSHTTPURLResponse>.promise()
 
     request.response(
-      queue: QueueExecution.backgroundQueue,
+      queue: QueueExecution.concurrentQueue,
       serializer: Alamofire.Request.responseDataSerializer(),
       completionHandler: { _, response, _, error in
         if let err = error {
@@ -97,7 +97,7 @@ class URLConnection: URLConnectable {
     let promise = Future<NSURL>.promise()
 
     request.response(
-      queue: QueueExecution.backgroundQueue,
+      queue: QueueExecution.concurrentQueue,
       serializer: Alamofire.Request.responseDataSerializer(),
       completionHandler: { _, response, _, error in
         if let err = error {

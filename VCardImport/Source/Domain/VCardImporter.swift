@@ -11,7 +11,9 @@ class VCardImporter {
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
   private let urlConnection: URLConnectable
-  private let queue: QueueExecution.Queue
+  private let callbackQueue: QueueExecution.Queue
+
+  private let executionQueue = QueueExecution.makeSerialQueue("VCardImporter")
 
   class func builder() -> Builder {
     return Builder()
@@ -22,13 +24,13 @@ class VCardImporter {
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
     urlConnection: URLConnectable,
-    queue: QueueExecution.Queue)
+    callbackQueue: QueueExecution.Queue)
   {
     self.onSourceDownload = onSourceDownload
     self.onSourceComplete = onSourceComplete
     self.onComplete = onComplete
     self.urlConnection = urlConnection
-    self.queue = queue
+    self.callbackQueue = callbackQueue
   }
 
   func importFrom(sources: [VCardSource]) {
@@ -36,12 +38,12 @@ class VCardImporter {
     // calls to background jobs and back to the user-specified queue in one
     // place.
 
-    QueueExecution.async(QueueExecution.backgroundQueue) {
+    QueueExecution.async(executionQueue) {
       var error: NSError?
       let addressBook: AddressBook! = AddressBook.sharedInstance(error: &error)
 
       if let err = error {
-        QueueExecution.async(self.queue) { self.onComplete(err) }
+        QueueExecution.async(self.callbackQueue) { self.onComplete(err) }
         return
       }
 
@@ -59,7 +61,7 @@ class VCardImporter {
         case .Success(let res):
           switch res() {
           case .Unchanged:
-            QueueExecution.async(self.queue) {
+            QueueExecution.async(self.callbackQueue) {
               self.onSourceComplete(source, nil, nil, nil)
             }
             continue
@@ -68,7 +70,7 @@ class VCardImporter {
             modifiedHeaderStamp = stamp
           }
         case .Failure(let desc):
-          QueueExecution.async(self.queue) {
+          QueueExecution.async(self.callbackQueue) {
             self.onSourceComplete(source, nil, nil, Errors.addressBookFailedToLoadVCardSource(desc))
           }
           continue
@@ -81,7 +83,7 @@ class VCardImporter {
         if !recordDiff.additions.isEmpty {
           let isSuccess = addressBook.addRecords(recordDiff.additions, error: &error)
           if !isSuccess {
-            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
+            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
         }
@@ -89,7 +91,7 @@ class VCardImporter {
         if !recordDiff.changes.isEmpty {
           let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
           if !isSuccess {
-            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
+            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
         }
@@ -97,18 +99,18 @@ class VCardImporter {
         if addressBook.hasUnsavedChanges {
           let isSaved = addressBook.save(error: &error)
           if !isSaved {
-            QueueExecution.async(self.queue) { self.onSourceComplete(source, nil, nil, error!) }
+            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error!) }
             continue
           }
         }
 
         NSLog("vCard source %@: %@", source.name, recordDiff.description)
-        QueueExecution.async(self.queue) {
+        QueueExecution.async(self.callbackQueue) {
           self.onSourceComplete(source, recordDiff, modifiedHeaderStamp, nil)
         }
       }
 
-      QueueExecution.async(self.queue) { self.onComplete(nil) }
+      QueueExecution.async(self.callbackQueue) { self.onComplete(nil) }
     }
   }
 
@@ -210,7 +212,7 @@ class VCardImporter {
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
     private var urlConnection: URLConnectable?
-    private var queue: QueueExecution.Queue?
+    private var callbackQueue: QueueExecution.Queue?
 
     func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
       self.onSourceDownload = callback
@@ -232,8 +234,8 @@ class VCardImporter {
       return self
     }
 
-    func queueTo(queue: QueueExecution.Queue) -> Builder {
-      self.queue = queue
+    func queueTo(callbackQueue: QueueExecution.Queue) -> Builder {
+      self.callbackQueue = callbackQueue
       return self
     }
 
@@ -242,7 +244,7 @@ class VCardImporter {
         self.onSourceComplete == nil ||
         self.onComplete == nil ||
         self.urlConnection == nil ||
-        self.queue == nil {
+        self.callbackQueue == nil {
         fatalError("all parameters must be given")
       }
       return VCardImporter(
@@ -250,7 +252,7 @@ class VCardImporter {
         onSourceComplete: self.onSourceComplete!,
         onComplete: self.onComplete!,
         urlConnection: self.urlConnection!,
-        queue: self.queue!)
+        callbackQueue: self.callbackQueue!)
     }
   }
 }
