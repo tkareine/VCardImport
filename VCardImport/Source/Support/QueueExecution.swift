@@ -1,6 +1,7 @@
 import Dispatch
 
 struct QueueExecution {
+  typealias OnceToken = dispatch_once_t
   typealias Queue = dispatch_queue_t
 
   static let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -20,6 +21,10 @@ struct QueueExecution {
     dispatch_after(scheduleAt, queue) {
       block()
     }
+  }
+
+  static func once(inout token: OnceToken, block: () -> Void) {
+    dispatch_once(&token, block)
   }
 
   /**

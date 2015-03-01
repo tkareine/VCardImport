@@ -7,6 +7,8 @@ class VCardImporterTests: XCTestCase {
   let OneTestRecordVCardFile = "amelie-alpha"
   let DuplicateTestRecordsVCardFile = "amelie-alpha-3x"
 
+  let addressBook = VCardImporterTests.makeAddressBook()
+
   override func setUp() {
     super.setUp()
     removeTestRecordsFromAddressBook()
@@ -234,15 +236,9 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
-  /**
-    Thread synchronization note: We need to recreate the address book object
-    after running `VCardImporter#importFrom` in order to ensure we see the
-    latest state of the address book. This is because VCardImporter accesses the
-    address book from a background thread.
-  */
-  private func makeAddressBook() -> AddressBook {
+  private class func makeAddressBook() -> AddressBook {
     var error: NSError?
-    let addressBook = AddressBook(error: &error)
+    let addressBook = AddressBook.sharedInstance(error: &error)
     if let err = error {
       fatalError("Failed to make address book: \(err)")
     }
@@ -255,7 +251,7 @@ class VCardImporterTests: XCTestCase {
   }
 
   private func loadTestRecordFromAddressBook() -> ABRecord? {
-    let records = makeAddressBook()
+    let records = addressBook
       .loadRecordsWithName("Amelie Alpha")
       .filter(recordIsOfTestOrganization)
     if records.count > 1 {
@@ -265,7 +261,6 @@ class VCardImporterTests: XCTestCase {
   }
 
   private func removeTestRecordsFromAddressBook() {
-    let addressBook = makeAddressBook()
     let records = addressBook.loadRecords().filter(recordIsOfTestOrganization)
     var error: NSError?
     addressBook.removeRecords(records, error: &error)
@@ -288,7 +283,6 @@ class VCardImporterTests: XCTestCase {
       jobTitle: jobTitle,
       organization: TestOrganization,
       phones: phones)
-    let addressBook = makeAddressBook()
     var error: NSError?
     addressBook.addRecords([record], error: &error)
     if let err = error {

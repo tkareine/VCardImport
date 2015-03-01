@@ -38,10 +38,10 @@ class VCardImporter {
 
     QueueExecution.async(QueueExecution.backgroundQueue) {
       var error: NSError?
-      let addressBook: AddressBook! = AddressBook(error: &error)
+      let addressBook: AddressBook! = AddressBook.sharedInstance(error: &error)
 
-      if addressBook == nil {
-        QueueExecution.async(self.queue) { self.onComplete(error!) }
+      if let err = error {
+        QueueExecution.async(self.queue) { self.onComplete(err) }
         return
       }
 

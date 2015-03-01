@@ -13,7 +13,7 @@ class AddressBook {
     return ABAddressBookHasUnsavedChanges(addressBook)
   }
 
-  init?(error: NSErrorPointer) {
+  private init?(error: NSErrorPointer) {
     func makeABAddressBook() -> ABAddressBook? {
       var abError: Unmanaged<CFError>?
       let abPtr: Unmanaged<ABAddressBook>? = ABAddressBookCreateWithOptions(nil, &abError)
@@ -109,5 +109,26 @@ class AddressBook {
     }
 
     return true
+  }
+
+  class func sharedInstance(#error: NSErrorPointer) -> AddressBook? {
+    struct Static {
+      static var instance: AddressBook?
+      static var error: NSError?
+      static var token: QueueExecution.OnceToken = 0
+    }
+
+    QueueExecution.once(&Static.token) {
+      var err: NSError?
+      if let ab = AddressBook(error: &err) {
+        Static.instance = ab
+      }
+      if let e = err {
+        Static.error = err
+      }
+    }
+
+    error.memory = Static.error
+    return Static.instance
   }
 }
