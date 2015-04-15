@@ -1,10 +1,10 @@
 PODS:
-  - Alamofire (1.1.4)
-  - MiniFuture (0.1.0)
+  - Alamofire (1.2.0)
+  - MiniFuture (0.2.0)
 
 DEPENDENCIES:
   - Alamofire (from `https://github.com/tkareine/Alamofire.git`, branch `issue-331-workaround`)
-  - MiniFuture
+  - MiniFuture (~> 0.2)
 
 EXTERNAL SOURCES:
   Alamofire:
@@ -13,11 +13,11 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Alamofire:
-    :commit: 1999566797fee51528be4cf01a0d9b148016dc34
+    :commit: 568043f4fc9333e1752e0205068ce3a251d289b0
     :git: https://github.com/tkareine/Alamofire.git
 
 SPEC CHECKSUMS:
-  Alamofire: 6a2cbaebe78a6d469bc55ee37f0a24ba22af76ac
-  MiniFuture: 2216abc481dbc64e7f75e76e3f53076f084a751b
+  Alamofire: d765c5c1713aa64106b0228aaa600a1e6851f68d
+  MiniFuture: 8efe7f71c177a3a09677f36d7c690afb7315a986
 
-COCOAPODS: 0.36.0.rc.1
+COCOAPODS: 0.36.4

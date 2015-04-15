@@ -20,7 +20,7 @@ class TextFieldValidator<T> {
   private weak var textFieldDelegate: ProxyTextFieldDelegate?
 
   private let switcher = Future<T>.makeSwitchLatest()
-  private let validationDebouncer: (String -> Void)!
+  private var validationDebouncer: (String -> Void)!
 
   init(
     textField: UITextField,
@@ -80,7 +80,7 @@ class TextFieldValidator<T> {
     }
   }
 
-  private func validate(text: NSString) {
+  private func validate(text: String) {
     // never call Future#get here as switcher completes only the latest Future
     switcher(validator(text)).onComplete { result in
       QueueExecution.async(QueueExecution.mainQueue) {
@@ -105,13 +105,13 @@ class TextFieldValidator<T> {
   }
 
   private func change(
-    #text: NSString,
+    #text: String,
     range: NSRange,
-    replacement: NSString)
-    -> NSString
+    replacement: String)
+    -> String
   {
-    let unaffectedStart = text.substringToIndex(range.location)
-    let unaffectedEnd = text.substringFromIndex(range.location + range.length)
+    let unaffectedStart = (text as NSString).substringToIndex(range.location)
+    let unaffectedEnd = (text as NSString).substringFromIndex(range.location + range.length)
     return unaffectedStart + replacement + unaffectedEnd
   }
 }

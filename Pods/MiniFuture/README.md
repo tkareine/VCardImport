@@ -1,24 +1,30 @@
 # MiniFuture
 
-A Future design pattern implementation in Swift language, using
-libdispatch and POSIX mutexes and condition variables.
+A monadic Future design pattern implementation in Swift language,
+using [libdispatch](http://libdispatch.macosforge.org/) and POSIX
+mutexes and condition variables. Design inspired from Scala's
+[scala.concurrent.Future](http://www.scala-lang.org/api/current/#scala.concurrent.Future).
+
+Only the essential features are in place currently. We're using the
+library in production, and it appears to work as expected. There's a
+benchmark that acts as a stress test, see [Performance](#performance)
+below.
 
 ## Requirements
 
 * For iOS: >= 7.0 (if installing by copying source files manually) or >=
   8.0 (if installing as embedded framework)
 * For Mac OS X: >= 10.9
-* Xcode 6.1
+* Xcode 6.3
 
 ## Installation
 
 ### CocoaPods
 
 [CocoaPods](http://cocoapods.org/) is a centralized dependency manager
-for Cocoa projects. Currently, its prerelease version supports
-libraries written in Swift language, integrating them as embedded
-frameworks to your project. This requires that the minimum deployment
-target of your project is iOS 8.0 or OS X 10.9.
+for Cocoa libraries. It integrates libraries as embedded frameworks to
+your project. This requires that the minimum deployment target of your
+project is iOS 8.0 or OS X 10.9.
 
 To add MiniFuture to your project, add the following line to your
 `Podfile`:
@@ -38,27 +44,30 @@ figure out how to upgrade the library yourself.
 
 ## Characteristics
 
-We use `Try<T>` value type as a helper. It's an enumeration with two
-members, `Success` and `Failure`. The first is meant for the caller of
-the Future to signify successful computation, with the result of the
-computation as the associated value of type `T`. The latter member
-signifies computation failure. You describe the failure with the
-associated value of String type.
+We use `Try<T>` value type to wrap computation results. It's an
+enumeration with two members, `Success` and `Failure`. The first is
+meant for the caller of the Future to signify successful computation,
+with the result of the computation as the associated value of type
+`T`. The latter member signifies computation failure. You describe the
+failure with the associated String value.
 
 Future composition with `Future#flatMap` either continues the
 composition chain or short-circuits based on the resolved `Try<T>`
-object of the current Future.
+value of the current Future. A `Success` value continues the chain,
+calling the next `flatMap` operation. A `Failure` value returns
+immediately, skipping further calls to `flatMap`, and returns the
+value as the result of the composed Future.
 
 We use explicit success and failure values, because you can't use
 exceptions in Swift. The idea is inspired from Scala 2.10, where the
 Future library wraps exceptions thrown inside Future computations to
-`Failure` values. In MiniFuture, you must do this yourself.
+`Failure` values. In MiniFuture, you must denote failures as values.
 
-All async operations run in libdispatch's default global concurrent
-queue. Closures passed to `Future#flatMap`, `Future#onComplete`, and
-`Future.async` always execute in a queue worker thread. Use
-synchronization as appropriate when accessing shared state outside the
-parameters the Futures pass to the closures.
+All asynchronous operations run in libdispatch's default global
+concurrent queue. Closures passed to `Future#flatMap`, `Future#map`,
+`Future#onComplete`, and `Future.async` always execute in a queue
+worker thread. Use synchronization as appropriate when accessing
+shared state outside the closures.
 
 ## Usage
 
@@ -67,9 +76,9 @@ To get a Future job running, use `Future.succeeded` and
 `ImmediateFuture` objects, a Future implementation class already
 completed with success or failure value.
 
-Use `Future.async` for async jobs that compute the value later in a
-queue worker thread. You pass a block to `Future.async` and return
-either a `Success` or `Failure` value from it. The Future
+Use `Future.async` for asynchronous jobs that compute the value later
+in a queue worker thread. You pass a block to `Future.async` and
+return either a `Success` or `Failure` value from it. The Future
 implementation class here is `AsyncFuture`.
 
 For adapting existing asynchronous interfaces with Futures, use
@@ -81,18 +90,18 @@ failure (`Future#reject`). You can immediately return a
 `PromiseFuture` to code expecting Futures and let the `PromiseFuture`
 object complete later.
 
-When you get a handle to a Future, use `Future#flatMap` to compose
-another Future that depends on the completed result of the previous
-Future. Use `Future#get` to wait for the result of a Future. Use
-`Future#onComplete` to add a callback to be run when the Future
-completes.
+When you get a handle to a Future, use `Future#flatMap` or
+`Future#map` to compose another Future that depends on the completed
+result of the previous Future. Use `Future#get` to wait for the result
+of a Future. Use `Future#onComplete` to add a callback for
+side-effects to be run when the Future completes.
 
 ### Example
 
 ```swift
 extension String {
   func excerpt(maxLength: Int) -> String {
-    let length = countElements(self)
+    let length = count(self)
 
     if length <= maxLength {
       return self
@@ -103,7 +112,8 @@ extension String {
   }
 }
 
-/* Request a web resource asynchronously, immediately returning a handle to
+/**
+ * Request a web resource asynchronously, immediately returning a handle to
  * the job as a promise kind of Future. When NSURLSession calls the completion
  * handler, we fullfill the promise. If the completion handler gets called
  * with the contents of the web resource, we resolve the promise with the
@@ -124,24 +134,23 @@ func loadURL(url: NSURL) -> Future<NSData> {
   return promise
 }
 
-/* Parse data as HTML document, finding specific contents from it with an
+/**
+ * Parse data as HTML document, finding specific contents from it with an
  * XPath query. We return a completed Future as the handle to the result. If
  * we can parse the data as an HTML document and the query succeeds, we return
  * a successful Future with the query result. Otherwise, we return failed
  * Future describing the error.
  *
  * Because this function gets called inside `Future#flatMap`, it's run in
- * backround in a queue worker thread.
+ * background in a queue worker thread.
  */
 func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
   var err: NSError?
 
-  if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
-    if let node = doc.rootHTMLNode(&err) {
-      if let found = node.nodeForXPath(xpath, error: &err) {
-        return Future.succeeded(found)
-      }
-    }
+  if let doc = HTMLDocument.readDataAsUTF8(data, error: &err),
+         node = doc.rootHTMLNode(&err),
+         found = node.nodeForXPath(xpath, error: &err) {
+    return Future.succeeded(found)
   }
 
   if let e = err {
@@ -157,7 +166,7 @@ let featuredArticleXPath = "//*[@id='mp-tfa']"
 let result = loadURL(wikipediaURL)
   /* Future composition (chaining): when this Future completes successfully,
    * pass its result to a function that does more work, returning another
-   * Future. If this Future completes with a failure, the chain short-circuits
+   * Future. If this Future completes with failure, the chain short-circuits
    * and further flatMap methods are not called. Calls to flatMap are always
    * executed in a queue worker thread.
    */
@@ -167,8 +176,8 @@ let result = loadURL(wikipediaURL)
   .get()
 
 switch result {
-case .Success(let result):
-  let excerpt = result().textContents!.excerpt(72)
+case .Success(let box):
+  let excerpt = box.value.textContents!.excerpt(72)
   println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
 case .Failure(let desc):
   println("Error getting today's featured article from Wikipedia: \(desc)")
@@ -182,9 +191,7 @@ $ make example
 # xcodebuild output...
 
 ./build/Example
-Excerpt from today's featured article at Wikipedia:
-
-Oliver Bosbyshell (1839–1921) was Superintendent of the United States …
+Excerpt from today's featured article at Wikipedia: Casino Royale (1953) is a James Bond novel, the first of twelve featurin…
 ```
 
 ### Reject `PromiseFuture` with `NSError`
@@ -200,6 +207,7 @@ You can use extensions to make MiniFuture easier to use with
 
 ```swift
 import Foundation
+import MiniFuture
 
 extension PromiseFuture {
   func reject(error: NSError) {
@@ -211,13 +219,14 @@ extension PromiseFuture {
 ## Performance
 
 There's a benchmark in `Benchmark/main.swift`. It builds up complex
-nested Futures (the `futEnd` variable in the code) in a loop
-`NumberOfFutureCompositions` times and chains them into one big
+nested Futures (the `futEnd` variable in the code) in a loop 2000
+times (`NumberOfFutureCompositions`) and chains them into one big
 composite Future (the `fut` variable). Then the benchmark waits for
 the Future to complete.
 
-We repeat this `NumberOfIterations` times to get the arithmetic mean
-and standard deviation of time spent completing each composite Future.
+We repeat this 100 times (`NumberOfIterations`) to get the arithmetic
+mean and standard deviation of time spent completing each composite
+Future.
 
 Compile it with Release build configuration, which enables `-O`
 compiler flag. Then run it from the terminal.
@@ -230,10 +239,10 @@ $ make benchmark
 # xcodebuild output...
 
 ./build/Benchmark
-iterations: 100, futures composed: 2000
+iterations: 500, futures composed: 2000
 
-warm up: 220 ms (± 3 ms)
-measure: 220 ms (± 2 ms)
+warm up: 56 ms (± 2 ms)
+measure: 56 ms (± 3 ms)
 ```
 
 Total memory consumption of the process stayed below 50 MB.

@@ -19,10 +19,10 @@ class RecordDifferencesTests: XCTestCase {
       city: "Sacramento",
       state: "CA")
     let newInstantMessage = makeInstantMessage(
-      service: kABPersonInstantMessageServiceSkype,
+      service: kABPersonInstantMessageServiceSkype as String,
       username: "bigarnie")
     let newSocialProfile = makeSocialProfile(
-      service: kABPersonSocialProfileServiceTwitter,
+      service: kABPersonSocialProfileServiceTwitter as String,
       url: "https://twitter.com/arnie",
       username: "arnie")
     let newRecord: ABRecord = TestRecords.makePerson(
@@ -35,12 +35,12 @@ class RecordDifferencesTests: XCTestCase {
       organization: "State Council",
       jobTitle: "Manager",
       department: "Headquarters",
-      phones: [(kABPersonPhoneMainLabel, "5551001002")],
+      phones: [(kABPersonPhoneMainLabel as String, "5551001002")],
       emails: [("Home", "arnold.alpha@example.com")],
       urls: [("Work", "https://exampleinc.com/")],
       addresses: [("Home", newRecordHomeAddress)],
-      instantMessages: [(kABPersonInstantMessageServiceSkype, newInstantMessage)],
-      socialProfiles: [(kABPersonSocialProfileServiceTwitter, newSocialProfile)],
+      instantMessages: [(kABPersonInstantMessageServiceSkype as String, newInstantMessage)],
+      socialProfiles: [(kABPersonSocialProfileServiceTwitter as String, newSocialProfile)],
       image: loadImage("aa-60"))
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
@@ -53,31 +53,31 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(singleValueChanges.count, 7)
 
-    let prefixNameChange = singleValueChanges[kABPersonPrefixProperty]!
+    let prefixNameChange = singleValueChanges[kABPersonPrefixProperty] as! String!
 
     XCTAssertEqual(prefixNameChange, "Mr.")
 
-    let nickNameChange = singleValueChanges[kABPersonNicknameProperty]!
+    let nickNameChange = singleValueChanges[kABPersonNicknameProperty] as! String
 
     XCTAssertEqual(nickNameChange, "Arnie")
 
-    let middleNameChange = singleValueChanges[kABPersonMiddleNameProperty]!
+    let middleNameChange = singleValueChanges[kABPersonMiddleNameProperty] as! String
 
     XCTAssertEqual(middleNameChange, "Big")
 
-    let suffixNameChange = singleValueChanges[kABPersonSuffixProperty]!
+    let suffixNameChange = singleValueChanges[kABPersonSuffixProperty] as! String
 
     XCTAssertEqual(suffixNameChange, "Senior")
 
-    let organizationChange = singleValueChanges[kABPersonOrganizationProperty]!
+    let organizationChange = singleValueChanges[kABPersonOrganizationProperty] as! String
 
     XCTAssertEqual(organizationChange, "State Council")
 
-    let jobTitleChange = singleValueChanges[kABPersonJobTitleProperty]!
+    let jobTitleChange = singleValueChanges[kABPersonJobTitleProperty] as! String
 
     XCTAssertEqual(jobTitleChange, "Manager")
 
-    let departmentChange = singleValueChanges[kABPersonDepartmentProperty]!
+    let departmentChange = singleValueChanges[kABPersonDepartmentProperty] as! String
 
     XCTAssertEqual(departmentChange, "Headquarters")
 
@@ -88,38 +88,38 @@ class RecordDifferencesTests: XCTestCase {
     let phoneChanges = multiValueChanges[kABPersonPhoneProperty]!
 
     XCTAssertEqual(phoneChanges.count, 1)
-    XCTAssertEqual(phoneChanges.first!.0, kABPersonPhoneMainLabel)
-    XCTAssertEqual(phoneChanges.first!.1, "5551001002")
+    XCTAssertEqual(phoneChanges.first!.0, kABPersonPhoneMainLabel as String)
+    XCTAssertEqual(phoneChanges.first!.1 as! String, "5551001002")
 
     let emailChanges = multiValueChanges[kABPersonEmailProperty]!
 
     XCTAssertEqual(emailChanges.count, 1)
     XCTAssertEqual(emailChanges.first!.0, "Home")
-    XCTAssertEqual(emailChanges.first!.1, "arnold.alpha@example.com")
+    XCTAssertEqual(emailChanges.first!.1 as! String, "arnold.alpha@example.com")
 
     let urlChanges = multiValueChanges[kABPersonURLProperty]!
 
     XCTAssertEqual(urlChanges.count, 1)
     XCTAssertEqual(urlChanges.first!.0, "Work")
-    XCTAssertEqual(urlChanges.first!.1, "https://exampleinc.com/")
+    XCTAssertEqual(urlChanges.first!.1 as! String, "https://exampleinc.com/")
 
     let addressChanges = multiValueChanges[kABPersonAddressProperty]!
 
     XCTAssertEqual(addressChanges.count, 1)
     XCTAssertEqual(addressChanges.first!.0, "Home")
-    XCTAssertEqual(addressChanges.first!.1, newRecordHomeAddress)
+    XCTAssertEqual(addressChanges.first!.1 as! [String: NSString], newRecordHomeAddress)
 
     let instantMessageChanges = multiValueChanges[kABPersonInstantMessageProperty]!
 
     XCTAssertEqual(instantMessageChanges.count, 1)
-    XCTAssertEqual(instantMessageChanges.first!.0, kABPersonInstantMessageServiceSkype)
-    XCTAssertEqual(instantMessageChanges.first!.1, newInstantMessage)
+    XCTAssertEqual(instantMessageChanges.first!.0, kABPersonInstantMessageServiceSkype as String)
+    XCTAssertEqual(instantMessageChanges.first!.1 as! [String: NSString], newInstantMessage)
 
     let socialProfileChanges = multiValueChanges[kABPersonSocialProfileProperty]!
 
     XCTAssertEqual(socialProfileChanges.count, 1)
-    XCTAssertEqual(socialProfileChanges.first!.0, kABPersonSocialProfileServiceTwitter)
-    XCTAssertEqual(socialProfileChanges.first!.1, newSocialProfile)
+    XCTAssertEqual(socialProfileChanges.first!.0, kABPersonSocialProfileServiceTwitter as String)
+    XCTAssertEqual(socialProfileChanges.first!.1 as! [String: NSString], newSocialProfile)
 
     XCTAssertNotNil(recordDiff.changes.first!.imageChange)
   }
@@ -149,7 +149,7 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(emailChanges.count, 1)
     XCTAssertEqual(emailChanges.first!.0, "Work")
-    XCTAssertEqual(emailChanges.first!.1, "info@gov.gov")
+    XCTAssertEqual(emailChanges.first!.1 as! String, "info@gov.gov")
   }
 
   func testDoesNotSetRecordChangeForNonTrackedFieldValue() {
@@ -333,11 +333,11 @@ class RecordDifferencesTests: XCTestCase {
     let oldRecord: ABRecord = TestRecords.makePerson(
       firstName: "Arnold",
       lastName: "Alpha",
-      phones: [(kABPersonPhoneMobileLabel, "5551001001")])
+      phones: [(kABPersonPhoneMobileLabel as String, "5551001001")])
     let newRecord: ABRecord = TestRecords.makePerson(
       firstName: "Arnold",
       lastName: "Alpha",
-      phones: [(kABPersonPhoneMainLabel, "5551001001")])
+      phones: [(kABPersonPhoneMainLabel as String, "5551001001")])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
       newRecords: [newRecord])
@@ -350,11 +350,11 @@ class RecordDifferencesTests: XCTestCase {
     let oldRecord: ABRecord = TestRecords.makePerson(
       firstName: "Arnold",
       lastName: "Alpha",
-      phones: [(kABPersonPhoneMobileLabel, "5551001001")])
+      phones: [(kABPersonPhoneMobileLabel as String, "5551001001")])
     let newRecord: ABRecord = TestRecords.makePerson(
       firstName: "Arnold",
       lastName: "Alpha",
-      phones: [(kABPersonPhoneMainLabel, "5551001002")])
+      phones: [(kABPersonPhoneMainLabel as String, "5551001002")])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
       newRecords: [newRecord])
@@ -370,8 +370,8 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(propertyChange, kABPersonPhoneProperty)
     XCTAssertEqual(valueChanges.count, 1)
-    XCTAssertEqual(valueChanges.first!.0, kABPersonPhoneMainLabel)
-    XCTAssertEqual(valueChanges.first!.1, "5551001002")
+    XCTAssertEqual(valueChanges.first!.0, kABPersonPhoneMainLabel as String)
+    XCTAssertEqual(valueChanges.first!.1 as! String, "5551001002")
   }
 
   func testDoesNotSetRecordChangeForExistingValueOfMultiDictionaryValueField() {
@@ -419,7 +419,7 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(propertyChange, kABPersonAddressProperty)
     XCTAssertEqual(valueChanges.count, 1)
     XCTAssertEqual(valueChanges.first!.0, "Work")
-    XCTAssertEqual(valueChanges.first!.1, newAddr)
+    XCTAssertEqual(valueChanges.first!.1 as! [String : NSString], newAddr)
   }
 
   func testDescriptionWithoutChanges() {
@@ -454,22 +454,22 @@ class RecordDifferencesTests: XCTestCase {
     zip: String,
     city: String,
     state: String)
-    -> [String: String]
+    -> [String: NSString]
   {
     return [
-      kABPersonAddressStreetKey: street,
-      kABPersonAddressZIPKey: zip,
-      kABPersonAddressCityKey: city,
-      kABPersonAddressStateKey: state
+      kABPersonAddressStreetKey as String: street,
+      kABPersonAddressZIPKey as String: zip,
+      kABPersonAddressCityKey as String: city,
+      kABPersonAddressStateKey as String: state
     ]
   }
 
   private func makeInstantMessage(#service: String, username: String)
-    -> [String: String]
+    -> [String: NSString]
   {
     return [
-      kABPersonInstantMessageServiceKey: service,
-      kABPersonInstantMessageUsernameKey: username
+      kABPersonInstantMessageServiceKey as String: service,
+      kABPersonInstantMessageUsernameKey as String: username
     ]
   }
 
@@ -477,12 +477,12 @@ class RecordDifferencesTests: XCTestCase {
     #service: String,
     url: String,
     username: String)
-    -> [String: String]
+    -> [String: NSString]
   {
     return [
-      kABPersonSocialProfileServiceKey: service,
-      kABPersonSocialProfileURLKey: url,
-      kABPersonSocialProfileUsernameKey: username
+      kABPersonSocialProfileServiceKey as String: service,
+      kABPersonSocialProfileURLKey as String: url,
+      kABPersonSocialProfileUsernameKey as String: username
     ]
   }
 

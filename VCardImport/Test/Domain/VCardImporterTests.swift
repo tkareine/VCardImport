@@ -40,23 +40,23 @@ class VCardImporterTests: XCTestCase {
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
 
-    let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as String!
+    let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as! String
     XCTAssertEqual(jobTitle, "Test Subject")
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record) as [(NSString, NSObject)]!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
     XCTAssertEqual(emails.count, 1)
-    XCTAssertEqual(emails.first!.1, "amelie.alpha@example.com")
+    XCTAssertEqual(emails.first!.1 as! String, "amelie.alpha@example.com")
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record) as [(NSString, NSObject)]!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
     XCTAssertEqual(phones.count, 1)
-    XCTAssertEqual(phones.first!.0, kABPersonPhoneMobileLabel)
-    XCTAssertEqual(phones.first!.1, "5551001001")
+    XCTAssertEqual(phones.first!.0, kABPersonPhoneMobileLabel as String)
+    XCTAssertEqual(phones.first!.1 as! String, "5551001001")
   }
 
   func testUpdatesRecordInAddressBook() {
     addTestRecordToAddressBook(
       jobTitle: "Existing Test Subject",
-      phones: [(kABPersonPhoneIPhoneLabel, "5551001002")])
+      phones: [(kABPersonPhoneIPhoneLabel as String, "5551001002")])
 
     let importSourceCompletionExpectation = expectationWithDescription("import source completion")
     let importCompletionExpectation = expectationWithDescription("import completion")
@@ -83,19 +83,19 @@ class VCardImporterTests: XCTestCase {
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
 
-    let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as String!
+    let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as! String
     XCTAssertEqual(jobTitle, "Existing Test Subject")
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record) as [(NSString, NSObject)]!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
     XCTAssertEqual(emails.count, 1)
-    XCTAssertEqual(emails.first!.1, "amelie.alpha@example.com")
+    XCTAssertEqual(emails.first!.1 as! String, "amelie.alpha@example.com")
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record) as [(NSString, NSObject)]!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
     XCTAssertEqual(phones.count, 2)
-    XCTAssertEqual(phones[0].0, kABPersonPhoneIPhoneLabel)
-    XCTAssertEqual(phones[0].1, "5551001002")
-    XCTAssertEqual(phones[1].0, kABPersonPhoneMobileLabel)
-    XCTAssertEqual(phones[1].1, "5551001001")
+    XCTAssertEqual(phones[0].0, kABPersonPhoneIPhoneLabel as String)
+    XCTAssertEqual(phones[0].1 as! String, "5551001002")
+    XCTAssertEqual(phones[1].0, kABPersonPhoneMobileLabel as String)
+    XCTAssertEqual(phones[1].1 as! String, "5551001001")
   }
 
   func testSameRecordGetsAddedOnlyOnce() {
@@ -130,17 +130,17 @@ class VCardImporterTests: XCTestCase {
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record) as [(NSString, NSObject)]!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
     XCTAssertEqual(emails.count, 1)
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record) as [(NSString, NSObject)]!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
     XCTAssertEqual(phones.count, 1)
   }
 
   func testSameRecordUpdateGetsAppliedOnlyOnce() {
     addTestRecordToAddressBook(
       jobTitle: "Existing Test Subject",
-      phones: [(kABPersonPhoneIPhoneLabel, "5551001002")])
+      phones: [(kABPersonPhoneIPhoneLabel as String, "5551001002")])
 
     let importCompletionExpectation = expectationWithDescription("import completion")
     let firstSource = makeVCardSource("first")
@@ -173,10 +173,10 @@ class VCardImporterTests: XCTestCase {
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record) as [(NSString, NSObject)]!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
     XCTAssertEqual(emails.count, 1)
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record) as [(NSString, NSObject)]!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
     XCTAssertEqual(phones.count, 2)
   }
 
@@ -246,8 +246,11 @@ class VCardImporterTests: XCTestCase {
   }
 
   private func recordIsOfTestOrganization(record: ABRecord) -> Bool {
-    let orgName = Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record)
-    return orgName == TestOrganization
+    if let orgName = Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String {
+      return orgName == TestOrganization
+    } else {
+      return false
+    }
   }
 
   private func loadTestRecordFromAddressBook() -> ABRecord? {
@@ -274,8 +277,8 @@ class VCardImporterTests: XCTestCase {
   }
 
   private func addTestRecordToAddressBook(
-    #jobTitle: NSString,
-    phones: [(NSString, NSString)]? = nil)
+    #jobTitle: String,
+    phones: [(String, NSString)]? = nil)
   {
     let record: ABRecord = TestRecords.makePerson(
       firstName: "Amelie",

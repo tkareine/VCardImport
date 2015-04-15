@@ -4,21 +4,21 @@ import UIKit
 
 struct TestRecords {
   static func makePerson(
-    prefixName: NSString? = nil,
-    firstName: NSString? = nil,
-    nickName: NSString? = nil,
-    middleName: NSString? = nil,
-    lastName: NSString? = nil,
-    suffixName: NSString? = nil,
-    organization: NSString? = nil,
-    jobTitle: NSString? = nil,
-    department: NSString? = nil,
-    phones: [(NSString, NSString)]? = nil,
-    emails: [(NSString, NSString)]? = nil,
-    urls: [(NSString, NSString)]? = nil,
-    addresses: [(NSString, NSDictionary)]? = nil,
-    instantMessages: [(NSString, NSDictionary)]? = nil,
-    socialProfiles: [(NSString, NSDictionary)]? = nil,
+    prefixName: String? = nil,
+    firstName: String? = nil,
+    nickName: String? = nil,
+    middleName: String? = nil,
+    lastName: String? = nil,
+    suffixName: String? = nil,
+    organization: String? = nil,
+    jobTitle: String? = nil,
+    department: String? = nil,
+    phones: [(String, NSString)]? = nil,
+    emails: [(String, NSString)]? = nil,
+    urls: [(String, NSString)]? = nil,
+    addresses: [(String, NSDictionary)]? = nil,
+    instantMessages: [(String, NSDictionary)]? = nil,
+    socialProfiles: [(String, NSDictionary)]? = nil,
     image: UIImage? = nil)
     -> ABRecord
   {
@@ -75,8 +75,8 @@ struct TestRecords {
   }
 
   static func makeOrganization(
-    #name: NSString,
-    emails: [(NSString, NSString)]? = nil)
+    #name: String,
+    emails: [(String, NSString)]? = nil)
     -> ABRecord
   {
     let record: ABRecord = ABPersonCreate().takeRetainedValue()

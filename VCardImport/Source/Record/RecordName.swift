@@ -11,11 +11,11 @@ class RecordName: Hashable, Equatable, Printable {
   }
 
   class func of(record: ABRecord) -> RecordName? {
-    let kind = (Records.getSingleValueProperty(kABPersonKindProperty, of: record) as NSNumber) ?? (kABPersonKindPerson as NSNumber)
+    let kind = (Records.getSingleValueProperty(kABPersonKindProperty, of: record) as? NSNumber) ?? (kABPersonKindPerson as NSNumber)
 
     if kind.isEqualToNumber(kABPersonKindPerson) {
-      let fn = (Records.getSingleValueProperty(kABPersonFirstNameProperty, of: record) as String?) ?? ""
-      let ln = (Records.getSingleValueProperty(kABPersonLastNameProperty, of: record) as String?) ?? ""
+      let fn = (Records.getSingleValueProperty(kABPersonFirstNameProperty, of: record) as? String) ?? ""
+      let ln = (Records.getSingleValueProperty(kABPersonLastNameProperty, of: record) as? String) ?? ""
 
       if fn.isEmpty && ln.isEmpty {
         return nil
@@ -23,7 +23,7 @@ class RecordName: Hashable, Equatable, Printable {
         return PersonRecordName(firstName: fn, lastName: ln)
       }
     } else {
-      let n = (Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as String?) ?? ""
+      let n = (Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String) ?? ""
 
       if n.isEmpty {
         return nil

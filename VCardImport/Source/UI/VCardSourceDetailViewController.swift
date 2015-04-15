@@ -73,7 +73,7 @@ class VCardSourceDetailViewController: UIViewController {
     func makeDetailView() -> UIView {
       return NSBundle
         .mainBundle()
-        .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as UIView
+        .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as! UIView
     }
 
     func setupSubviews() {
@@ -263,7 +263,7 @@ class VCardSourceDetailViewController: UIViewController {
     // adapted and modified from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
 
     func bottomOffset(info: [NSObject: AnyObject]) -> CGFloat {
-      let nsvalue = info[UIKeyboardFrameBeginUserInfoKey]! as NSValue
+      let nsvalue = info[UIKeyboardFrameBeginUserInfoKey] as! NSValue
       let orgRect = nsvalue.CGRectValue()
       let convRect = view.convertRect(orgRect, fromView: nil)
       return convRect.size.height
@@ -315,7 +315,7 @@ class VCardSourceDetailViewController: UIViewController {
       textField: nameField,
       textFieldDelegate: textFieldDelegate,
       syncValidator: { [weak self] text in
-        return !text.trimmed.isEmpty ? .Success(text) : .Failure("empty")
+        return !text.trimmed.isEmpty ? .success(text) : .failure("empty")
       },
       onValidated: { [weak self] result in
         if let s = self {

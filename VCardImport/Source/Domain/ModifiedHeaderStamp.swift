@@ -42,8 +42,8 @@ extension ModifiedHeaderStamp: DictionaryConvertible {
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> ModifiedHeaderStamp {
     return self(
-      name: dictionary["name"] as String!,
-      value: dictionary["value"] as String!)
+      name: dictionary["name"] as! String,
+      value: dictionary["value"] as! String)
   }
 }
 

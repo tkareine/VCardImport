@@ -140,10 +140,10 @@ extension VCardSource: DictionaryConvertible {
     }
 
     return self(
-      name: dictionary["name"] as String!,
-      connection: Connection.fromDictionary(dictionary["connection"] as [String: AnyObject]!),
-      isEnabled: dictionary["isEnabled"] as Bool!,
-      id: dictionary["id"] as String!,
+      name: dictionary["name"] as! String,
+      connection: Connection.fromDictionary(dictionary["connection"] as! [String: AnyObject]),
+      isEnabled: dictionary["isEnabled"] as! Bool,
+      id: dictionary["id"] as! String,
       lastImportResult: lastImportResult)
   }
 }
@@ -154,7 +154,7 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return self(url: dictionary["url"] as String)
+    return self(url: dictionary["url"] as! String)
   }
 }
 
@@ -178,9 +178,9 @@ extension VCardSource.ImportResult: DictionaryConvertible {
     }
 
     return self(
-      isSuccess: dictionary["isSuccess"] as Bool,
-      message: dictionary["message"] as String,
-      importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as String)!,
+      isSuccess: dictionary["isSuccess"] as! Bool,
+      message: dictionary["message"] as! String,
+      importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as! String)!,
       modifiedHeaderStamp: modifiedHeaderStamp)
   }
 }

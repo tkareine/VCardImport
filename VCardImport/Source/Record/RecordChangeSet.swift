@@ -3,8 +3,8 @@ import AddressBook
 
 struct RecordChangeSet {
   let record: ABRecord
-  let singleValueChanges: [ABPropertyID: NSObject]
-  let multiValueChanges: [ABPropertyID: [(NSString, NSObject)]]
+  let singleValueChanges: [ABPropertyID: AnyObject]
+  let multiValueChanges: [ABPropertyID: [(String, AnyObject)]]
   let imageChange: NSData?
 
   init?(oldRecord: ABRecord, newRecord: ABRecord) {
@@ -44,16 +44,15 @@ struct RecordChangeSet {
   private static func findSingleValueChanges(
     oldRecord: ABRecord,
     _ newRecord: ABRecord)
-    -> [ABPropertyID: NSObject]
+    -> [ABPropertyID: AnyObject]
   {
-    var changes: [ABPropertyID: NSObject] = [:]
+    var changes: [ABPropertyID: AnyObject] = [:]
 
     for prop in TrackedSingleValueProperties {
-      let oldVal = Records.getSingleValueProperty(prop, of: oldRecord)
+      let oldVal: AnyObject? = Records.getSingleValueProperty(prop, of: oldRecord)
       if oldVal == nil {
-        let newVal = Records.getSingleValueProperty(prop, of: newRecord)
-        if let nv = newVal {
-          changes[prop] = nv
+        if let newVal: AnyObject = Records.getSingleValueProperty(prop, of: newRecord) {
+          changes[prop] = newVal
         }
       }
     }
@@ -64,23 +63,23 @@ struct RecordChangeSet {
   private static func findMultiValueChanges(
     oldRecord: ABRecord,
     _ newRecord: ABRecord)
-    -> [ABPropertyID: [(NSString, NSObject)]]
+    -> [ABPropertyID: [(String, AnyObject)]]
   {
-    var changes: [ABPropertyID: [(NSString, NSObject)]] = [:]
+    var changes: [ABPropertyID: [(String, AnyObject)]] = [:]
 
     for prop in TrackedMultiValueProperties {
       let oldMultiVals = Records.getMultiValueProperty(prop, of: oldRecord)
       let newMultiVals = Records.getMultiValueProperty(prop, of: newRecord)
 
       if let newMV = newMultiVals {
-        let oldValues = oldMultiVals != nil ? oldMultiVals!.map { $0.1 } : []
+        let oldValues: NSArray = oldMultiVals != nil ? oldMultiVals!.map { $0.1 } : []
 
-        var changesByLabel: [(NSString, NSObject)] = []
+        var changesByLabel: [(String, AnyObject)] = []
 
         for newLabelAndValue in newMV {
-          let (newLabel, newValue) = newLabelAndValue
+          let (newLabel, newValue: AnyObject) = newLabelAndValue
 
-          if !contains(oldValues, newValue) {
+          if !oldValues.containsObject(newValue) {
             changesByLabel.append(newLabelAndValue)
           }
         }

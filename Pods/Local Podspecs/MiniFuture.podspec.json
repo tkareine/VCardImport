@@ -5,7 +5,7 @@
     "type": "MIT",
     "file": "LICENSE.txt"
   },
-  "summary": "A Future design pattern implementation in Swift",
+  "summary": "A monadic Future design pattern implementation in Swift",
   "homepage": "https://github.com/tkareine/MiniFuture",
   "social_media_url": "http://twitter.com/tkareine",
   "source": {

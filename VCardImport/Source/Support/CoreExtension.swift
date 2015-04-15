@@ -113,7 +113,7 @@ private let HTTPURLRegexp = "^" +
   "(?:/[^\\s]*)?" +
   "$"
 
-let HTTPURLRegexpPredicate = NSPredicate(format: "SELF MATCHES[cd] %@", HTTPURLRegexp)!
+let HTTPURLRegexpPredicate = NSPredicate(format: "SELF MATCHES[cd] %@", HTTPURLRegexp)
 
 extension NSURL {
   var isValidHTTPURL: Bool {

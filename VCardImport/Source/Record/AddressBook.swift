@@ -29,7 +29,7 @@ class AddressBook {
       return nil
     }
 
-    func requestAuthorizationAndWaitResult() -> ABAuthorizationStatus {
+    func requestAuthorizationAndWaitResult(addressBook: ABAddressBook) -> ABAuthorizationStatus {
       var authResolution = false
       let semaphore = Semaphore()
 
@@ -43,13 +43,15 @@ class AddressBook {
       return authResolution ? .Authorized : .Denied
     }
 
+    var addressBookUsedForAuthorization: ABAddressBook?
     var authStatus = ABAddressBookGetAuthorizationStatus()
 
     if authStatus == .NotDetermined {
       if let ab: ABAddressBook = makeABAddressBook() {
-        addressBook = ab
-        authStatus = requestAuthorizationAndWaitResult()
+        addressBookUsedForAuthorization = ab
+        authStatus = requestAuthorizationAndWaitResult(ab)
       } else {
+        addressBook = nil
         return nil
       }
     }
@@ -58,24 +60,27 @@ class AddressBook {
       if error != nil {
         error.memory = Errors.addressBookAccessDeniedOrRestricted()
       }
-
+      addressBook = nil
       return nil
     }
 
-    // is already authorized?
-    if addressBook == nil {
+    // is not already authorized?
+    if addressBookUsedForAuthorization == nil {
       if let ab: ABAddressBook = makeABAddressBook() {
         addressBook = ab
       } else {
+        addressBook = nil
         return nil
       }
+    } else {
+      addressBook = addressBookUsedForAuthorization
     }
   }
 
   func loadRecords() -> [ABRecord] {
     let defaultSource: ABRecord = ABAddressBookCopyDefaultSource(addressBook).takeRetainedValue()
     return ABAddressBookCopyArrayOfAllPeopleInSource(addressBook, defaultSource)
-      .takeRetainedValue()
+      .takeRetainedValue() as [ABRecord]
   }
 
   func addRecords(records: [ABRecord], error: NSErrorPointer) -> Bool {

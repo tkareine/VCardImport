@@ -74,7 +74,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     -> UITableViewCell
   {
     let cell = tableView.dequeueReusableCellWithIdentifier(
-      Config.UI.TableCellReuseIdentifier, forIndexPath: indexPath) as VCardSourceCell
+      Config.UI.TableCellReuseIdentifier, forIndexPath: indexPath) as! VCardSourceCell
     cell.setContents(vcardSourceStore[indexPath.row])
     cell.setContentLeadingSpace(tableView.separatorInset.left)
     return cell

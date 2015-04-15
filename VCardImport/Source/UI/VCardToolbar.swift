@@ -1,26 +1,56 @@
 import UIKit
 
-class VCardToolbar: UIView {
-  let importButton: UIButton!
-  let backupButton: UIButton!
-  let progressLabel: UILabel!
-  let progressView: UIProgressView!
+private func makeButton(
+  title: String,
+  align labelAlignment: UIControlContentHorizontalAlignment)
+  -> UIButton
+{
+  let button = UIButton.buttonWithType(.System) as! UIButton
+  button.setTitle(title, forState: .Normal)
+  if let label = button.titleLabel {
+    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    label.font = bodyFont.fontWithSize(17)
+  }
+  button.contentHorizontalAlignment = labelAlignment
+  return button
+}
 
-  private let border: CALayer!
+private func makeProgressLabel() -> UILabel {
+  let label = UILabel()
+  label.textAlignment = .Center
+  label.textColor = Config.UI.ToolbarProgressTextColor
+  label.adjustsFontSizeToFitWidth = true
+  label.font = label.font.fontWithSize(13)
+  label.minimumScaleFactor = 0.85
+  label.lineBreakMode = .ByWordWrapping
+  label.numberOfLines = 2
+  label.alpha = 0
+  return label
+}
+
+private func makeProgressView() -> UIProgressView {
+  let view = UIProgressView(progressViewStyle: .Bar)
+  view.alpha = 0
+  return view
+}
+
+private func getBorderLayerRect(bounds: CGRect) -> CGRect {
+  return CGRect(x: 0, y: 0, width: bounds.size.width, height: 1)
+}
+
+class VCardToolbar: UIView {
+  let importButton = makeButton("Import", align: .Left)
+  let backupButton = makeButton("Backup", align: .Right)
+  let progressLabel  = makeProgressLabel()
+  let progressView = makeProgressView()
+
+  private var border: CALayer!
 
   // MARK: View Life Cycle
-
-  override init() {
-    super.init()
-  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    importButton = makeButton("Import", align: .Left)
-    backupButton = makeButton("Backup", align: .Right)
-    progressLabel = makeProgressLabel()
-    progressView = makeProgressView()
     border = makeBorderLayer()
 
     addSubview(importButton)
@@ -89,49 +119,11 @@ class VCardToolbar: UIView {
 
   // MARK: Helpers
 
-  private func makeButton(
-    title: String,
-    align labelAlignment: UIControlContentHorizontalAlignment)
-    -> UIButton
-  {
-    let button = UIButton.buttonWithType(.System) as UIButton
-    button.setTitle(title, forState: .Normal)
-    if let label = button.titleLabel {
-      let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-      label.font = bodyFont.fontWithSize(17)
-    }
-    button.contentHorizontalAlignment = labelAlignment
-    return button
-  }
-
-  private func makeProgressLabel() -> UILabel {
-    let label = UILabel()
-    label.textAlignment = .Center
-    label.textColor = Config.UI.ToolbarProgressTextColor
-    label.adjustsFontSizeToFitWidth = true
-    label.font = label.font.fontWithSize(13)
-    label.minimumScaleFactor = 0.85
-    label.lineBreakMode = .ByWordWrapping
-    label.numberOfLines = 2
-    label.alpha = 0
-    return label
-  }
-
-  private func makeProgressView() -> UIProgressView {
-    let view = UIProgressView(progressViewStyle: .Bar)
-    view.alpha = 0
-    return view
-  }
-
   private func makeBorderLayer() -> CALayer {
     let layer = CALayer()
     layer.frame = getBorderLayerRect(bounds)
     layer.backgroundColor = Config.UI.ToolbarBorderColor
     return layer
-  }
-
-  private func getBorderLayerRect(bounds: CGRect) -> CGRect {
-    return CGRect(x: 0, y: 0, width: bounds.size.width, height: 1)
   }
 
   private func setupLayout() {

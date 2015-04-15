@@ -99,7 +99,7 @@ class VCardSourceStore {
     if let sourcesData = NSUserDefaults
       .standardUserDefaults()
       .objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
-      return (JSONSerialization.decode(sourcesData) as [[String: AnyObject]])
+      return (JSONSerialization.decode(sourcesData) as! [[String: AnyObject]])
         .map { VCardSource.fromDictionary($0) }
     } else {
 #if DEFAULT_SOURCES
@@ -112,7 +112,7 @@ class VCardSourceStore {
 
   private func loadSensitiveDataFromKeychain(sources: [VCardSource]) -> [VCardSource] {
     if let credsData = keychainItem.objectForKey(kSecAttrGeneric) as? NSData {
-      let creds = JSONSerialization.decode(credsData) as [String: [String: String]]
+      let creds = JSONSerialization.decode(credsData) as! [String: [String: String]]
       return sources.map { source in
         if let cred = creds[source.id] {
           return source.with(username: cred["username"] ?? "", password: cred["password"] ?? "")

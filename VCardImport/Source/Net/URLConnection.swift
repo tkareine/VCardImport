@@ -41,7 +41,7 @@ class URLConnection: URLConnectable {
     }
 
     if let prog = onProgress {
-      request.progress(prog)
+      request.progress(closure: prog)
     }
 
     let promise = Future<NSHTTPURLResponse>.promise()
@@ -91,7 +91,7 @@ class URLConnection: URLConnectable {
     }
 
     if let prog = onProgress {
-      request.progress(prog)
+      request.progress(closure: prog)
     }
 
     let promise = Future<NSURL>.promise()

@@ -9,10 +9,10 @@ struct Records {
   static func getSingleValueProperty(
     property: ABPropertyID,
     of record: ABRecord)
-    -> NSObject?
+    -> AnyObject?
   {
     if let val = ABRecordCopyValue(record, property) {
-      return (val.takeRetainedValue() as NSObject)
+      return val.takeRetainedValue()
     } else {
       return nil
     }
@@ -21,16 +21,16 @@ struct Records {
   static func getMultiValueProperty(
     property: ABPropertyID,
     of record: ABRecord)
-    -> [(NSString, NSObject)]?
+    -> [(String, AnyObject)]?
   {
     if let val = ABRecordCopyValue(record, property) {
       let multiVal: ABMultiValue = val.takeRetainedValue() as ABMultiValue
-      var result: [(NSString, NSObject)] = []
+      var result: [(String, AnyObject)] = []
       for i in 0..<ABMultiValueGetCount(multiVal) {
         if let labelPtr = ABMultiValueCopyLabelAtIndex(multiVal, i) {
-          let label = labelPtr.takeRetainedValue() as NSString
+          let label = labelPtr.takeRetainedValue() as String
           if let valuePtr = ABMultiValueCopyValueAtIndex(multiVal, i) {
-            let value = valuePtr.takeRetainedValue() as NSObject
+            let value: AnyObject = valuePtr.takeRetainedValue()
             result.append((label, value))
           }
         }
@@ -68,7 +68,7 @@ struct Records {
   }
 
   static func addValues<T: AnyObject>(
-    values: [(NSString, T)],
+    values: [(String, T)],
     toMultiValueProperty property: ABPropertyID,
     of record: ABRecord)
     -> Bool

@@ -3,7 +3,7 @@ import Foundation
 
 extension AddressBook {
   func loadRecordsWithName(name: String) -> [ABRecord] {
-    return ABAddressBookCopyPeopleWithName(_abAddressBook, name).takeRetainedValue()
+    return ABAddressBookCopyPeopleWithName(_abAddressBook, name).takeRetainedValue() as [ABRecord]
   }
 
   func removeRecords(records: [ABRecord], error: NSErrorPointer) -> Bool {

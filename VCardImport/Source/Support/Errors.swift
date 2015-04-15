@@ -45,9 +45,9 @@ struct Errors {
 
   static func fromCFError(error: CFError) -> NSError {
     return NSError(
-      domain: CFErrorGetDomain(error),
+      domain: CFErrorGetDomain(error) as String,
       code: CFErrorGetCode(error),
-      userInfo: CFErrorCopyUserInfo(error))
+      userInfo: CFErrorCopyUserInfo(error) as [NSObject: AnyObject])
   }
 
   static func describeErrorForNSURLRequest(error: NSError) -> String {

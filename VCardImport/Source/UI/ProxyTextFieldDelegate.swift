@@ -4,7 +4,7 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
   typealias OnBeginEditingCallback = UITextField -> Void
   typealias OnEndEditingCallback = UITextField -> Void
   typealias OnShouldReturnCallback = UITextField -> Bool
-  typealias OnTextChangeCallback = (textField: UITextField, range: NSRange, replacement: NSString) -> Bool
+  typealias OnTextChangeCallback = (textField: UITextField, range: NSRange, replacement: String) -> Bool
 
   private var onBeginEditingCallees: [TextFieldCallee<OnBeginEditingCallback>] = []
   private var onEndEditingCallees: [TextFieldCallee<OnEndEditingCallback>] = []
@@ -13,19 +13,19 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
 
   // MARK: Public API
 
-  func addOnBeginEditing(textField: UITextField, callback: OnBeginEditingCallback) {
+  func addOnBeginEditing(textField: UITextField, _ callback: OnBeginEditingCallback) {
     onBeginEditingCallees.append(TextFieldCallee(textField: textField, callback: callback))
   }
 
-  func addOnEndEditing(textField: UITextField, callback: OnEndEditingCallback) {
+  func addOnEndEditing(textField: UITextField, _ callback: OnEndEditingCallback) {
     onEndEditingCallees.append(TextFieldCallee(textField: textField, callback: callback))
   }
 
-  func addOnShouldReturn(textField: UITextField, callback: OnShouldReturnCallback) {
+  func addOnShouldReturn(textField: UITextField, _ callback: OnShouldReturnCallback) {
     onShouldReturnCallees.append(TextFieldCallee(textField: textField, callback: callback))
   }
 
-  func addOnTextChange(textField: UITextField, callback: OnTextChangeCallback) {
+  func addOnTextChange(textField: UITextField, _ callback: OnTextChangeCallback) {
     onTextChangeCallees.append(TextFieldCallee(textField: textField, callback: callback))
   }
 
@@ -70,7 +70,7 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
   func textField(
     textField: UITextField,
     shouldChangeCharactersInRange range: NSRange,
-    replacementString string: NSString)
+    replacementString string: String)
     -> Bool
   {
     if let callee = findCallee(with: textField, from: onTextChangeCallees) {

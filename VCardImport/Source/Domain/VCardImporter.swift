@@ -58,8 +58,8 @@ class VCardImporter {
         var modifiedHeaderStamp: ModifiedHeaderStamp?
 
         switch importResult {
-        case .Success(let res):
-          switch res() {
+        case .Success(let box):
+          switch box.value {
           case .Unchanged:
             QueueExecution.async(self.callbackQueue) {
               self.onSourceComplete(source, nil, nil, nil)
@@ -191,7 +191,7 @@ class VCardImporter {
   private func loadRecordsFromFile(fileURL: NSURL) -> Future<[ABRecord]> {
     let vcardData = NSData(contentsOfURL: fileURL)
     if let records = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData) {
-      let foundRecords: [ABRecord] = records.takeRetainedValue()
+      let foundRecords = records.takeRetainedValue() as [ABRecord]
       if foundRecords.isEmpty {
         return Future.failed("no contact data found from vCard file")
       } else {
