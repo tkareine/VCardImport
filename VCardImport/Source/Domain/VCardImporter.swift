@@ -54,8 +54,8 @@ class VCardImporter {
       for (source, sourceImport) in sourceImports {
         let importResult = sourceImport.get()
 
-        var loadedRecords: [ABRecord]
-        var modifiedHeaderStamp: ModifiedHeaderStamp?
+        let loadedRecords: [ABRecord]
+        let modifiedHeaderStamp: ModifiedHeaderStamp?
 
         switch importResult {
         case .Success(let box):
