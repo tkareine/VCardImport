@@ -68,25 +68,21 @@ struct RecordChangeSet {
     var changes: [ABPropertyID: [(String, AnyObject)]] = [:]
 
     for prop in TrackedMultiValueProperties {
-      let oldMultiVals = Records.getMultiValueProperty(prop, of: oldRecord)
+      let oldValues: NSArray = Records.getMultiValueProperty(prop, of: oldRecord).map { $0.1 }
       let newMultiVals = Records.getMultiValueProperty(prop, of: newRecord)
 
-      if let newMV = newMultiVals {
-        let oldValues: NSArray = oldMultiVals != nil ? oldMultiVals!.map { $0.1 } : []
+      var changesByLabel: [(String, AnyObject)] = []
 
-        var changesByLabel: [(String, AnyObject)] = []
+      for newLabelAndValue in newMultiVals {
+        let (newLabel, newValue: AnyObject) = newLabelAndValue
 
-        for newLabelAndValue in newMV {
-          let (newLabel, newValue: AnyObject) = newLabelAndValue
-
-          if !oldValues.containsObject(newValue) {
-            changesByLabel.append(newLabelAndValue)
-          }
+        if !oldValues.containsObject(newValue) {
+          changesByLabel.append(newLabelAndValue)
         }
+      }
 
-        if !changesByLabel.isEmpty {
-          changes[prop] = changesByLabel
-        }
+      if !changesByLabel.isEmpty {
+        changes[prop] = changesByLabel
       }
     }
 

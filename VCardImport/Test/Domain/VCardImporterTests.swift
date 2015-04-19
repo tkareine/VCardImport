@@ -43,11 +43,11 @@ class VCardImporterTests: XCTestCase {
     let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as! String
     XCTAssertEqual(jobTitle, "Test Subject")
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
     XCTAssertEqual(emails.count, 1)
     XCTAssertEqual(emails.first!.1 as! String, "amelie.alpha@example.com")
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)
     XCTAssertEqual(phones.count, 1)
     XCTAssertEqual(phones.first!.0, kABPersonPhoneMobileLabel as String)
     XCTAssertEqual(phones.first!.1 as! String, "5551001001")
@@ -86,11 +86,11 @@ class VCardImporterTests: XCTestCase {
     let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as! String
     XCTAssertEqual(jobTitle, "Existing Test Subject")
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
     XCTAssertEqual(emails.count, 1)
     XCTAssertEqual(emails.first!.1 as! String, "amelie.alpha@example.com")
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)
     XCTAssertEqual(phones.count, 2)
     XCTAssertEqual(phones[0].0, kABPersonPhoneIPhoneLabel as String)
     XCTAssertEqual(phones[0].1 as! String, "5551001002")
@@ -130,10 +130,10 @@ class VCardImporterTests: XCTestCase {
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
     XCTAssertEqual(emails.count, 1)
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)
     XCTAssertEqual(phones.count, 1)
   }
 
@@ -173,10 +173,10 @@ class VCardImporterTests: XCTestCase {
     let record: ABRecord! = loadTestRecordFromAddressBook()
     XCTAssertNotNil(record)
 
-    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)!
+    let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
     XCTAssertEqual(emails.count, 1)
 
-    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)!
+    let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)
     XCTAssertEqual(phones.count, 2)
   }
 

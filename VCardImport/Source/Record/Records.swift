@@ -21,7 +21,7 @@ struct Records {
   static func getMultiValueProperty(
     property: ABPropertyID,
     of record: ABRecord)
-    -> [(String, AnyObject)]?
+    -> [(String, AnyObject)]
   {
     if let val = ABRecordCopyValue(record, property) {
       let multiVal: ABMultiValue = val.takeRetainedValue() as ABMultiValue
@@ -37,7 +37,7 @@ struct Records {
       }
       return result
     } else {
-      return nil
+      return []
     }
   }
 
