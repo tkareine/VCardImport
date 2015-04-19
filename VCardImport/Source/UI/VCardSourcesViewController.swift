@@ -34,15 +34,13 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
         if let s = self {
           if let err = error {
             s.dataSource.setVCardSourceErrorStatus(source, error: err)
+          } else if let diff = recordDiff {
+            s.dataSource.setVCardSourceChangedStatus(
+              source,
+              recordDifferences: diff,
+              modifiedHeaderStamp: modifiedHeaderStamp)
           } else {
-            if let diff = recordDiff {
-              s.dataSource.setVCardSourceChangedStatus(
-                source,
-                recordDifferences: diff,
-                modifiedHeaderStamp: modifiedHeaderStamp)
-            } else {
-              s.dataSource.setVCardSourceUnchangedStatus(source)
-            }
+            s.dataSource.setVCardSourceUnchangedStatus(source)
           }
           s.inProgress(.Completed, forSource: source)
           s.reloadTableViewSourceRow(source)

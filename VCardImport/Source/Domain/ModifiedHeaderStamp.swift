@@ -14,10 +14,11 @@ struct ModifiedHeaderStamp {
   init?(headers: [NSObject: AnyObject]) {
     func findNameAndValue() -> (String, String)? {
       for candidateName in ModifiedHeaderStamp.HeadersToSearch {
-        if let candidateValue = (headers[candidateName] as? String)?.trimmed {
-          if !candidateValue.isEmpty {
-            return (candidateName, candidateValue)
-          }
+        if let
+          candidateValue = (headers[candidateName] as? String)?.trimmed
+          where !candidateValue.isEmpty
+        {
+          return (candidateName, candidateValue)
         }
       }
       return nil

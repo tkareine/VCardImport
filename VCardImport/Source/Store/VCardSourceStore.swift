@@ -98,7 +98,8 @@ class VCardSourceStore {
   private func loadNonSensitiveDataFromUserDefaults() -> [VCardSource]? {
     if let sourcesData = NSUserDefaults
       .standardUserDefaults()
-      .objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
+      .objectForKey(Config.Persistence.VCardSourcesKey) as? NSData
+    {
       return (JSONSerialization.decode(sourcesData) as! [[String: AnyObject]])
         .map { VCardSource.fromDictionary($0) }
     } else {

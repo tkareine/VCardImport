@@ -428,11 +428,10 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   private func stringToValidHTTPURL(urlString: String) -> NSURL? {
-    if let url = NSURL(string: urlString.trimmed) {
-      if url.isValidHTTPURL {
-        return url
-      }
+    if let url = NSURL(string: urlString.trimmed) where url.isValidHTTPURL {
+      return url
+    } else {
+      return nil
     }
-    return nil
   }
 }

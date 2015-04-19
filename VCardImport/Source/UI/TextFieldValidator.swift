@@ -66,10 +66,8 @@ class TextFieldValidator<T> {
   }
 
   deinit {
-    if let tf = textField {
-      if let dl = textFieldDelegate {
-        dl.removeOnTextChange(tf)
-      }
+    if let tf = textField, dl = textFieldDelegate {
+      dl.removeOnTextChange(tf)
     }
   }
 

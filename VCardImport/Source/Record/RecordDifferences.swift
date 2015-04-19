@@ -92,8 +92,7 @@ struct RecordDifferences {
     var changeSets: [RecordChangeSet] = []
 
     for (recordName, (existingRecord, newRecord)) in matchingRecords {
-      let changeSet = RecordChangeSet(oldRecord: existingRecord, newRecord: newRecord)
-      if let cs = changeSet {
+      if let cs = RecordChangeSet(oldRecord: existingRecord, newRecord: newRecord) {
         NSLog("Marking record for having changes: %@", recordName.description)
         changeSets.append(cs)
       }

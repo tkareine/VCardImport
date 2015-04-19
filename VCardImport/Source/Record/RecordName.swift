@@ -72,15 +72,17 @@ class OrganizationRecordName: RecordName {
 }
 
 func ==(lhs: RecordName, rhs: RecordName) -> Bool {
-  if let lh = lhs as? PersonRecordName {
-    if let rh = rhs as? PersonRecordName {
-      return lh.firstName == rh.firstName && lh.lastName == rh.lastName
-    }
+  if let
+    lh = lhs as? PersonRecordName,
+    rh = rhs as? PersonRecordName
+  {
+    return lh.firstName == rh.firstName && lh.lastName == rh.lastName
+  } else if let
+    lh = lhs as? OrganizationRecordName,
+    rh = rhs as? OrganizationRecordName
+  {
+    return lh.name == rh.name
+  } else {
+    return false
   }
-  if let lh = lhs as? OrganizationRecordName {
-    if let rh = rhs as? OrganizationRecordName {
-      return lh.name == rh.name
-    }
-  }
-  return false
 }
