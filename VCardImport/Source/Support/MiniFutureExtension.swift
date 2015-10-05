@@ -7,22 +7,15 @@ extension Future {
 
     func latest(future: Future<T>) -> Future<T> {
       lastFuture = future
-      let guard = Future<T>.promise()
+      let grd = Future<T>.promise()
       future.onComplete { result in
         if future === lastFuture {
-          guard.complete(result)
+          grd.complete(result)
         }
       }
-      return guard
+      return grd
     }
 
     return latest
-  }
-}
-
-extension PromiseFuture {
-  func reject(response: NSHTTPURLResponse) {
-    let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode).capitalized
-    reject("\(statusDesc) (\(response.statusCode))")
   }
 }

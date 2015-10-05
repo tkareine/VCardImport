@@ -8,14 +8,14 @@ struct RecordDifferences {
   let countSkippedAmbiguousMatchesToExistingRecords: Int
 
   static func resolveBetween(
-    #oldRecords: [ABRecord],
+    oldRecords oldRecords: [ABRecord],
     newRecords: [ABRecord])
     -> RecordDifferences
   {
     let (uniqueNewRecords, countSkippedNewRecordsWithDuplicateNames) = uniqueRecordsOf(newRecords)
     let (additions, matches, countSkippedAmbiguousMatchesToExistingRecords) = findAdditionsAndExistingMatchesBetween(oldRecords, uniqueNewRecords)
     let changes = findChanges(matches)
-    return self(
+    return self.init(
       additions: additions,
       changes: changes,
       countSkippedNewRecordsWithDuplicateNames: countSkippedNewRecordsWithDuplicateNames,
@@ -43,7 +43,7 @@ struct RecordDifferences {
       }
     }
 
-    let totalSkipped = reduce(skippedRecords, 0) { sum, kv in sum + kv.1 }
+    let totalSkipped = skippedRecords.reduce(0) { sum, kv in sum + kv.1 }
 
     return (uniqueRecords, totalSkipped)
   }
@@ -102,7 +102,7 @@ struct RecordDifferences {
   }
 }
 
-extension RecordDifferences: Printable {
+extension RecordDifferences: CustomStringConvertible {
   var description: String {
     func pluralizeUnit(singularUnit: String, pluralUnit: String, count: Int)
       -> String
@@ -118,29 +118,29 @@ extension RecordDifferences: Printable {
     var result = ""
 
     if countAdditions == 0 && countUpdates == 0 {
-      print("Nothing to change", &result)
+      print("Nothing to change", terminator: "", toStream: &result)
     } else {
       if countAdditions == 0 {
-        print("No additions", &result)
+        print("No additions", terminator: "", toStream: &result)
       } else {
-        print(pluralizeUnit("addition", "additions", countAdditions), &result)
+        print(pluralizeUnit("addition", pluralUnit: "additions", count: countAdditions), terminator: "", toStream: &result)
       }
 
-      print(", ", &result)
+      print(", ", terminator: "", toStream: &result)
 
       if countUpdates == 0 {
-        print("no updates", &result)
+        print("no updates", terminator: "", toStream: &result)
       } else {
-        print(pluralizeUnit("update", "updates", countUpdates), &result)
+        print(pluralizeUnit("update", pluralUnit: "updates", count: countUpdates), terminator: "", toStream: &result)
       }
     }
 
     if countSkippedNewRecordsWithDuplicateNames > 0 {
-      print(", skipped \(countSkippedNewRecordsWithDuplicateNames) contacts in vCard file due to duplicate names", &result)
+      print(", skipped \(countSkippedNewRecordsWithDuplicateNames) contacts in vCard file due to duplicate names", terminator: "", toStream: &result)
     }
 
     if countSkippedAmbiguousMatchesToExistingRecords > 0 {
-      print(", skipped updates to \(countSkippedAmbiguousMatchesToExistingRecords) contacts due to ambiguous name matches", &result)
+      print(", skipped updates to \(countSkippedAmbiguousMatchesToExistingRecords) contacts due to ambiguous name matches", terminator: "", toStream: &result)
     }
 
     return result

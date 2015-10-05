@@ -26,7 +26,7 @@ class VCardImportProgress {
     return currentProgress
   }
 
-  private func stepProgressLeft(#type: Progress, id: String) -> Float {
+  private func stepProgressLeft(type type: Progress, id: String) -> Float {
     if let downloadLeft = downloadLeftBySourceId[id] {
       switch type {
       case .Completed:

@@ -1,8 +1,11 @@
 struct InsertionOrderDictionary<K: Hashable, V> {
-  private var keyOrder: [K] = []
-  private var dictionary: [K: V] = [:]
+  private var keyOrder: [K]
+  private var dictionary: [K: V]
 
-  init() {}
+  init() {
+    keyOrder = []
+    dictionary = [:]
+  }
 
   var isEmpty: Bool {
     return keyOrder.isEmpty
@@ -26,12 +29,10 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     }
 
     set {
-      if let existing = dictionary[key] {
-        dictionary[key] = newValue
-      } else {
+      if !hasKey(key) {
         keyOrder.append(key)
-        dictionary[key] = newValue
       }
+      dictionary[key] = newValue
     }
   }
 
@@ -48,8 +49,8 @@ struct InsertionOrderDictionary<K: Hashable, V> {
   }
 
   mutating func removeValueForKey(key: K) -> V? {
-    if let value = dictionary[key] {
-      let index = find(keyOrder, key)!
+    if hasKey(key) {
+      let index = keyOrder.indexOf(key)!
       return remove(index, key)
     } else {
       return nil
@@ -70,7 +71,7 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     return dictionary.removeValueForKey(key)!
   }
 
-  mutating func move(#fromIndex: Int, toIndex: Int) {
+  mutating func move(fromIndex fromIndex: Int, toIndex: Int) {
     if fromIndex == toIndex {
       return
     }
@@ -84,7 +85,7 @@ struct InsertionOrderDictionary<K: Hashable, V> {
   }
 
   func indexOf(key: K) -> Int? {
-    return find(keyOrder, key)
+    return keyOrder.indexOf(key)
   }
 }
 
@@ -117,10 +118,8 @@ extension InsertionOrderDictionary: SequenceType {
 }
 
 extension InsertionOrderDictionary: DictionaryLiteralConvertible {
-  typealias Key = K
-  typealias Value = V
-
-  init(dictionaryLiteral elements: (Key, Value)...) {
+  init(dictionaryLiteral elements: (K, V)...) {
+    self.init()
     for (key, value) in elements {
       keyOrder.append(key)
       dictionary[key] = value
@@ -128,29 +127,21 @@ extension InsertionOrderDictionary: DictionaryLiteralConvertible {
   }
 }
 
-extension InsertionOrderDictionary: Printable, DebugPrintable {
+extension InsertionOrderDictionary: CustomStringConvertible, CustomDebugStringConvertible {
   var description: String {
-    return describeWith(print)
+    return describeWith { key, value in "\(key): \(value)" }
   }
 
   var debugDescription: String {
-    return describeWith(debugPrint)
+    return describeWith { key, value in "\(String(reflecting: key)): \(String(reflecting: value))" }
   }
 
-  private func describeWith(printFn: (Any, inout String) -> Void) -> String {
+  private func describeWith(pairDescriber: (K, V) -> String) -> String {
     func join(pairs: [String]) -> String {
-      let joined = ", ".join(pairs)
+      let joined = pairs.joinWithSeparator(", ")
       return "[" + joined + "]"
     }
 
-    func describeKeyAndValue(key: K, value: V) -> String {
-      var str = ""
-      printFn(key, &str)
-      print(": ", &str)
-      printFn(value, &str)
-      return str
-    }
-
-    return join(map(self, describeKeyAndValue))
+    return join(map(pairDescriber))
   }
 }

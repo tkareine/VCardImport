@@ -13,11 +13,11 @@ class VCardSourceStore {
   }
 
   var countEnabled: Int {
-    return countWhere(store.values, { $0.isEnabled })
+    return store.values.countWhere { $0.isEnabled }
   }
 
   var filterEnabled: [VCardSource] {
-    return filter(store.values, { $0.isEnabled })
+    return store.values.filter { $0.isEnabled }
   }
 
   init() {
@@ -47,7 +47,7 @@ class VCardSourceStore {
     store.removeValueAtIndex(index)
   }
 
-  func move(#fromIndex: Int, toIndex: Int) {
+  func move(fromIndex fromIndex: Int, toIndex: Int) {
     store.move(fromIndex: fromIndex, toIndex: toIndex)
   }
 

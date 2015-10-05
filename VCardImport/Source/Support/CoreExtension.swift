@@ -1,13 +1,38 @@
 import Foundation
 
 extension Dictionary {
-  var first: (Key, Value)? {
-    var gen = self.generate()
-    return gen.next()
-  }
-
   func hasKey(key: Key) -> Bool {
     return self[key] != nil
+  }
+}
+
+extension SequenceType {
+  func countWhere(predicate: Self.Generator.Element -> Bool) -> Int {
+    var c = 0
+    for e in self {
+      if predicate(e) {
+        c += 1
+      }
+    }
+    return c
+  }
+
+  func findElementWhere(predicate: Self.Generator.Element -> Bool) -> Self.Generator.Element? {
+    for e in self {
+      if predicate(e) {
+        return e
+      }
+    }
+    return nil
+  }
+
+  func findIndexWhere(predicate: Self.Generator.Element -> Bool) -> Int? {
+    for (idx, e) in enumerate() {
+      if predicate(e) {
+        return idx
+      }
+    }
+    return nil
   }
 }
 
@@ -15,8 +40,8 @@ private let WhiteSpaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewli
 
 extension String {
   var capitalized: String {
-    if let head = first(self) {
-      let tail = dropFirst(self)
+    if let head = self.characters.first {
+      let tail = String(self.characters.dropFirst())
       return String(head).uppercaseString + tail
     } else {
       return self
@@ -117,11 +142,7 @@ let HTTPURLRegexpPredicate = NSPredicate(format: "SELF MATCHES[cd] %@", HTTPURLR
 
 extension NSURL {
   var isValidHTTPURL: Bool {
-    if let url = absoluteString {
-      return HTTPURLRegexpPredicate.evaluateWithObject(url)
-    } else {
-      return false
-    }
+    return HTTPURLRegexpPredicate.evaluateWithObject(absoluteString)
   }
 }
 
@@ -131,44 +152,4 @@ func ==<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
 
 func !=<T: Equatable>(lhs: (T, T), rhs: (T, T)) -> Bool {
   return !(lhs == rhs)
-}
-
-func countWhere<S: SequenceType, E where E == S.Generator.Element>(
-  seq: S,
-  predicate: E -> Bool)
-  -> Int
-{
-  var c = 0
-  for e in seq {
-    if predicate(e) {
-      c += 1
-    }
-  }
-  return c
-}
-
-func findElement<S: SequenceType, E where E == S.Generator.Element>(
-  seq: S,
-  predicate: E -> Bool)
-  -> E?
-{
-  for e in seq {
-    if predicate(e) {
-      return e
-    }
-  }
-  return nil
-}
-
-func findIndex<S: SequenceType, E where E == S.Generator.Element>(
-  seq: S,
-  predicate: E -> Bool)
-  -> Int?
-{
-  for (idx, e) in enumerate(seq) {
-    if predicate(e) {
-      return idx
-    }
-  }
-  return nil
 }

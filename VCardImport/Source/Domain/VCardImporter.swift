@@ -4,8 +4,8 @@ import MiniFuture
 
 class VCardImporter {
   typealias OnSourceDownloadCallback = (VCardSource, Request.ProgressBytes) -> Void
-  typealias OnSourceCompleteCallback = (VCardSource, RecordDifferences?, ModifiedHeaderStamp?, NSError?) -> Void
-  typealias OnCompleteCallback = NSError? -> Void
+  typealias OnSourceCompleteCallback = (VCardSource, RecordDifferences?, ModifiedHeaderStamp?, ErrorType?) -> Void
+  typealias OnCompleteCallback = ErrorType? -> Void
 
   private let onSourceDownload: OnSourceDownloadCallback
   private let onSourceComplete: OnSourceCompleteCallback
@@ -39,11 +39,12 @@ class VCardImporter {
     // place.
 
     QueueExecution.async(executionQueue) {
-      var error: NSError?
-      let addressBook: AddressBook! = AddressBook.sharedInstance(error: &error)
+      let addressBook: AddressBook
 
-      if let err = error {
-        QueueExecution.async(self.callbackQueue) { self.onComplete(err) }
+      do {
+        addressBook = try AddressBook.sharedInstance()
+      } catch {
+        QueueExecution.async(self.callbackQueue) { self.onComplete(error) }
         return
       }
 
@@ -58,8 +59,8 @@ class VCardImporter {
         let modifiedHeaderStamp: ModifiedHeaderStamp?
 
         switch importResult {
-        case .Success(let box):
-          switch box.value {
+        case .Success(let value):
+          switch value {
           case .Unchanged:
             QueueExecution.async(self.callbackQueue) {
               self.onSourceComplete(source, nil, nil, nil)
@@ -69,9 +70,9 @@ class VCardImporter {
             loadedRecords = records
             modifiedHeaderStamp = stamp
           }
-        case .Failure(let desc):
+        case .Failure(let error):
           QueueExecution.async(self.callbackQueue) {
-            self.onSourceComplete(source, nil, nil, Errors.addressBookFailedToLoadVCardSource(desc))
+            self.onSourceComplete(source, nil, nil, Errors.addressBookFailedToLoadVCardSource((error as NSError).localizedDescription))
           }
           continue
         }
@@ -81,25 +82,28 @@ class VCardImporter {
           newRecords: loadedRecords)
 
         if !recordDiff.additions.isEmpty {
-          let isSuccess = addressBook.addRecords(recordDiff.additions, error: &error)
-          if !isSuccess {
-            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error!) }
+          do {
+            try addressBook.addRecords(recordDiff.additions)
+          } catch {
+            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error) }
             continue
           }
         }
 
         if !recordDiff.changes.isEmpty {
-          let isSuccess = self.changeRecords(recordDiff.changes, error: &error)
-          if !isSuccess {
-            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error!) }
+          do {
+            try self.changeRecords(recordDiff.changes)
+          } catch {
+            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error) }
             continue
           }
         }
 
         if addressBook.hasUnsavedChanges {
-          let isSaved = addressBook.save(error: &error)
-          if !isSaved {
-            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error!) }
+          do {
+            try addressBook.save()
+          } catch {
+            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error) }
             continue
           }
         }
@@ -114,13 +118,12 @@ class VCardImporter {
     }
   }
 
-  private func changeRecords(changeSets: [RecordChangeSet], error: NSErrorPointer) -> Bool {
+  private func changeRecords(changeSets: [RecordChangeSet]) throws {
     for changeSet in changeSets {
       for (property, value) in changeSet.singleValueChanges {
         let isChanged = Records.setValue(value, toSingleValueProperty: property, of: changeSet.record)
         if !isChanged {
-          error.memory = Errors.addressBookFailedToChange(property, of: changeSet.record)
-          return false
+          throw Errors.addressBookFailedToChange(property, of: changeSet.record)
         }
       }
 
@@ -130,21 +133,17 @@ class VCardImporter {
           toMultiValueProperty: property,
           of: changeSet.record)
         if !isChanged {
-          error.memory = Errors.addressBookFailedToChange(property, of: changeSet.record)
-          return false
+          throw Errors.addressBookFailedToChange(property, of: changeSet.record)
         }
       }
 
       if let img = changeSet.imageChange {
         let isChanged = Records.setImage(img, of: changeSet.record)
         if !isChanged {
-          error.memory = Errors.addressBookFailedToChangeImage(of: changeSet.record)
-          return false
+          throw Errors.addressBookFailedToChangeImage(of: changeSet.record)
         }
       }
     }
-
-    return true
   }
 
   private func checkAndDownloadSource(source: VCardSource) -> Future<SourceImportResult> {
@@ -193,12 +192,12 @@ class VCardImporter {
     if let records = ABPersonCreatePeopleInSourceWithVCardRepresentation(nil, vcardData) {
       let foundRecords = records.takeRetainedValue() as [ABRecord]
       if foundRecords.isEmpty {
-        return Future.failed("no contact data found from vCard file")
+        return Future.failed(Errors.addressBookFailedToLoadVCardSource("no contact data found from vCard file"))
       } else {
         return Future.succeeded(foundRecords)
       }
     } else {
-      return Future.failed("invalid vCard file")
+      return Future.failed(Errors.addressBookFailedToLoadVCardSource("invalid vCard file"))
     }
   }
 
@@ -240,13 +239,6 @@ class VCardImporter {
     }
 
     func build() -> VCardImporter {
-      if self.onSourceDownload == nil ||
-        self.onSourceComplete == nil ||
-        self.onComplete == nil ||
-        self.urlConnection == nil ||
-        self.callbackQueue == nil {
-        fatalError("all parameters must be given")
-      }
       return VCardImporter(
         onSourceDownload: self.onSourceDownload!,
         onSourceComplete: self.onSourceComplete!,

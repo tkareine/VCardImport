@@ -42,7 +42,11 @@ class FilesTests: XCTestCase {
 
   private func touch(path: NSURL) {
     var error: NSError?
-    "".writeToURL(path, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
+    do {
+      try "".writeToURL(path, atomically: true, encoding: NSUTF8StringEncoding)
+    } catch let error1 as NSError {
+      error = error1
+    }
     if let err = error {
       fatalError("Failed in touching file \(path): \(err)")
     }

@@ -74,7 +74,7 @@ struct RecordChangeSet {
       var changesByLabel: [(String, AnyObject)] = []
 
       for newLabelAndValue in newMultiVals {
-        let (newLabel, newValue: AnyObject) = newLabelAndValue
+        let (_, newValue) = newLabelAndValue
 
         if !oldValues.containsObject(newValue) {
           changesByLabel.append(newLabelAndValue)

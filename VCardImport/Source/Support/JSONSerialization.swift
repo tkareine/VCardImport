@@ -3,18 +3,22 @@ import Foundation
 struct JSONSerialization {
   static func encode(obj: AnyObject) -> NSData {
     var err: NSError?
-    if let data = NSJSONSerialization.dataWithJSONObject(obj, options: nil, error: &err) {
+    do {
+      let data = try NSJSONSerialization.dataWithJSONObject(obj, options: [])
       return data
-    } else {
+    } catch let error as NSError {
+      err = error
       fatalError("JSON serialization failed: \(err!)")
     }
   }
 
   static func decode(data: NSData) -> AnyObject {
     var err: NSError?
-    if let obj: AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &err) {
+    do {
+      let obj: AnyObject = try NSJSONSerialization.JSONObjectWithData(data, options: [])
       return obj
-    } else {
+    } catch let error as NSError {
+      err = error
       fatalError("JSON deserialization failed: \(err!)")
     }
   }

@@ -22,14 +22,14 @@ struct VCardSource {
   }
 
   static func empty() -> VCardSource {
-    return self(
+    return self.init(
       name: "",
       connection: Connection.empty(),
       isEnabled: true)
   }
 
   func with(
-    #name: String,
+    name name: String,
     connection: Connection,
     isEnabled: Bool)
     -> VCardSource
@@ -45,7 +45,7 @@ struct VCardSource {
       lastImportResult: stamp)
   }
 
-  func with(#username: String, password: String) -> VCardSource {
+  func with(username username: String, password: String) -> VCardSource {
     let connection = Connection(
       url: self.connection.url,
       username: username,
@@ -92,7 +92,7 @@ struct VCardSource {
     }
 
     static func empty() -> Connection {
-      return self(
+      return self.init(
         url: "",
         username: "",
         password: "")
@@ -102,7 +102,7 @@ struct VCardSource {
       return NSURL(string: url)!  // guaranteed by trimming in initializer
     }
 
-    func toCredential(_ persistence: NSURLCredentialPersistence = .None) -> NSURLCredential? {
+    func toCredential(persistence: NSURLCredentialPersistence = .None) -> NSURLCredential? {
       if !username.isEmpty {
         return NSURLCredential(user: username, password: password, persistence: persistence)
       } else {
@@ -139,7 +139,7 @@ extension VCardSource: DictionaryConvertible {
        lastImportResult = VCardSource.ImportResult.fromDictionary(importResult)
     }
 
-    return self(
+    return self.init(
       name: dictionary["name"] as! String,
       connection: Connection.fromDictionary(dictionary["connection"] as! [String: AnyObject]),
       isEnabled: dictionary["isEnabled"] as! Bool,
@@ -154,7 +154,7 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return self(url: dictionary["url"] as! String)
+    return self.init(url: dictionary["url"] as! String)
   }
 }
 
@@ -177,7 +177,7 @@ extension VCardSource.ImportResult: DictionaryConvertible {
       modifiedHeaderStamp = ModifiedHeaderStamp.fromDictionary(stamp)
     }
 
-    return self(
+    return self.init(
       isSuccess: dictionary["isSuccess"] as! Bool,
       message: dictionary["message"] as! String,
       importedAt: NSDate.dateFromISOString(dictionary["importedAt"] as! String)!,

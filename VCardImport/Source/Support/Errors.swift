@@ -4,6 +4,13 @@ import AddressBook
 struct Errors {
   private static let Domain = Config.BundleIdentifier + ".Error"
 
+  static func migration(description: String) -> NSError {
+    return vcardError(
+      code: 42,
+      failureReason: "Migration Error",
+      description: description)
+  }
+
   static func addressBookAccessDeniedOrRestricted() -> NSError {
     return vcardError(
       code: 5,
@@ -14,8 +21,20 @@ struct Errors {
   static func addressBookFailedToLoadVCardSource(reason: String) -> NSError {
     return vcardError(
       code: 6,
-      failureReason: "VCard Download Error",
+      failureReason: "vCard Download Error",
       description: "Download failed: \(reason)")
+  }
+
+  static func addressBookFailedToChange(
+    propertyDescription: String,
+    of record: ABRecord)
+    -> NSError
+  {
+    let name = ABRecordCopyCompositeName(record).takeRetainedValue()
+    return vcardError(
+      code: 8,
+      failureReason: "Contact Update Error",
+      description: "Failed in updating \(propertyDescription) for contact \(name)")
   }
 
   static func addressBookFailedToChange(
@@ -31,16 +50,27 @@ struct Errors {
     return addressBookFailedToChange("image", of: record)
   }
 
-  static func addressBookFailedToChange(
-    propertyDescription: String,
-    of record: ABRecord)
-    -> NSError
-  {
-    let name = ABRecordCopyCompositeName(record).takeRetainedValue()
+  static func urlIsInvalid() -> NSError {
     return vcardError(
-      code: 8,
-      failureReason: "Contact Update Error",
-      description: "Failed in updating \(propertyDescription) for contact \(name)")
+      code: 9,
+      failureReason: "URL Error",
+      description: "Invalid URL")
+  }
+
+  static func urlRequestFailed(reason: String) -> NSError {
+    return vcardError(
+      code: 10,
+      failureReason: "Request Error",
+      description: reason)
+  }
+
+  static func urlRequestFailed(error: NSError) -> NSError {
+    return urlRequestFailed(describeErrorForNSURLRequest(error))
+  }
+
+  static func urlRequestFailed(response: NSHTTPURLResponse) -> NSError {
+    let statusDesc = NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode).capitalized
+    return urlRequestFailed("\(statusDesc) (\(response.statusCode))")
   }
 
   static func fromCFError(error: CFError) -> NSError {
@@ -50,32 +80,9 @@ struct Errors {
       userInfo: CFErrorCopyUserInfo(error) as [NSObject: AnyObject])
   }
 
-  static func describeErrorForNSURLRequest(error: NSError) -> String {
-    switch error.code {
-    case NSURLErrorTimedOut,
-         NSURLErrorUserCancelledAuthentication:
-      return "Response timed out"
-    case NSURLErrorCancelled:
-      return "Cancelled (authentication rejected?)"
-    case NSURLErrorNotConnectedToInternet,
-         NSURLErrorNetworkConnectionLost:
-      return "No internet connection"
-    case NSURLErrorSecureConnectionFailed,
-         NSURLErrorCannotLoadFromNetwork:
-      return "Secure connection failed"
-    case NSURLErrorServerCertificateHasBadDate,
-         NSURLErrorServerCertificateUntrusted,
-         NSURLErrorServerCertificateHasUnknownRoot,
-         NSURLErrorServerCertificateNotYetValid:
-      return "Invalid server certificate"
-    default:
-      return Config.Net.GenericErrorDescription
-    }
-  }
-
   // MARK: Helpers
 
-  private static func vcardError(#code: Int, failureReason: String, description: String) -> NSError {
+  private static func vcardError(code code: Int, failureReason: String, description: String) -> NSError {
     let userInfo = [
       NSLocalizedFailureReasonErrorKey: failureReason,
       NSLocalizedDescriptionKey: description
@@ -113,6 +120,29 @@ struct Errors {
       return "social profile"
     default:
       return "unknown"
+    }
+  }
+
+  private static func describeErrorForNSURLRequest(error: NSError) -> String {
+    switch error.code {
+    case NSURLErrorTimedOut,
+         NSURLErrorUserCancelledAuthentication:
+      return "Response timed out"
+    case NSURLErrorCancelled:
+      return "Cancelled (authentication rejected?)"
+    case NSURLErrorNotConnectedToInternet,
+         NSURLErrorNetworkConnectionLost:
+      return "No internet connection"
+    case NSURLErrorSecureConnectionFailed,
+         NSURLErrorCannotLoadFromNetwork:
+      return "Secure connection failed"
+    case NSURLErrorServerCertificateHasBadDate,
+         NSURLErrorServerCertificateUntrusted,
+         NSURLErrorServerCertificateHasUnknownRoot,
+         NSURLErrorServerCertificateNotYetValid:
+      return "Invalid server certificate"
+    default:
+      return Config.Net.GenericErrorDescription
     }
   }
 }

@@ -7,7 +7,7 @@ class VCardImporterTests: XCTestCase {
   let OneTestRecordVCardFile = "amelie-alpha"
   let DuplicateTestRecordsVCardFile = "amelie-alpha-3x"
 
-  let addressBook = VCardImporterTests.makeAddressBook()
+  let addressBook = try! AddressBook.sharedInstance()
 
   override func setUp() {
     super.setUp()
@@ -45,12 +45,12 @@ class VCardImporterTests: XCTestCase {
 
     let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
     XCTAssertEqual(emails.count, 1)
-    XCTAssertEqual(emails.first!.1 as! String, "amelie.alpha@example.com")
+    XCTAssertEqual((emails.first!.1 as! String), "amelie.alpha@example.com")
 
     let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)
     XCTAssertEqual(phones.count, 1)
     XCTAssertEqual(phones.first!.0, kABPersonPhoneMobileLabel as String)
-    XCTAssertEqual(phones.first!.1 as! String, "5551001001")
+    XCTAssertEqual((phones.first!.1 as! String), "5551001001")
   }
 
   func testUpdatesRecordInAddressBook() {
@@ -88,14 +88,14 @@ class VCardImporterTests: XCTestCase {
 
     let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
     XCTAssertEqual(emails.count, 1)
-    XCTAssertEqual(emails.first!.1 as! String, "amelie.alpha@example.com")
+    XCTAssertEqual((emails.first!.1 as! String), "amelie.alpha@example.com")
 
     let phones = Records.getMultiValueProperty(kABPersonPhoneProperty, of: record)
     XCTAssertEqual(phones.count, 2)
     XCTAssertEqual(phones[0].0, kABPersonPhoneIPhoneLabel as String)
-    XCTAssertEqual(phones[0].1 as! String, "5551001002")
+    XCTAssertEqual((phones[0].1 as! String), "5551001002")
     XCTAssertEqual(phones[1].0, kABPersonPhoneMobileLabel as String)
-    XCTAssertEqual(phones[1].1 as! String, "5551001001")
+    XCTAssertEqual((phones[1].1 as! String), "5551001001")
   }
 
   func testSameRecordGetsAddedOnlyOnce() {
@@ -236,15 +236,6 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
-  private class func makeAddressBook() -> AddressBook {
-    var error: NSError?
-    let addressBook = AddressBook.sharedInstance(error: &error)
-    if let err = error {
-      fatalError("Failed to make address book: \(err)")
-    }
-    return addressBook!
-  }
-
   private func recordIsOfTestOrganization(record: ABRecord) -> Bool {
     if let orgName = Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String {
       return orgName == TestOrganization
@@ -265,19 +256,12 @@ class VCardImporterTests: XCTestCase {
 
   private func removeTestRecordsFromAddressBook() {
     let records = addressBook.loadRecords().filter(recordIsOfTestOrganization)
-    var error: NSError?
-    addressBook.removeRecords(records, error: &error)
-    if let err = error {
-      fatalError("Failed to remove test record: \(err)")
-    }
-    addressBook.save(error: &error)
-    if let err = error {
-      fatalError("Failed to save address book: \(err)")
-    }
+    try! addressBook.removeRecords(records)
+    try! addressBook.save()
   }
 
   private func addTestRecordToAddressBook(
-    #jobTitle: String,
+    jobTitle jobTitle: String,
     phones: [(String, NSString)]? = nil)
   {
     let record: ABRecord = TestRecords.makePerson(
@@ -286,18 +270,11 @@ class VCardImporterTests: XCTestCase {
       jobTitle: jobTitle,
       organization: TestOrganization,
       phones: phones)
-    var error: NSError?
-    addressBook.addRecords([record], error: &error)
-    if let err = error {
-      fatalError("Failed to add test record: \(err)")
-    }
-    addressBook.save(error: &error)
-    if let err = error {
-      fatalError("Failed to save address book: \(err)")
-    }
+    try! addressBook.addRecords([record])
+    try! addressBook.save()
   }
 
-  func makeVCardSource(_ name: String = "amelie-alpha") -> VCardSource {
+  func makeVCardSource(name: String = "amelie-alpha") -> VCardSource {
     return VCardSource(
       name: name,
       connection: VCardSource.Connection(

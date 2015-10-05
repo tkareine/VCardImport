@@ -3,23 +3,31 @@ import Foundation
 struct Files {
   static func tempURL() -> NSURL {
     let fileName = NSProcessInfo.processInfo().globallyUniqueString
-    return NSURL.fileURLWithPath(NSTemporaryDirectory().stringByAppendingPathComponent(fileName))!
+    return NSURL.fileURLWithPath(NSTemporaryDirectory()).URLByAppendingPathComponent(fileName)
   }
 
-  static func copy(#from: NSURL, to: NSURL) {
+  static func copy(from from: NSURL, to: NSURL) {
     var error: NSError?
 
-    NSFileManager.defaultManager().copyItemAtURL(from, toURL: to, error: &error)
+    do {
+      try NSFileManager.defaultManager().copyItemAtURL(from, toURL: to)
+    } catch let error1 as NSError {
+      error = error1
+    }
 
     if let err = error {
       fatalError("Failed to copy file from \(from) to \(to): \(err)")
     }
   }
 
-  static func move(#from: NSURL, to: NSURL) {
+  static func move(from from: NSURL, to: NSURL) {
     var error: NSError?
 
-    NSFileManager.defaultManager().moveItemAtURL(from, toURL: to, error: &error)
+    do {
+      try NSFileManager.defaultManager().moveItemAtURL(from, toURL: to)
+    } catch let error1 as NSError {
+      error = error1
+    }
 
     if let err = error {
       fatalError("Failed to move file from \(from) to \(to): \(err)")
@@ -35,7 +43,11 @@ struct Files {
 
     var error: NSError?
 
-    fileManager.removeItemAtURL(fileURL, error: &error)
+    do {
+      try fileManager.removeItemAtURL(fileURL)
+    } catch let error1 as NSError {
+      error = error1
+    }
 
     if let err = error {
       fatalError("Failed to remove file at \(fileURL): \(err)")

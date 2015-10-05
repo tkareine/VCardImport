@@ -42,7 +42,7 @@ extension ModifiedHeaderStamp: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> ModifiedHeaderStamp {
-    return self(
+    return self.init(
       name: dictionary["name"] as! String,
       value: dictionary["value"] as! String)
   }
@@ -54,7 +54,7 @@ func ==(lhs: ModifiedHeaderStamp, rhs: ModifiedHeaderStamp) -> Bool {
   return lhs.name == rhs.name && lhs.value == rhs.value
 }
 
-extension ModifiedHeaderStamp: Printable {
+extension ModifiedHeaderStamp: CustomStringConvertible {
   var description: String {
     return "\(name): \(value)"
   }

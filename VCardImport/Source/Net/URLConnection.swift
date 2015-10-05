@@ -31,7 +31,7 @@ class URLConnection: URLConnectable {
     onProgress: Request.OnProgressCallback? = nil)
     -> Future<NSHTTPURLResponse>
   {
-    var request = Alamofire.request(makeURLRequest(
+    var request = manager.request(makeURLRequest(
       url: url,
       method: method,
       headers: headers))
@@ -41,26 +41,25 @@ class URLConnection: URLConnectable {
     }
 
     if let prog = onProgress {
-      request.progress(closure: prog)
+      request.progress(prog)
     }
 
     let promise = Future<NSHTTPURLResponse>.promise()
 
     request.response(
       queue: QueueExecution.concurrentQueue,
-      serializer: Alamofire.Request.responseDataSerializer(),
       completionHandler: { _, response, _, error in
-        if let err = error {
-          NSLog("%@ request error <%@>: %@", method.rawValue, url, err)
-          promise.reject(Errors.describeErrorForNSURLRequest(err))
-        } else if let res = response {
+        if let res = response {
           if self.isSuccessStatusCode(res.statusCode) {
             promise.resolve(res)
           } else {
-            promise.reject(res)
+            promise.reject(Errors.urlRequestFailed(res))
           }
+        } else if let err = error {
+          NSLog("%@ request error <%@>: %@", method.rawValue, url, err)
+          promise.reject(Errors.urlRequestFailed(err))
         } else {
-          promise.reject("Unknown request error for \(method) \(url)")
+          promise.reject(Errors.urlRequestFailed("Unknown request error for \(method) \(url)"))
         }
       })
 
@@ -84,33 +83,32 @@ class URLConnection: URLConnectable {
     onProgress: Request.OnProgressCallback? = nil)
     -> Future<NSURL>
   {
-    var request = Alamofire.download(makeURLRequest(url: url, headers: headers), { _, _ in destination })
+    var request = manager.download(makeURLRequest(url: url, headers: headers), destination: { _, _ in destination })
 
     if let cred = credential {
       request = request.authenticate(usingCredential: cred)
     }
 
     if let prog = onProgress {
-      request.progress(closure: prog)
+      request.progress(prog)
     }
 
     let promise = Future<NSURL>.promise()
 
     request.response(
       queue: QueueExecution.concurrentQueue,
-      serializer: Alamofire.Request.responseDataSerializer(),
       completionHandler: { _, response, _, error in
-        if let err = error {
-          NSLog("Download error <%@>: %@", url, err)
-          promise.reject(Errors.describeErrorForNSURLRequest(err))
-        } else if let res = response {
+        if let res = response {
           if self.isSuccessStatusCode(res.statusCode) {
             promise.resolve(destination)
           } else {
-            promise.reject(res)
+            promise.reject(Errors.urlRequestFailed(res))
           }
+        } else if let err = error {
+          NSLog("Download error <%@>: %@", url, err)
+          promise.reject(Errors.urlRequestFailed(err))
         } else {
-          promise.reject("Unknown download error for \(url)")
+          promise.reject(Errors.urlRequestFailed("Unknown download error for \(url)"))
         }
       })
 
@@ -120,7 +118,7 @@ class URLConnection: URLConnectable {
   // MARK: Helpers
 
   private func makeURLRequest(
-    #url: NSURL,
+    url url: NSURL,
     method: Request.Method = .GET,
     headers: Request.Headers = [:])
     -> NSURLRequest
@@ -137,6 +135,6 @@ class URLConnection: URLConnectable {
   }
 
   private func isSuccessStatusCode(code: Int) -> Bool {
-    return contains(SuccessStatusCodes, code)
+    return SuccessStatusCodes.contains(code)
   }
 }

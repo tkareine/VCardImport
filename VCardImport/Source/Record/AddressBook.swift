@@ -13,20 +13,20 @@ class AddressBook {
     return ABAddressBookHasUnsavedChanges(addressBook)
   }
 
-  private init?(error: NSErrorPointer) {
-    func makeABAddressBook() -> ABAddressBook? {
+  private init() throws {
+    func makeABAddressBook() throws -> ABAddressBook {
       var abError: Unmanaged<CFError>?
       let abPtr: Unmanaged<ABAddressBook>? = ABAddressBookCreateWithOptions(nil, &abError)
 
-      if let ab = abPtr {
-        return ab.takeRetainedValue()
+      guard let ab = abPtr else {
+        if let err = abError {
+          throw Errors.fromCFError(err.takeRetainedValue())
+        } else {
+          throw Errors.migration("Failed to create ABAddressBook")
+        }
       }
 
-      if error != nil && abError != nil {
-        error.memory = Errors.fromCFError(abError!.takeRetainedValue())
-      }
-
-      return nil
+      return ab.takeRetainedValue()
     }
 
     func requestAuthorizationAndWaitResult(addressBook: ABAddressBook) -> ABAuthorizationStatus {
@@ -43,37 +43,24 @@ class AddressBook {
       return authResolution ? .Authorized : .Denied
     }
 
-    var addressBookUsedForAuthorization: ABAddressBook?
-    var authStatus = ABAddressBookGetAuthorizationStatus()
+    let authStatus = ABAddressBookGetAuthorizationStatus()
+
+    guard authStatus == .NotDetermined || authStatus == .Authorized else {
+      addressBook = nil
+      throw Errors.addressBookAccessDeniedOrRestricted()
+    }
+
+    do {
+      addressBook = try makeABAddressBook()
+    } catch {
+      addressBook = nil
+      throw error
+    }
 
     if authStatus == .NotDetermined {
-      if let ab: ABAddressBook = makeABAddressBook() {
-        addressBookUsedForAuthorization = ab
-        authStatus = requestAuthorizationAndWaitResult(ab)
-      } else {
-        addressBook = nil
-        return nil
+      if requestAuthorizationAndWaitResult(addressBook) != .Authorized {
+        throw Errors.addressBookAccessDeniedOrRestricted()
       }
-    }
-
-    if authStatus != .Authorized {
-      if error != nil {
-        error.memory = Errors.addressBookAccessDeniedOrRestricted()
-      }
-      addressBook = nil
-      return nil
-    }
-
-    // is not already authorized?
-    if addressBookUsedForAuthorization == nil {
-      if let ab: ABAddressBook = makeABAddressBook() {
-        addressBook = ab
-      } else {
-        addressBook = nil
-        return nil
-      }
-    } else {
-      addressBook = addressBookUsedForAuthorization
     }
   }
 
@@ -83,57 +70,54 @@ class AddressBook {
       .takeRetainedValue() as [ABRecord]
   }
 
-  func addRecords(records: [ABRecord], error: NSErrorPointer) -> Bool {
+  func addRecords(records: [ABRecord]) throws {
     for record in records {
       var abError: Unmanaged<CFError>?
-
       let isAdded = ABAddressBookAddRecord(addressBook, record, &abError)
 
-      if !isAdded {
-        if error != nil && abError != nil {
-          error.memory = Errors.fromCFError(abError!.takeRetainedValue())
+      guard isAdded else {
+        if let err = abError {
+          throw Errors.fromCFError(err.takeRetainedValue())
+        } else {
+          throw Errors.migration("Failed to add record to address book")
         }
-
-        return false
       }
     }
-
-    return true
   }
 
-  func save(#error: NSErrorPointer) -> Bool {
+  func save() throws {
     var abError: Unmanaged<CFError>?
     let isSaved = ABAddressBookSave(addressBook, &abError)
 
-    if !isSaved {
-      if abError != nil {
-        error.memory = Errors.fromCFError(abError!.takeRetainedValue())
+    guard isSaved else {
+      if let err = abError {
+        throw Errors.fromCFError(err.takeRetainedValue())
+      } else {
+        throw Errors.migration("Failed to save address book")
       }
-
-      return false
     }
-
-    return true
   }
 
-  class func sharedInstance(#error: NSErrorPointer) -> AddressBook? {
+  class func sharedInstance() throws -> AddressBook {
     struct Static {
       static var instance: AddressBook?
-      static var error: NSError?
+      static var error: ErrorType?
       static var token: QueueExecution.OnceToken = 0
     }
 
     QueueExecution.once(&Static.token) {
-      var err: NSError?
-      if let ab = AddressBook(error: &err) {
+      do {
+        let ab = try AddressBook()
         Static.instance = ab
-      }
-      if let e = err {
-        Static.error = err
+      } catch {
+        Static.error = error
       }
     }
 
-    error.memory = Static.error
-    return Static.instance
+    guard let inst = Static.instance else {
+      throw Static.error!
+    }
+
+    return inst
   }
 }

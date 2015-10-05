@@ -1,45 +1,28 @@
 import Foundation
 
 public enum Try<T> {
-  case Success(Box<T>)
-  case Failure(String)
-
-  public static func success(value: T) -> Try<T> {
-    return .Success(Box(value))
-  }
-
-  public static func failure(desc: String) -> Try<T> {
-    return .Failure(desc)
-  }
+  case Success(T)
+  case Failure(ErrorType)
 
   public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
     switch self {
-    case Success(let box):
-      return f(box.value)
-    case Failure(let desc):
-      return .failure(desc)
+    case Success(let value):
+      return f(value)
+    case Failure(let error):
+      return .Failure(error)
     }
   }
 
   public func map<U>(@noescape f: T -> U) -> Try<U> {
-    return flatMap { e in .success(f(e)) }
+    return flatMap { e in .Success(f(e)) }
   }
 
-  public var value: T? {
+  public func value() throws -> T {
     switch self {
-    case Success(let box):
-      return box.value
-    case Failure:
-      return nil
-    }
-  }
-
-  public var failureDescription: String? {
-    switch self {
-    case Success:
-      return nil
-    case Failure(let desc):
-      return desc
+    case Success(let value):
+      return value
+    case Failure(let error):
+      throw error
     }
   }
 
@@ -57,25 +40,22 @@ public enum Try<T> {
   }
 }
 
-extension Try: Printable, DebugPrintable {
+extension Try: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
-    return describeWith(print)
+    switch self {
+    case .Success(let value):
+      return "Success(\(value))"
+    case .Failure(let error):
+      return "Failure(\(error))"
+    }
   }
 
   public var debugDescription: String {
-    return describeWith(debugPrint)
-  }
-
-  private func describeWith(@noescape printFn: (Any, inout String) -> Void) -> String {
     switch self {
-    case Success(let box):
-      var str = ""
-      print("Success(", &str)
-      printFn(box.value, &str)
-      print(")", &str)
-      return str
-    case Failure(let desc):
-      return "Failure(\"\(desc)\")"
+    case .Success(let value):
+      return "Success(\(String(reflecting: value)))"
+    case .Failure(let error):
+      return "Failure(\(String(reflecting: error)))"
     }
   }
 }
@@ -87,9 +67,10 @@ extension Try: Printable, DebugPrintable {
 public func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
   case (.Success(let lhs), .Success(let rhs)):
-    return lhs.value == rhs.value
-  case (.Failure(let lhs), .Failure(let rhs)):
     return lhs == rhs
+  case (.Failure(let lhs as NSError), .Failure(let rhs as NSError)):
+    return lhs.domain == rhs.domain
+        && lhs.code == rhs.code
   default:
     return false
   }

@@ -32,7 +32,7 @@ struct QueueExecution {
   }
 
   /**
-   * :param: queue The queue in which to execute. Must be a serial queue.
+   * - parameter queue: The queue in which to execute. Must be a serial queue.
    */
   static func makeDebouncer<T>(
     waitInMS: Int,

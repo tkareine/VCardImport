@@ -1,5 +1,5 @@
 framework module MiniFuture {
-  umbrella header "Pods-MiniFuture-umbrella.h"
+  umbrella header "MiniFuture-umbrella.h"
 
   export *
   module * { export * }

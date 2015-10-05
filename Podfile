@@ -6,5 +6,5 @@ link_with "vCard Turbo", "Test"
 platform :ios, "8.0"
 use_frameworks!
 
-pod "Alamofire", "~> 1.2"
-pod "MiniFuture", "~> 0.2"
+pod "Alamofire", "~> 3.1.0"
+pod "MiniFuture", "~> 0.3.0"

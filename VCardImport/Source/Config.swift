@@ -8,13 +8,13 @@ private func getBundleInfo()
   var version: String?
 
   if let info = NSBundle.mainBundle().infoDictionary {
-    if let data = info[kCFBundleExecutableKey] as? String {
+    if let data = info[kCFBundleExecutableKey as String] as? String {
       executable = data
     }
-    if let data = info[kCFBundleIdentifierKey] as? String {
+    if let data = info[kCFBundleIdentifierKey as String] as? String {
       bundleId = data
     }
-    if let data = info[kCFBundleVersionKey] as? String {
+    if let data = info[kCFBundleVersionKey as String] as? String {
       version = data
     }
   }

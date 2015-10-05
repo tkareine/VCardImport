@@ -87,14 +87,14 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
     from callees: [TextFieldCallee<T>])
     -> TextFieldCallee<T>?
   {
-    return findElement(callees) { $0.textField === textField }
+    return callees.findElementWhere { $0.textField === textField }
   }
 
   private func removeCallee<T>(
     with textField: UITextField,
     var from callees: [TextFieldCallee<T>])
   {
-    if let index = findIndex(callees, { $0.textField === textField }) {
+    if let index = callees.findIndexWhere({ $0.textField === textField }) {
       callees.removeAtIndex(index)
     }
   }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8AD31A8ED4BE4362183F13A7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		8AD31A8ED4BE4362183F13A7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; };
 		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
 		E907C6A91A6B382700612C90 /* MiniFutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* MiniFutureExtension.swift */; };
@@ -31,6 +31,7 @@
 		E975804B1A75FE94008A70E9 /* VCardImportProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5E8B01A7568A000400291 /* VCardImportProgress.swift */; };
 		E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97B6C0A1A34A1F100B4D3E6 /* VCardSourceStore.swift */; };
 		E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */; };
+		E97BCB0A1BC9BB7B000307D6 /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97BCB091BC9BB7B000307D6 /* ValidationError.swift */; settings = {ASSET_TAGS = (); }; };
 		E97D05C91A96806500740659 /* AddressBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97D05C81A96806500740659 /* AddressBook.swift */; };
 		E97DE1841A0EC80D005FAB7D /* VCardImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */; };
 		E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97F0C361A86C644005C9B0B /* RecordNameTests.swift */; };
@@ -79,7 +80,7 @@
 		E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */; };
 		E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */; };
 		E9F9D8601A361C1B0054DCB8 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
-		FE8CF8A46BB7043B6A93B3D7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FE8CF8A46BB7043B6A93B3D7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +130,7 @@
 		E97580491A75FE26008A70E9 /* VCardImportProgressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardImportProgressTests.swift; path = Support/VCardImportProgressTests.swift; sourceTree = "<group>"; };
 		E97B6C0A1A34A1F100B4D3E6 /* VCardSourceStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceStore.swift; path = Store/VCardSourceStore.swift; sourceTree = "<group>"; };
 		E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSource.swift; path = Domain/VCardSource.swift; sourceTree = "<group>"; };
+		E97BCB091BC9BB7B000307D6 /* ValidationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ValidationError.swift; path = UI/ValidationError.swift; sourceTree = "<group>"; };
 		E97D05C81A96806500740659 /* AddressBook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBook.swift; path = Record/AddressBook.swift; sourceTree = "<group>"; };
 		E97DE1831A0EC80D005FAB7D /* VCardImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardImporter.swift; path = Domain/VCardImporter.swift; sourceTree = "<group>"; };
 		E97F0C361A86C644005C9B0B /* RecordNameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordNameTests.swift; path = Record/RecordNameTests.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			children = (
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
 				E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */,
+				E97BCB091BC9BB7B000307D6 /* ValidationError.swift */,
 				E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */,
 				E90684AB1A589F0700728D0B /* VCardSourceCell.swift */,
 				E9F850341A6EFE6C0051669A /* VCardSourceCell.xib */,
@@ -436,7 +439,9 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = "";
-				LastUpgradeCheck = 0600;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Tuomas Kareinen";
 				TargetAttributes = {
 					E983F1D119E9C76F00219305 = {
@@ -618,6 +623,7 @@
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
 				E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */,
+				E97BCB0A1BC9BB7B000307D6 /* ValidationError.swift in Sources */,
 				E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */,
 				E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */,
 				E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */,
@@ -707,6 +713,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -787,8 +794,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Source/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -D DEFAULT_SOURCES";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Source/Bridging-Header.h";
@@ -805,7 +812,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Source/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Source/Bridging-Header.h";
@@ -817,16 +824,12 @@
 			baseConfigurationReference = 6E1FE9330B4AD96D644FDB37 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Test/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCard Turbo.app/vCard Turbo";
 			};
@@ -837,12 +840,8 @@
 			baseConfigurationReference = 1FB67E41FDADE55F0C0843B0 /* Pods.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = Test/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCard Turbo.app/vCard Turbo";
 			};

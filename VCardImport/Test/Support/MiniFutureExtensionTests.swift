@@ -11,10 +11,10 @@ class MiniFutureExtensionTests: XCTestCase {
     let swi0 = switcher(fut0)
     let swi1 = switcher(fut1)
 
-    fut0.complete(.success("a"))
-    fut1.complete(.success("b"))
+    fut0.complete(.Success("a"))
+    fut1.complete(.Success("b"))
 
-    XCTAssert(swi1.get() == .success("b"))
+    XCTAssert(swi1.get() == .Success("b"))
     XCTAssertFalse(swi0.isCompleted)
   }
 }

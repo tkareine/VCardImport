@@ -2,7 +2,8 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-  private var window: UIWindow!
+  var window: UIWindow?
+
   private var appContext: AppContext!
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -16,12 +17,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let navigationController = UINavigationController(rootViewController: vcardSourcesController)
 
-    window = UIWindow(frame: UIScreen.mainScreen().bounds)
-    window.tintColor = Config.UI.TintColor
-    window.backgroundColor = UIColor.whiteColor()
-    window.rootViewController = navigationController
-    window.makeKeyAndVisible()
+    let win = UIWindow(frame: UIScreen.mainScreen().bounds)
+    win.tintColor = Config.UI.TintColor
+    win.backgroundColor = UIColor.whiteColor()
+    win.rootViewController = navigationController
+    win.makeKeyAndVisible()
 
+    window = win
+    
     return true
   }
 

@@ -26,7 +26,7 @@ class RecordDifferencesTests: XCTestCase {
       url: "https://twitter.com/arnie",
       username: "arnie")
     let newRecord: ABRecord = TestRecords.makePerson(
-      prefixName: "Mr.",
+      "Mr.",
       firstName: "Arnold",
       nickName: "Arnie",
       middleName: "Big",
@@ -89,19 +89,19 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(phoneChanges.count, 1)
     XCTAssertEqual(phoneChanges.first!.0, kABPersonPhoneMainLabel as String)
-    XCTAssertEqual(phoneChanges.first!.1 as! String, "5551001002")
+    XCTAssertEqual(phoneChanges.first!.1 as? String, "5551001002")
 
     let emailChanges = multiValueChanges[kABPersonEmailProperty]!
 
     XCTAssertEqual(emailChanges.count, 1)
     XCTAssertEqual(emailChanges.first!.0, "Home")
-    XCTAssertEqual(emailChanges.first!.1 as! String, "arnold.alpha@example.com")
+    XCTAssertEqual(emailChanges.first!.1 as? String, "arnold.alpha@example.com")
 
     let urlChanges = multiValueChanges[kABPersonURLProperty]!
 
     XCTAssertEqual(urlChanges.count, 1)
     XCTAssertEqual(urlChanges.first!.0, "Work")
-    XCTAssertEqual(urlChanges.first!.1 as! String, "https://exampleinc.com/")
+    XCTAssertEqual(urlChanges.first!.1 as? String, "https://exampleinc.com/")
 
     let addressChanges = multiValueChanges[kABPersonAddressProperty]!
 
@@ -149,7 +149,7 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(emailChanges.count, 1)
     XCTAssertEqual(emailChanges.first!.0, "Work")
-    XCTAssertEqual(emailChanges.first!.1 as! String, "info@gov.gov")
+    XCTAssertEqual(emailChanges.first!.1 as? String, "info@gov.gov")
   }
 
   func testDoesNotSetRecordChangeForNonTrackedFieldValue() {
@@ -371,7 +371,7 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(propertyChange, kABPersonPhoneProperty)
     XCTAssertEqual(valueChanges.count, 1)
     XCTAssertEqual(valueChanges.first!.0, kABPersonPhoneMainLabel as String)
-    XCTAssertEqual(valueChanges.first!.1 as! String, "5551001002")
+    XCTAssertEqual(valueChanges.first!.1 as? String, "5551001002")
   }
 
   func testDoesNotSetRecordChangeForExistingValueOfMultiDictionaryValueField() {
@@ -450,7 +450,7 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   private func makeAddress(
-    #street: String,
+    street street: String,
     zip: String,
     city: String,
     state: String)
@@ -464,7 +464,7 @@ class RecordDifferencesTests: XCTestCase {
     ]
   }
 
-  private func makeInstantMessage(#service: String, username: String)
+  private func makeInstantMessage(service service: String, username: String)
     -> [String: NSString]
   {
     return [
@@ -474,7 +474,7 @@ class RecordDifferencesTests: XCTestCase {
   }
 
   private func makeSocialProfile(
-    #service: String,
+    service service: String,
     url: String,
     username: String)
     -> [String: NSString]

@@ -56,7 +56,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       .build()
   }
 
-  required init(coder decoder: NSCoder) {
+  required init?(coder decoder: NSCoder) {
     fatalError("not implemented")
   }
 
@@ -89,24 +89,24 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
         "toolbar": toolbar
       ]
 
-      tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
-      toolbar.setTranslatesAutoresizingMaskIntoConstraints(false)
+      tableView.translatesAutoresizingMaskIntoConstraints = false
+      toolbar.translatesAutoresizingMaskIntoConstraints = false
 
       view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[tableView]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
       view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[toolbar]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
       view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "V:|[tableView][toolbar(==58)]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
     }
@@ -203,10 +203,10 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     }
   }
 
-  private func presentAlertForError(error: NSError) {
+  private func presentAlertForError(error: ErrorType) {
     let alertController = UIAlertController(
-      title: error.localizedFailureReason,
-      message: error.localizedDescription,
+      title: (error as NSError).localizedFailureReason ?? "Failure",
+      message: (error as NSError).localizedDescription,
       preferredStyle: .Alert)
     let dismissAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
 

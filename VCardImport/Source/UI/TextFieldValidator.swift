@@ -9,9 +9,7 @@ class TextFieldValidator<T> {
   private let validator: AsyncValidator
   private let onValidated: OnValidatedCallback
 
-  private let queue = dispatch_queue_create(
-    Config.BundleIdentifier + ".TextFieldValidator",
-    DISPATCH_QUEUE_SERIAL)
+  private let queue = QueueExecution.makeSerialQueue("TextFieldValidator")
 
   private let validBorderWidth: CGFloat
   private let validBorderColor: CGColor
@@ -34,7 +32,7 @@ class TextFieldValidator<T> {
     self.textFieldDelegate = textFieldDelegate
 
     validBorderWidth = textField.layer.borderWidth
-    validBorderColor = textField.layer.borderColor
+    validBorderColor = textField.layer.borderColor!
 
     validationDebouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) { [weak self] in
       if let s = self {  // view might have been destroyed already
@@ -43,7 +41,7 @@ class TextFieldValidator<T> {
     }
 
     self.textFieldDelegate?.addOnTextChange(textField) { tf, range, replacement in
-      let oldText = tf.text
+      let oldText = tf.text!
       QueueExecution.async(self.queue) {
         let newText = self.change(text: oldText, range: range, replacement: replacement)
         self.validationDebouncer(newText)
@@ -73,7 +71,7 @@ class TextFieldValidator<T> {
 
   func validate() {
     if let tf = textField {
-      let text = tf.text
+      let text = tf.text!
       QueueExecution.async(queue) { self.validationDebouncer(text) }
     }
   }
@@ -103,7 +101,7 @@ class TextFieldValidator<T> {
   }
 
   private func change(
-    #text: String,
+    text text: String,
     range: NSRange,
     replacement: String)
     -> String

@@ -69,13 +69,13 @@ struct TestRecords {
       Records.addValues(vals, toMultiValueProperty: kABPersonSocialProfileProperty, of: record)
     }
     if let img = image {
-      Records.setImage(UIImagePNGRepresentation(img), of: record)
+      Records.setImage(UIImagePNGRepresentation(img)!, of: record)
     }
     return record
   }
 
   static func makeOrganization(
-    #name: String,
+    name name: String,
     emails: [(String, NSString)]? = nil)
     -> ABRecord
   {

@@ -5,7 +5,7 @@ private func makeButton(
   align labelAlignment: UIControlContentHorizontalAlignment)
   -> UIButton
 {
-  let button = UIButton.buttonWithType(.System) as! UIButton
+  let button = UIButton(type: .System)
   button.setTitle(title, forState: .Normal)
   if let label = button.titleLabel {
     let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
@@ -69,7 +69,7 @@ class VCardToolbar: UIView {
     backupButton.hidden = true  // not implemented yet
   }
 
-  required init(coder decoder: NSCoder) {
+  required init?(coder decoder: NSCoder) {
     fatalError("not implemented")
   }
 
@@ -105,7 +105,7 @@ class VCardToolbar: UIView {
       })
   }
 
-  func inProgress(#text: String, progress: Float) {
+  func inProgress(text text: String, progress: Float) {
     progressLabel.text = text
     progressView.setProgress(progress, animated: true)
   }
@@ -127,13 +127,13 @@ class VCardToolbar: UIView {
   }
 
   private func setupLayout() {
-    importButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+    importButton.translatesAutoresizingMaskIntoConstraints = false
     importButton.setContentHuggingPriority(251, forAxis: .Horizontal)
-    backupButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+    backupButton.translatesAutoresizingMaskIntoConstraints = false
     backupButton.setContentHuggingPriority(251, forAxis: .Horizontal)
-    progressLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+    progressLabel.translatesAutoresizingMaskIntoConstraints = false
     progressLabel.setContentCompressionResistancePriority(749, forAxis: .Horizontal)
-    progressView.setTranslatesAutoresizingMaskIntoConstraints(false)
+    progressView.translatesAutoresizingMaskIntoConstraints = false
 
     let viewNamesToObjects = [
       "importButton": importButton,
@@ -207,7 +207,7 @@ class VCardToolbar: UIView {
 
     addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[importButton(>=50)]-10-[progressLabel]-10-[backupButton(>=50)]-|",
-      options: nil,
+      options: [],
       metrics: nil,
       views: viewNamesToObjects))
   }

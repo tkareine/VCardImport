@@ -77,7 +77,7 @@ struct Records {
 
     let mutableMultiVal: ABMutableMultiValue
     if let v = val {
-      let multiVal: ABMultiValue = val.takeRetainedValue()
+      let multiVal: ABMultiValue = v.takeRetainedValue()
       mutableMultiVal = ABMultiValueCreateMutableCopy(multiVal).takeRetainedValue()
     } else {
       mutableMultiVal = ABMultiValueCreateMutable(ABPropertyType(kABMultiStringPropertyType)).takeRetainedValue()

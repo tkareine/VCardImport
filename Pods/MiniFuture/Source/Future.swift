@@ -31,16 +31,16 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  public class func async(block: () -> Try<T>) -> AsyncFuture<T> {
+  public class func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
   public class func succeeded(val: T) -> ImmediateFuture<T> {
-    return fromTry(.success(val))
+    return fromTry(.Success(val))
   }
 
-  public class func failed(val: String) -> ImmediateFuture<T> {
-    return fromTry(.failure(val))
+  public class func failed(error: ErrorType) -> ImmediateFuture<T> {
+    return fromTry(.Failure(error))
   }
 
   public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
@@ -75,23 +75,35 @@ public class Future<T> {
     fatalError("must be overridden")
   }
 
-  public func flatMap<U>(f: T -> Future<U>) -> Future<U> {
+  public func flatMap<U>(f: T throws -> Future<U>) -> Future<U> {
     let promise = PromiseFuture<U>()
     onComplete { res in
       switch res {
-      case .Success(let box):
-        f(box.value).onComplete(promise.complete)
-      case .Failure(let desc):
+      case .Success(let value):
+        let fut: Future<U>
+        do {
+          fut = try f(value)
+        } catch {
+          fut = Future<U>.failed(error)
+        }
+        fut.onComplete(promise.complete)
+      case .Failure(let error):
         // we cannot cast dynamically with generic types, so let's create a
         // new value
-        promise.complete(.failure(desc))
+        promise.complete(.Failure(error))
       }
     }
     return promise
   }
 
-  public func map<U>(f: T -> U) -> Future<U> {
-    return flatMap { e in Future<U>.succeeded(f(e)) }
+  public func map<U>(f: T throws -> U) -> Future<U> {
+    return flatMap { e in
+      do {
+        return Future<U>.succeeded(try f(e))
+      } catch {
+        return Future<U>.failed(error)
+      }
+    }
   }
 }
 
@@ -133,10 +145,16 @@ public class AsyncFuture<T>: Future<T> {
     return "AsyncFuture"
   }
 
-  private init(_ block: () -> Try<T>) {
+  private init(_ block: () throws -> Try<T>) {
     super.init(nil)
     FutureExecution.async(Group) {
-      self.result = block()
+      let res: Try<T>
+      do {
+        res = try block()
+      } catch {
+        res = Try<T>.Failure(error)
+      }
+      self.result = res
     }
   }
 
@@ -171,18 +189,18 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   public func resolve(value: T) {
-    complete(.success(value))
+    complete(.Success(value))
   }
 
-  public func reject(description: String) {
-    complete(.failure(description))
+  public func reject(error: ErrorType) {
+    complete(.Failure(error))
   }
 
   public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
       if self.result != nil {
         fatalError("Tried to complete PromiseFuture with \(value.value), but " +
-          "the future is already completed with \(self.result!.value)")
+          "the future is already completed with \(self.result!)")
       }
 
       self.result = value
@@ -227,19 +245,12 @@ public class PromiseFuture<T>: Future<T> {
   }
 }
 
-extension Future: Printable, DebugPrintable {
+extension Future: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
-    return describeWith(print)
+    return "\(futureName)(\(result))"
   }
 
   public var debugDescription: String {
-    return describeWith(debugPrint)
-  }
-
-  private func describeWith(@noescape printFn: (Any, inout String) -> Void) -> String {
-    var str = "\(futureName)("
-    printFn(result, &str)
-    print(")", &str)
-    return str
+    return "\(futureName)(\(String(reflecting: result)))"
   }
 }

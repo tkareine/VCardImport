@@ -6,21 +6,20 @@ extension AddressBook {
     return ABAddressBookCopyPeopleWithName(_abAddressBook, name).takeRetainedValue() as [ABRecord]
   }
 
-  func removeRecords(records: [ABRecord], error: NSErrorPointer) -> Bool {
+  func removeRecords(records: [ABRecord]) throws {
+    var error: NSError! = NSError(domain: "Migrator", code: 0, userInfo: nil)
     for record in records {
       var abError: Unmanaged<CFError>?
 
       let isRemoved = ABAddressBookRemoveRecord(_abAddressBook, record, &abError)
 
       if !isRemoved {
-        if error != nil && abError != nil {
-          error.memory = Errors.fromCFError(abError!.takeRetainedValue())
+        if true && abError != nil {
+          error = Errors.fromCFError(abError!.takeRetainedValue())
         }
 
-        return false
+        throw error
       }
     }
-
-    return true
   }
 }

@@ -21,10 +21,10 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     return vcardSourceStore.filterEnabled
   }
 
-  func setVCardSourceErrorStatus(source: VCardSource, error: NSError) {
+  func setVCardSourceErrorStatus(source: VCardSource, error: ErrorType) {
     setVCardSourceStatus(
       false,
-      message: error.localizedDescription,
+      message: (error as NSError).localizedDescription,
       modifiedHeaderStamp: nil,
       to: source)
   }

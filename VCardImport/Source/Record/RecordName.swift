@@ -1,7 +1,7 @@
 import Foundation
 import AddressBook
 
-class RecordName: Hashable, Equatable, Printable {
+class RecordName: Hashable, Equatable, CustomStringConvertible {
   var hashValue: Int {
     fatalError("must be overridden")
   }

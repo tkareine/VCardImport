@@ -57,7 +57,7 @@ class VCardSourceDetailViewController: UIViewController {
     }
   }
 
-  required init(coder decoder: NSCoder) {
+  required init?(coder decoder: NSCoder) {
     fatalError("not implemented")
   }
 
@@ -108,7 +108,7 @@ class VCardSourceDetailViewController: UIViewController {
           self.focusedTextField = nil
         }
 
-        textFieldDelegate.addOnShouldReturn(f) { [unowned self] tf in
+        textFieldDelegate.addOnShouldReturn(f) { tf in
           tf.resignFirstResponder()
           return true
         }
@@ -127,30 +127,30 @@ class VCardSourceDetailViewController: UIViewController {
         "contentView": contentView
       ]
 
-      scrollView.setTranslatesAutoresizingMaskIntoConstraints(false)
-      contentView.setTranslatesAutoresizingMaskIntoConstraints(false)
+      scrollView.translatesAutoresizingMaskIntoConstraints = false
+      contentView.translatesAutoresizingMaskIntoConstraints = false
 
       view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[scrollView]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
       view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "V:|[scrollView]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
       scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[contentView]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
       scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "V:|[contentView]|",
-        options: nil,
+        options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
@@ -228,12 +228,12 @@ class VCardSourceDetailViewController: UIViewController {
 
     if shouldCallDoneCallbackOnViewDisappear {
       let newConnection = VCardSource.Connection(
-        url: urlField.text,
-        username: usernameField.text,
-        password: passwordField.text)
+        url: urlField.text!,
+        username: usernameField.text!,
+        password: passwordField.text!)
 
       let newSource = source.with(
-        name: nameField.text.trimmed,
+        name: nameField.text!.trimmed,
         connection: newConnection,
         isEnabled: isEnabledSwitch.on
       )
@@ -314,8 +314,8 @@ class VCardSourceDetailViewController: UIViewController {
     nameFieldValidator = TextFieldValidator(
       textField: nameField,
       textFieldDelegate: textFieldDelegate,
-      syncValidator: { [weak self] text in
-        return !text.trimmed.isEmpty ? .success(text) : .failure("empty")
+      syncValidator: { text in
+        return !text.trimmed.isEmpty ? .Success(text) : .Failure(ValidationError.Empty)
       },
       onValidated: { [weak self] result in
         if let s = self {
@@ -335,8 +335,8 @@ class VCardSourceDetailViewController: UIViewController {
           var username = ""
           var password = ""
           QueueExecution.sync(QueueExecution.mainQueue) {
-            username = s.usernameField.text
-            password = s.passwordField.text
+            username = s.usernameField.text!
+            password = s.passwordField.text!
           }
           let connection = VCardSource.Connection(
             url: url,
@@ -344,7 +344,7 @@ class VCardSourceDetailViewController: UIViewController {
             password: password)
           return s.checkIsReachableURL(connection)
         } else {
-          return Future.failed("view disappeared")
+          return Future.failed(ValidationError.Cancelled)
         }
       },
       onValidated: { [weak self] result in
@@ -383,7 +383,7 @@ class VCardSourceDetailViewController: UIViewController {
     UIView.animateWithDuration(
       Config.UI.AnimationDurationFadeMessage,
       delay: 0,
-      options: .CurveEaseIn | .BeginFromCurrentState,
+      options: [.CurveEaseIn, .BeginFromCurrentState],
       animations: {
         self.urlValidationLabel.alpha = 1
       },
@@ -399,13 +399,13 @@ class VCardSourceDetailViewController: UIViewController {
       UIView.animateWithDuration(
         Config.UI.AnimationDurationFadeMessage,
         delay: Config.UI.AnimationDelayFadeOutMessage,
-        options: .CurveEaseOut | .BeginFromCurrentState,
+        options: [.CurveEaseOut, .BeginFromCurrentState],
         animations: {
           self.urlValidationLabel.alpha = 0
         },
         completion: nil)
-    case .Failure(let desc):
-      urlValidationLabel.text = desc
+    case .Failure(let error):
+      urlValidationLabel.text = (error as NSError).localizedDescription
     }
 
     isValidatingURLIndicator.stopAnimating()
@@ -424,7 +424,7 @@ class VCardSourceDetailViewController: UIViewController {
         .head(url, headers: Config.Net.VCardHTTPHeaders, credential: credential)
         .map { _ in url }
     }
-    return Future.failed("Invalid URL")
+    return Future.failed(Errors.urlIsInvalid())
   }
 
   private func stringToValidHTTPURL(urlString: String) -> NSURL? {
