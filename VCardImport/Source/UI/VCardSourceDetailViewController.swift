@@ -30,6 +30,7 @@ class VCardSourceDetailViewController: UIViewController {
   private var isValidCurrentURL = false
 
   private var scrollView: UIScrollView!
+  private var contentView: UIView!
   private var focusedTextField: UITextField!
 
   // MARK: Controller Life Cycle
@@ -63,19 +64,27 @@ class VCardSourceDetailViewController: UIViewController {
 
   // MARK: View Life Cycle
 
-  override func viewDidLoad() {
+  override func loadView() {
     func makeScrollView() -> UIScrollView {
       let sv = UIScrollView()
       sv.backgroundColor = UIColor.whiteColor()
       return sv
     }
 
-    func makeDetailView() -> UIView {
+    func makeContentView() -> UIView {
       return NSBundle
         .mainBundle()
         .loadNibNamed("VCardSourceDetailView", owner: self, options: nil).first! as! UIView
     }
 
+    scrollView = makeScrollView()
+    contentView = makeContentView()
+    scrollView.addSubview(contentView)
+
+    view = scrollView
+  }
+
+  override func viewDidLoad() {
     func setupSubviews() {
       nameField.text = source.name
       urlField.text = source.connection.url
@@ -121,71 +130,24 @@ class VCardSourceDetailViewController: UIViewController {
       view.userInteractionEnabled = true
     }
 
-    func setupLayout(contentView: UIView) {
-      let viewNamesToObjects = [
-        "scrollView": scrollView,
-        "contentView": contentView
-      ]
-
-      scrollView.translatesAutoresizingMaskIntoConstraints = false
-      contentView.translatesAutoresizingMaskIntoConstraints = false
-
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|[scrollView]|",
-        options: [],
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:|[scrollView]|",
-        options: [],
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|[contentView]|",
-        options: [],
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:|[contentView]|",
-        options: [],
-        metrics: nil,
-        views: viewNamesToObjects))
-
-      view.addConstraint(NSLayoutConstraint(
-        item: contentView,
-        attribute: .Leading,
-        relatedBy: .Equal,
-        toItem: view,
-        attribute: .Left,
-        multiplier: 1,
-        constant: 0))
-
-      view.addConstraint(NSLayoutConstraint(
-        item: contentView,
-        attribute: .Trailing,
-        relatedBy: .Equal,
-        toItem: view,
-        attribute: .Right,
-        multiplier: 1,
-        constant: 0))
-    }
-
     super.viewDidLoad()
 
-    scrollView = makeScrollView()
-    let detailView = makeDetailView()
     resetFontSizes()
     setupSubviews()
     setupTextFieldDelegates()
     setupBackgroundTap()
+  }
 
-    scrollView.addSubview(detailView)
-    view.addSubview(scrollView)
+  override func viewDidLayoutSubviews() {
+    contentView.frame = CGRectMake(
+      contentView.frame.origin.x,
+      contentView.frame.origin.y,
+      scrollView.frame.size.width,
+      contentView.frame.size.height)
 
-    setupLayout(detailView)
+    scrollView.contentSize = CGSizeMake(
+      scrollView.frame.size.width,
+      contentView.frame.size.height)
   }
 
   override func viewWillAppear(animated: Bool) {
