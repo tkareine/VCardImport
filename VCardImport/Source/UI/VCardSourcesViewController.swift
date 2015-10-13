@@ -62,7 +62,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
   // MARK: View Life Cycle
 
-  override func viewDidLoad() {
+  override func loadView() {
     func makeToolbar() -> VCardToolbar {
       let tb = VCardToolbar()
       tb.importButton.addTarget(
@@ -83,6 +83,15 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       return tv
     }
 
+    toolbar = makeToolbar()
+    tableView = makeTableView()
+
+    view = UIView()
+    view.addSubview(tableView)
+    view.addSubview(toolbar)
+  }
+
+  override func viewDidLoad() {
     func setupLayout() {
       let viewNamesToObjects = [
         "tableView": tableView,
@@ -112,12 +121,6 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     }
 
     super.viewDidLoad()
-
-    toolbar = makeToolbar()
-    tableView = makeTableView()
-
-    view.addSubview(tableView)
-    view.addSubview(toolbar)
 
     setupLayout()
 
