@@ -18,7 +18,7 @@ class VCardSourceDetailViewController: UIViewController {
 
   private let source: VCardSource
   private let isNewSource: Bool
-  private let urlConnection: URLConnectable
+  private let httpRequests: HTTPRequestable
   private let doneCallback: VCardSource -> Void
   private let textFieldDelegate: ProxyTextFieldDelegate
 
@@ -38,12 +38,12 @@ class VCardSourceDetailViewController: UIViewController {
   init(
     source: VCardSource,
     isNewSource: Bool,
-    urlConnection: URLConnectable,
+    httpRequestsWith httpRequests: HTTPRequestable,
     doneCallback: VCardSource -> Void)
   {
     self.source = source
     self.isNewSource = isNewSource
-    self.urlConnection = urlConnection
+    self.httpRequests = httpRequests
     self.doneCallback = doneCallback
     textFieldDelegate = ProxyTextFieldDelegate()
 
@@ -382,7 +382,7 @@ class VCardSourceDetailViewController: UIViewController {
   private func checkIsReachableURL(connection: VCardSource.Connection) -> Future<NSURL> {
     if let url = stringToValidHTTPURL(connection.url) {
       let credential = connection.toCredential()
-      return self.urlConnection
+      return self.httpRequests
         .head(url, headers: Config.Net.VCardHTTPHeaders, credential: credential)
         .map { _ in url }
     }

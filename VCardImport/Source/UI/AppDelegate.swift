@@ -9,7 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     appContext = AppContext(
       vcardSourceStore: VCardSourceStore(),
-      urlConnection: URLConnection()
+      httpRequestsWith: HTTPRequestManager()
     )
     appContext.vcardSourceStore.load()
 

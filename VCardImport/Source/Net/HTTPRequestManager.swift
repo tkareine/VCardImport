@@ -2,7 +2,7 @@ import Foundation
 import Alamofire
 import MiniFuture
 
-class URLConnection: URLConnectable {
+class HTTPRequestManager: HTTPRequestable {
   private let DefaultHeaders = [
     "User-Agent": "\(Config.Executable)/\(Config.BundleIdentifier) (\(Config.Version); OS \(Config.OS))"
   ]
@@ -24,11 +24,11 @@ class URLConnection: URLConnectable {
   }
 
   func request(
-    method: Request.Method,
+    method: HTTPRequest.Method,
     url: NSURL,
-    headers: Request.Headers = [:],
+    headers: HTTPRequest.Headers = [:],
     credential: NSURLCredential? = nil,
-    onProgress: Request.OnProgressCallback? = nil)
+    onProgress: HTTPRequest.OnProgressCallback? = nil)
     -> Future<NSHTTPURLResponse>
   {
     var request = manager.request(makeURLRequest(
@@ -68,7 +68,7 @@ class URLConnection: URLConnectable {
 
   func head(
     url: NSURL,
-    headers: Request.Headers = [:],
+    headers: HTTPRequest.Headers = [:],
     credential: NSURLCredential? = nil)
     -> Future<NSHTTPURLResponse>
   {
@@ -78,9 +78,9 @@ class URLConnection: URLConnectable {
   func download(
     url: NSURL,
     to destination: NSURL,
-    headers: Request.Headers = [:],
+    headers: HTTPRequest.Headers = [:],
     credential: NSURLCredential? = nil,
-    onProgress: Request.OnProgressCallback? = nil)
+    onProgress: HTTPRequest.OnProgressCallback? = nil)
     -> Future<NSURL>
   {
     var request = manager.download(makeURLRequest(url: url, headers: headers), destination: { _, _ in destination })
@@ -119,8 +119,8 @@ class URLConnection: URLConnectable {
 
   private func makeURLRequest(
     url url: NSURL,
-    method: Request.Method = .GET,
-    headers: Request.Headers = [:])
+    method: HTTPRequest.Method = .GET,
+    headers: HTTPRequest.Headers = [:])
     -> NSURLRequest
   {
     let request = NSMutableURLRequest(URL: url)

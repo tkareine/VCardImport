@@ -1,26 +1,26 @@
 import Foundation
 import MiniFuture
 
-protocol URLConnectable {
+protocol HTTPRequestable {
   func request(
-    method: Request.Method,
+    method: HTTPRequest.Method,
     url: NSURL,
-    headers: Request.Headers,
+    headers: HTTPRequest.Headers,
     credential: NSURLCredential?,
-    onProgress: Request.OnProgressCallback?)
+    onProgress: HTTPRequest.OnProgressCallback?)
     -> Future<NSHTTPURLResponse>
 
   func head(
     url: NSURL,
-    headers: Request.Headers,
+    headers: HTTPRequest.Headers,
     credential: NSURLCredential?)
     -> Future<NSHTTPURLResponse>
 
   func download(
     url: NSURL,
     to destination: NSURL,
-    headers: Request.Headers,
+    headers: HTTPRequest.Headers,
     credential: NSURLCredential?,
-    onProgress: Request.OnProgressCallback?)
+    onProgress: HTTPRequest.OnProgressCallback?)
     -> Future<NSURL>
 }

@@ -3,14 +3,14 @@ import AddressBook
 import MiniFuture
 
 class VCardImporter {
-  typealias OnSourceDownloadCallback = (VCardSource, Request.ProgressBytes) -> Void
+  typealias OnSourceDownloadCallback = (VCardSource, HTTPRequest.ProgressBytes) -> Void
   typealias OnSourceCompleteCallback = (VCardSource, RecordDifferences?, ModifiedHeaderStamp?, ErrorType?) -> Void
   typealias OnCompleteCallback = ErrorType? -> Void
 
   private let onSourceDownload: OnSourceDownloadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
-  private let urlConnection: URLConnectable
+  private let httpRequests: HTTPRequestable
   private let callbackQueue: QueueExecution.Queue
 
   private let executionQueue = QueueExecution.makeSerialQueue("VCardImporter")
@@ -23,13 +23,13 @@ class VCardImporter {
     onSourceDownload: OnSourceDownloadCallback,
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
-    urlConnection: URLConnectable,
+    httpRequests: HTTPRequestable,
     callbackQueue: QueueExecution.Queue)
   {
     self.onSourceDownload = onSourceDownload
     self.onSourceComplete = onSourceComplete
     self.onComplete = onComplete
-    self.urlConnection = urlConnection
+    self.httpRequests = httpRequests
     self.callbackQueue = callbackQueue
   }
 
@@ -148,7 +148,7 @@ class VCardImporter {
 
   private func checkAndDownloadSource(source: VCardSource) -> Future<SourceImportResult> {
     NSLog("vCard source %@: checking if remote has changed…", source.name)
-    return urlConnection
+    return httpRequests
       .head(
         source.connection.toURL(),
         headers: Config.Net.VCardHTTPHeaders,
@@ -170,12 +170,12 @@ class VCardImporter {
 
   private func downloadSource(source: VCardSource) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
-    let onProgressCallback: Request.OnProgressCallback = { progressBytes in
+    let onProgressCallback: HTTPRequest.OnProgressCallback = { progressBytes in
       QueueExecution.async(QueueExecution.mainQueue) {
         self.onSourceDownload(source, progressBytes)
       }
     }
-    let future = urlConnection
+    let future = httpRequests
       .download(
         source.connection.toURL(),
         to: fileURL,
@@ -210,7 +210,7 @@ class VCardImporter {
     private var onSourceDownload: OnSourceDownloadCallback?
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
-    private var urlConnection: URLConnectable?
+    private var httpRequests: HTTPRequestable?
     private var callbackQueue: QueueExecution.Queue?
 
     func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
@@ -228,8 +228,8 @@ class VCardImporter {
       return self
     }
 
-    func connectWith(urlConnection: URLConnectable) -> Builder {
-      self.urlConnection = urlConnection
+    func httpRequestsWith(httpRequests: HTTPRequestable) -> Builder {
+      self.httpRequests = httpRequests
       return self
     }
 
@@ -243,7 +243,7 @@ class VCardImporter {
         onSourceDownload: self.onSourceDownload!,
         onSourceComplete: self.onSourceComplete!,
         onComplete: self.onComplete!,
-        urlConnection: self.urlConnection!,
+        httpRequests: self.httpRequests!,
         callbackQueue: self.callbackQueue!)
     }
   }

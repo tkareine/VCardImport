@@ -2,7 +2,7 @@ import UIKit
 
 class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private let dataSource: VCardSourcesDataSource
-  private let urlConnection: URLConnectable
+  private let httpRequests: HTTPRequestable
 
   private var toolbar: VCardToolbar!
   private var tableView: UITableView!
@@ -15,12 +15,12 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
   init(appContext: AppContext) {
     dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
-    urlConnection = appContext.urlConnection
+    httpRequests = appContext.httpRequests
 
     super.init(nibName: nil, bundle: nil)
 
     vcardImporter = VCardImporter.builder()
-      .connectWith(urlConnection)
+      .httpRequestsWith(httpRequests)
       .queueTo(QueueExecution.mainQueue)
       .onSourceDownload { [weak self] source, progress in
         if let s = self {
@@ -151,7 +151,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     let vc = VCardSourceDetailViewController(
       source: oldSource,
       isNewSource: false,
-      urlConnection: urlConnection) { newSource in
+      httpRequestsWith: httpRequests) { newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
       }
@@ -170,7 +170,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     let vc = VCardSourceDetailViewController(
       source: VCardSource.empty(),
       isNewSource: true,
-      urlConnection: urlConnection) { newSource in
+      httpRequestsWith: httpRequests) { newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadData()
       }

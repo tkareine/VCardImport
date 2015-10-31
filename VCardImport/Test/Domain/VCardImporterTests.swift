@@ -289,7 +289,7 @@ class VCardImporterTests: XCTestCase {
     -> VCardImporter
   {
     return VCardImporter.builder()
-      .connectWith(FakeURLConnection(using: vcardFile))
+      .httpRequestsWith(FakeHTTPRequestManager(using: vcardFile))
       .queueTo(QueueExecution.mainQueue)
       .onSourceDownload({ _, _ in () })
       .onSourceComplete(onSourceComplete)
@@ -297,7 +297,7 @@ class VCardImporterTests: XCTestCase {
       .build()
   }
 
-  private class FakeURLConnection: URLConnectable {
+  private class FakeHTTPRequestManager: HTTPRequestable {
     let vcardFile: String
 
     init(using vcardFile: String) {
@@ -305,11 +305,11 @@ class VCardImporterTests: XCTestCase {
     }
 
     func request(
-      method: Request.Method,
+      method: HTTPRequest.Method,
       url: NSURL,
-      headers: Request.Headers,
+      headers: HTTPRequest.Headers,
       credential: NSURLCredential?,
-      onProgress: Request.OnProgressCallback? = nil)
+      onProgress: HTTPRequest.OnProgressCallback? = nil)
       -> Future<NSHTTPURLResponse>
     {
       return Future.succeeded(NSHTTPURLResponse(
@@ -321,7 +321,7 @@ class VCardImporterTests: XCTestCase {
 
     func head(
       url: NSURL,
-      headers: Request.Headers,
+      headers: HTTPRequest.Headers,
       credential: NSURLCredential?)
       -> Future<NSHTTPURLResponse>
     {
@@ -331,9 +331,9 @@ class VCardImporterTests: XCTestCase {
     func download(
       url: NSURL,
       to destination: NSURL,
-      headers: Request.Headers,
+      headers: HTTPRequest.Headers,
       credential: NSURLCredential?,
-      onProgress: Request.OnProgressCallback?)
+      onProgress: HTTPRequest.OnProgressCallback?)
       -> Future<NSURL>
     {
       let dst = Files.tempURL()

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Request {
+struct HTTPRequest {
   typealias Headers = [String: String]
   typealias ProgressBytes = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)
   typealias OnProgressCallback = ProgressBytes -> Void
