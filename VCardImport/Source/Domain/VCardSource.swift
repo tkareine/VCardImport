@@ -92,10 +92,7 @@ struct VCardSource {
     }
 
     static func empty() -> Connection {
-      return self.init(
-        url: "",
-        username: "",
-        password: "")
+      return self.init(url: "")
     }
 
     func toURL() -> NSURL {
