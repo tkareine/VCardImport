@@ -19,6 +19,8 @@
 		E927AD4C1AA305BD00C5CA27 /* MiniFutureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* MiniFutureExtension.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
 		E92F0B891AA31E2000367705 /* MiniFutureExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F0B881AA31E2000367705 /* MiniFutureExtensionTests.swift */; };
+		E942050C1BEA97A500139A79 /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942050B1BEA97A500139A79 /* HTTPResponse.swift */; };
+		E94205101BEA9A0700139A79 /* HTTPRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
 		E94897411A47448C004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -118,6 +120,8 @@
 		E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyTextFieldDelegate.swift; path = UI/ProxyTextFieldDelegate.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONSerialization.swift; path = Support/JSONSerialization.swift; sourceTree = "<group>"; };
 		E92F0B881AA31E2000367705 /* MiniFutureExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiniFutureExtensionTests.swift; path = Support/MiniFutureExtensionTests.swift; sourceTree = "<group>"; };
+		E942050B1BEA97A500139A79 /* HTTPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponse.swift; path = Net/HTTPResponse.swift; sourceTree = "<group>"; };
+		E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestTests.swift; path = Net/HTTPRequestTests.swift; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Files.swift; path = Support/Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordName.swift; path = Record/RecordName.swift; sourceTree = "<group>"; };
 		E94C0D631A74428D0005C472 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeychainItemWrapper.h; path = Store/KeychainItemWrapper.h; sourceTree = "<group>"; };
@@ -208,12 +212,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E94205111BEA9A0D00139A79 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */,
+			);
+			name = Net;
+			sourceTree = "<group>";
+		};
 		E9828EAC1A99E52100757D18 /* Net */ = {
 			isa = PBXGroup;
 			children = (
 				E9828EB01A99E73600757D18 /* HTTPRequest.swift */,
 				E9828EAD1A99E67C00757D18 /* HTTPRequestable.swift */,
 				E9C46E721A4A3C98004BD769 /* HTTPRequestManager.swift */,
+				E942050B1BEA97A500139A79 /* HTTPResponse.swift */,
 			);
 			name = Net;
 			sourceTree = "<group>";
@@ -268,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				E9F0D6A31A78C007002191E9 /* Domain */,
+				E94205111BEA9A0D00139A79 /* Net */,
 				E9F0D6A21A78C000002191E9 /* Record */,
 				E9F0D6A11A78BF78002191E9 /* Support */,
 				E983F1EB19E9C76F00219305 /* Supporting Files */,
@@ -611,6 +625,7 @@
 				E9828EB11A99E73600757D18 /* HTTPRequest.swift in Sources */,
 				E9828EAE1A99E67C00757D18 /* HTTPRequestable.swift in Sources */,
 				E9C46E731A4A3C98004BD769 /* HTTPRequestManager.swift in Sources */,
+				E942050C1BEA97A500139A79 /* HTTPResponse.swift in Sources */,
 				E97D05C91A96806500740659 /* AddressBook.swift in Sources */,
 				E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */,
 				E9F2289E1A438A7E00A10190 /* RecordDifferences.swift in Sources */,
@@ -662,6 +677,7 @@
 				E92F0B891AA31E2000367705 /* MiniFutureExtensionTests.swift in Sources */,
 				E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */,
 				E975804A1A75FE26008A70E9 /* VCardImportProgressTests.swift in Sources */,
+				E94205101BEA9A0700139A79 /* HTTPRequestTests.swift in Sources */,
 				E9828EBB1A9A6DDD00757D18 /* AddressBookExtension.swift in Sources */,
 				E9F2289C1A43819200A10190 /* RecordDifferencesTests.swift in Sources */,
 				E97F0C371A86C644005C9B0B /* RecordNameTests.swift in Sources */,

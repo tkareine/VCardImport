@@ -3,12 +3,6 @@ import Alamofire
 import MiniFuture
 
 class HTTPRequestManager: HTTPRequestable {
-  private let DefaultHeaders = [
-    "User-Agent": "\(Config.Executable)/\(Config.BundleIdentifier) (\(Config.Version); OS \(Config.OS))"
-  ]
-
-  private let SuccessStatusCodes = 200..<300
-
   private let manager: Alamofire.Manager
 
   init() {
@@ -31,7 +25,7 @@ class HTTPRequestManager: HTTPRequestable {
     onProgress: HTTPRequest.OnProgressCallback? = nil)
     -> Future<NSHTTPURLResponse>
   {
-    var request = manager.request(makeURLRequest(
+    var request = manager.request(HTTPRequest.makeURLRequest(
       url: url,
       method: method,
       headers: headers))
@@ -50,7 +44,7 @@ class HTTPRequestManager: HTTPRequestable {
       queue: QueueExecution.concurrentQueue,
       completionHandler: { _, response, _, error in
         if let res = response {
-          if self.isSuccessStatusCode(res.statusCode) {
+          if HTTPResponse.isSuccessStatusCode(res.statusCode) {
             promise.resolve(res)
           } else {
             promise.reject(Errors.urlRequestFailed(res))
@@ -83,7 +77,7 @@ class HTTPRequestManager: HTTPRequestable {
     onProgress: HTTPRequest.OnProgressCallback? = nil)
     -> Future<NSURL>
   {
-    var request = manager.download(makeURLRequest(url: url, headers: headers), destination: { _, _ in destination })
+    var request = manager.download(HTTPRequest.makeURLRequest(url: url, headers: headers), destination: { _, _ in destination })
 
     if let cred = credential {
       request = request.authenticate(usingCredential: cred)
@@ -99,7 +93,7 @@ class HTTPRequestManager: HTTPRequestable {
       queue: QueueExecution.concurrentQueue,
       completionHandler: { _, response, _, error in
         if let res = response {
-          if self.isSuccessStatusCode(res.statusCode) {
+          if HTTPResponse.isSuccessStatusCode(res.statusCode) {
             promise.resolve(destination)
           } else {
             promise.reject(Errors.urlRequestFailed(res))
@@ -113,28 +107,5 @@ class HTTPRequestManager: HTTPRequestable {
       })
 
     return promise
-  }
-
-  // MARK: Helpers
-
-  private func makeURLRequest(
-    url url: NSURL,
-    method: HTTPRequest.Method = .GET,
-    headers: HTTPRequest.Headers = [:])
-    -> NSURLRequest
-  {
-    let request = NSMutableURLRequest(URL: url)
-    request.HTTPMethod = method.rawValue
-    for (headerName, headerValue) in DefaultHeaders {
-      request.setValue(headerValue, forHTTPHeaderField: headerName)
-    }
-    for (headerName, headerValue) in headers {
-      request.setValue(headerValue, forHTTPHeaderField: headerName)
-    }
-    return request
-  }
-
-  private func isSuccessStatusCode(code: Int) -> Bool {
-    return SuccessStatusCodes.contains(code)
   }
 }
