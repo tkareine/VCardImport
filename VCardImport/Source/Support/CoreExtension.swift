@@ -36,7 +36,7 @@ extension SequenceType {
   }
 }
 
-private let WhiteSpaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+private let WhitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
 
 extension String {
   var capitalized: String {
@@ -49,7 +49,7 @@ extension String {
   }
 
   var trimmed: String {
-    return stringByTrimmingCharactersInSet(WhiteSpaceAndNewlineCharacterSet)
+    return stringByTrimmingCharactersInSet(WhitespaceAndNewlineCharacterSet)
   }
 }
 
