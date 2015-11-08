@@ -165,12 +165,14 @@ class VCardSourceStore {
       VCardSource(
         name: "Body Corp",
         connection: VCardSource.Connection(
-          url: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf"),
+          url: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf",
+          authenticationMethod: .PostForm),
         isEnabled: true),
       VCardSource(
         name: "Cold Temp",
         connection: VCardSource.Connection(
-          url: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf"),
+          url: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf",
+          authenticationMethod: .HTTPAuth),
         isEnabled: true)
     ]
   }

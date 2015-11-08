@@ -2,10 +2,13 @@ import Foundation
 
 class AppContext {
   let vcardSourceStore: VCardSourceStore
-  let httpRequests: HTTPRequestable
+  let urlDownloadFactory: URLDownloadFactory
 
-  init(vcardSourceStore: VCardSourceStore, httpRequestsWith httpRequests: HTTPRequestable) {
+  init(
+    vcardSourceStore: VCardSourceStore,
+    urlDownloadsWith urlDownloadFactory: URLDownloadFactory)
+  {
     self.vcardSourceStore = vcardSourceStore
-    self.httpRequests = httpRequests
+    self.urlDownloadFactory = urlDownloadFactory
   }
 }

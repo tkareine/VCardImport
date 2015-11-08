@@ -18,13 +18,13 @@ class VCardSourceDetailViewController: UIViewController {
 
   private let source: VCardSource
   private let isNewSource: Bool
-  private let httpRequests: HTTPRequestable
+  private let urlDownloadFactory: URLDownloadFactory
   private let doneCallback: VCardSource -> Void
   private let textFieldDelegate: ProxyTextFieldDelegate
 
   private var shouldCallDoneCallbackOnViewDisappear: Bool
   private var nameFieldValidator: TextFieldValidator<String>!
-  private var urlFieldValidator: TextFieldValidator<NSURL>!
+  private var urlFieldValidator: TextFieldValidator<String>!
 
   private var isValidCurrentName = false
   private var isValidCurrentURL = false
@@ -38,12 +38,12 @@ class VCardSourceDetailViewController: UIViewController {
   init(
     source: VCardSource,
     isNewSource: Bool,
-    httpRequestsWith httpRequests: HTTPRequestable,
+    downloadsWith urlDownloadFactory: URLDownloadFactory,
     doneCallback: VCardSource -> Void)
   {
     self.source = source
     self.isNewSource = isNewSource
-    self.httpRequests = httpRequests
+    self.urlDownloadFactory = urlDownloadFactory
     self.doneCallback = doneCallback
     textFieldDelegate = ProxyTextFieldDelegate()
 
@@ -191,6 +191,7 @@ class VCardSourceDetailViewController: UIViewController {
     if shouldCallDoneCallbackOnViewDisappear {
       let newConnection = VCardSource.Connection(
         url: urlField.text!,
+        authenticationMethod: .PostForm,
         username: usernameField.text!,
         password: passwordField.text!)
 
@@ -302,6 +303,7 @@ class VCardSourceDetailViewController: UIViewController {
           }
           let connection = VCardSource.Connection(
             url: url,
+            authenticationMethod: .PostForm,
             username: username,
             password: password)
           return s.checkIsReachableURL(connection)
@@ -354,7 +356,7 @@ class VCardSourceDetailViewController: UIViewController {
     isValidatingURLIndicator.startAnimating()
   }
 
-  private func endURLValidationProgress(result: Try<NSURL>) {
+  private func endURLValidationProgress(result: Try<String>) {
     switch result {
     case .Success:
       urlValidationLabel.text = "URL is valid"
@@ -379,21 +381,15 @@ class VCardSourceDetailViewController: UIViewController {
     }
   }
 
-  private func checkIsReachableURL(connection: VCardSource.Connection) -> Future<NSURL> {
-    if let url = stringToValidHTTPURL(connection.url) {
-      let credential = connection.toCredential()
-      return self.httpRequests
-        .head(url, headers: Config.Net.VCardHTTPHeaders, credential: credential)
-        .map { _ in url }
+  private func checkIsReachableURL(connection: VCardSource.Connection) -> Future<String> {
+    if connection.toURL().isValidHTTPURL {
+      return urlDownloadFactory
+        .makeDownloader(
+          connection: connection,
+          headers: Config.Net.VCardHTTPHeaders)
+        .requestFileHeaders()
+        .map { _ in connection.url }
     }
     return Future.failed(Errors.urlIsInvalid())
-  }
-
-  private func stringToValidHTTPURL(urlString: String) -> NSURL? {
-    if let url = NSURL(string: urlString.trimmed) where url.isValidHTTPURL {
-      return url
-    } else {
-      return nil
-    }
   }
 }

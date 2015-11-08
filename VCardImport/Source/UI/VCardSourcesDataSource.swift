@@ -62,7 +62,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     return vcardSourceStore.indexOf(source)
   }
 
-  // MARK: Table View Data Source Delegate
+  // MARK: UITableViewDataSource
 
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return vcardSourceStore.countAll

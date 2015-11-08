@@ -10,7 +10,7 @@ class VCardImporter {
   private let onSourceDownload: OnSourceDownloadCallback
   private let onSourceComplete: OnSourceCompleteCallback
   private let onComplete: OnCompleteCallback
-  private let httpRequests: HTTPRequestable
+  private let urlDownloadFactory: URLDownloadFactory
   private let callbackQueue: QueueExecution.Queue
 
   private let executionQueue = QueueExecution.makeSerialQueue("VCardImporter")
@@ -23,13 +23,13 @@ class VCardImporter {
     onSourceDownload: OnSourceDownloadCallback,
     onSourceComplete: OnSourceCompleteCallback,
     onComplete: OnCompleteCallback,
-    httpRequests: HTTPRequestable,
+    urlDownloadFactory: URLDownloadFactory,
     callbackQueue: QueueExecution.Queue)
   {
     self.onSourceDownload = onSourceDownload
     self.onSourceComplete = onSourceComplete
     self.onComplete = onComplete
-    self.httpRequests = httpRequests
+    self.urlDownloadFactory = urlDownloadFactory
     self.callbackQueue = callbackQueue
   }
 
@@ -147,12 +147,14 @@ class VCardImporter {
   }
 
   private func checkAndDownloadSource(source: VCardSource) -> Future<SourceImportResult> {
-    NSLog("vCard source %@: checking if remote has changed…", source.name)
-    return httpRequests
-      .head(
-        source.connection.toURL(),
-        headers: Config.Net.VCardHTTPHeaders,
-        credential: source.connection.toCredential(.ForSession))
+    NSLog("vCard source %@: checking if remote has changed, using %@ authentication method…",
+      source.name,
+      source.connection.authenticationMethod.rawValue)
+    let downloader = urlDownloadFactory.makeDownloader(
+      connection: source.connection,
+      headers: Config.Net.VCardHTTPHeaders)
+    return downloader
+      .requestFileHeaders()
       .flatMap { response in
         let newStamp = ModifiedHeaderStamp(headers: response.allHeaderFields)
 
@@ -164,24 +166,19 @@ class VCardImporter {
         }
 
         NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
-        return self.downloadSource(source).map { records in .Changed(records, newStamp) }
-      }
+        return self.downloadSource(source, downloadWith: downloader).map { records in .Changed(records, newStamp) }
+    }
   }
 
-  private func downloadSource(source: VCardSource) -> Future<[ABRecord]> {
+  private func downloadSource(source: VCardSource, downloadWith urlDownloader: URLDownloadable) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
     let onProgressCallback: HTTPRequest.OnProgressCallback = { progressBytes in
       QueueExecution.async(QueueExecution.mainQueue) {
         self.onSourceDownload(source, progressBytes)
       }
     }
-    let future = httpRequests
-      .download(
-        source.connection.toURL(),
-        to: fileURL,
-        headers: Config.Net.VCardHTTPHeaders,
-        credential: source.connection.toCredential(.ForSession),
-        onProgress: onProgressCallback)
+    let future = urlDownloader
+      .downloadFile(to: fileURL, onProgress: onProgressCallback)
       .flatMap(loadRecordsFromFile)
     future.onComplete { _ in Files.remove(fileURL) }
     return future
@@ -210,7 +207,7 @@ class VCardImporter {
     private var onSourceDownload: OnSourceDownloadCallback?
     private var onSourceComplete: OnSourceCompleteCallback?
     private var onComplete: OnCompleteCallback?
-    private var httpRequests: HTTPRequestable?
+    private var urlDownloadFactory: URLDownloadFactory?
     private var callbackQueue: QueueExecution.Queue?
 
     func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
@@ -228,8 +225,8 @@ class VCardImporter {
       return self
     }
 
-    func httpRequestsWith(httpRequests: HTTPRequestable) -> Builder {
-      self.httpRequests = httpRequests
+    func downloadsWith(urlDownloadFactory: URLDownloadFactory) -> Builder {
+      self.urlDownloadFactory = urlDownloadFactory
       return self
     }
 
@@ -243,7 +240,7 @@ class VCardImporter {
         onSourceDownload: self.onSourceDownload!,
         onSourceComplete: self.onSourceComplete!,
         onComplete: self.onComplete!,
-        httpRequests: self.httpRequests!,
+        urlDownloadFactory: self.urlDownloadFactory!,
         callbackQueue: self.callbackQueue!)
     }
   }

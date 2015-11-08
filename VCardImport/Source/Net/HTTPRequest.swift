@@ -20,17 +20,24 @@ private let DefaultHeaders = [
 
 struct HTTPRequest {
   typealias Headers = [String: String]
+  typealias Parameters = [String: AnyObject]
   typealias ProgressBytes = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)
   typealias OnProgressCallback = ProgressBytes -> Void
 
-  enum Method: String {
+  enum RequestMethod: String {
     case HEAD = "HEAD"
     case GET = "GET"
+    case POST = "POST"
+  }
+
+  enum AuthenticationMethod: String {
+    case HTTPAuth = "HTTPAuth"
+    case PostForm = "PostForm"
   }
 
   static func makeURLRequest(
-    url url: NSURL,
-    method: Method = .GET,
+    method method: RequestMethod = .GET,
+    url: NSURL,
     headers: Headers = [:])
     -> NSURLRequest
   {

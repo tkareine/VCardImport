@@ -278,7 +278,8 @@ class VCardImporterTests: XCTestCase {
     return VCardSource(
       name: name,
       connection: VCardSource.Connection(
-        url: "https://example.com/vcards/\(name).vcf"),
+        url: "https://example.com/vcards/\(name).vcf",
+        authenticationMethod: .HTTPAuth),
       isEnabled: true)
   }
 
@@ -289,7 +290,9 @@ class VCardImporterTests: XCTestCase {
     -> VCardImporter
   {
     return VCardImporter.builder()
-      .httpRequestsWith(FakeHTTPRequestManager(using: vcardFile))
+      .downloadsWith(URLDownloadFactory(httpSessionsWith: {
+        FakeHTTPSession(using: vcardFile)
+      }))
       .queueTo(QueueExecution.mainQueue)
       .onSourceDownload({ _, _ in () })
       .onSourceComplete(onSourceComplete)
@@ -297,15 +300,15 @@ class VCardImporterTests: XCTestCase {
       .build()
   }
 
-  private class FakeHTTPRequestManager: HTTPRequestable {
-    let vcardFile: String
+  private class FakeHTTPSession: HTTPRequestable {
+    private let vcardFile: String
 
     init(using vcardFile: String) {
       self.vcardFile = vcardFile
     }
 
     func request(
-      method: HTTPRequest.Method,
+      method: HTTPRequest.RequestMethod,
       url: NSURL,
       headers: HTTPRequest.Headers,
       credential: NSURLCredential?,
@@ -326,6 +329,15 @@ class VCardImporterTests: XCTestCase {
       -> Future<NSHTTPURLResponse>
     {
       return request(.HEAD, url: url, headers: headers, credential: credential)
+    }
+
+    func post(
+      url: NSURL,
+      headers: HTTPRequest.Headers,
+      parameters: HTTPRequest.Parameters)
+      -> Future<NSHTTPURLResponse>
+    {
+      fatalError("not implemented")
     }
 
     func download(

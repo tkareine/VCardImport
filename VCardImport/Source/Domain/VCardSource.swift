@@ -48,6 +48,7 @@ struct VCardSource {
   func with(username username: String, password: String) -> VCardSource {
     let connection = Connection(
       url: self.connection.url,
+      authenticationMethod: self.connection.authenticationMethod,
       username: username,
       password: password)
     return VCardSource(
@@ -82,29 +83,28 @@ struct VCardSource {
 
   struct Connection {
     let url: String
+    let authenticationMethod: HTTPRequest.AuthenticationMethod
     let username: String
     let password: String
 
-    init(url: String, username: String = "", password: String = "") {
+    init(
+      url: String,
+      authenticationMethod: HTTPRequest.AuthenticationMethod,
+      username: String = "",
+      password: String = "")
+    {
       self.url = url.trimmed  // needed by `toURL`
+      self.authenticationMethod = authenticationMethod
       self.username = username
       self.password = password
     }
 
     static func empty() -> Connection {
-      return self.init(url: "")
+      return self.init(url: "", authenticationMethod: .HTTPAuth)
     }
 
     func toURL() -> NSURL {
       return NSURL(string: url)!  // guaranteed by trimming in initializer
-    }
-
-    func toCredential(persistence: NSURLCredentialPersistence = .None) -> NSURLCredential? {
-      if !username.isEmpty {
-        return NSURLCredential(user: username, password: password, persistence: persistence)
-      } else {
-        return nil
-      }
     }
   }
 
@@ -147,11 +147,16 @@ extension VCardSource: DictionaryConvertible {
 
 extension VCardSource.Connection: DictionaryConvertible {
   func toDictionary() -> [String: AnyObject] {
-    return ["url": url]
+    return [
+      "url": url,
+      "authenticationMethod": authenticationMethod.rawValue
+    ]
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    return self.init(url: dictionary["url"] as! String)
+    return self.init(
+      url: dictionary["url"] as! String,
+      authenticationMethod: HTTPRequest.AuthenticationMethod(rawValue: dictionary["authenticationMethod"] as! String)!)
   }
 }
 
