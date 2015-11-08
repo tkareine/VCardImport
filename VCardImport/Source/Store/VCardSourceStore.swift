@@ -1,5 +1,7 @@
 import Foundation
 
+private let CurrentStoreVersion = 2
+
 class VCardSourceStore {
   private let keychainItem: KeychainItemWrapper
   private var store: InsertionOrderDictionary<String, VCardSource> = InsertionOrderDictionary()
@@ -52,24 +54,32 @@ class VCardSourceStore {
   }
 
   func save() {
-    saveNonSensitiveDataToUserDefaults()
+    saveNonSensitiveDataToUserDefaults(NSUserDefaults.standardUserDefaults())
     saveSensitiveDataToKeychain()
   }
 
   func load() {
-    if let sources = loadNonSensitiveDataFromUserDefaults() {
-      resetFrom(loadSensitiveDataFromKeychain(sources))
+    let userDefaults = NSUserDefaults.standardUserDefaults()
+    let previousStoreVersion = userDefaults.integerForKey(Config.Persistence.VersionKey)
+    let needsMigration = previousStoreVersion > 0 && previousStoreVersion < CurrentStoreVersion
+    let sources = needsMigration
+      ? migrateNonSensitiveDataFromUserDefaults(userDefaults, previousVersion: previousStoreVersion)
+      : loadNonSensitiveDataFromUserDefaults(userDefaults)
+    resetFrom(loadSensitiveDataFromKeychain(sources))
+    if needsMigration {
+      saveNonSensitiveDataToUserDefaults(userDefaults)
+      NSLog("Migrated vCard sources from version %d to %d", previousStoreVersion, CurrentStoreVersion)
     }
   }
 
   // MARK: Helpers
 
-  private func saveNonSensitiveDataToUserDefaults() {
+  private func saveNonSensitiveDataToUserDefaults(userDefaults: NSUserDefaults) {
+    // attempt to serialize vcard sources before persisting them
     let sourcesData = JSONSerialization.encode(store.values.map { $0.toDictionary() })
-    let defaults = NSUserDefaults.standardUserDefaults()
-    defaults.setInteger(1, forKey: Config.Persistence.VersionKey)
-    defaults.setObject(sourcesData, forKey: Config.Persistence.VCardSourcesKey)
-    defaults.synchronize()
+    userDefaults.setInteger(CurrentStoreVersion, forKey: Config.Persistence.VersionKey)
+    userDefaults.setObject(sourcesData, forKey: Config.Persistence.VCardSourcesKey)
+    userDefaults.synchronize()
   }
 
   private func saveSensitiveDataToKeychain() {
@@ -95,18 +105,33 @@ class VCardSourceStore {
     keychainItem.setObject(credsData, forKey: kSecAttrGeneric)
   }
 
-  private func loadNonSensitiveDataFromUserDefaults() -> [VCardSource]? {
-    if let sourcesData = NSUserDefaults
-      .standardUserDefaults()
-      .objectForKey(Config.Persistence.VCardSourcesKey) as? NSData
-    {
+  private func migrateNonSensitiveDataFromUserDefaults(
+    userDefaults: NSUserDefaults,
+    previousVersion: Int)
+    -> [VCardSource]
+  {
+    if let sourcesData = userDefaults.objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
+      let oldSourcesDicts = JSONSerialization.decode(sourcesData) as! [[String: AnyObject]]
+      let newSourcesDicts = VCardSourceStoreMigrations.migrateNonSensitiveData(
+        oldSourcesDicts,
+        previousVersion: previousVersion)
+      return newSourcesDicts.map { VCardSource.fromDictionary($0) }
+    } else {
+      return []
+    }
+  }
+
+  private func loadNonSensitiveDataFromUserDefaults(userDefaults: NSUserDefaults)
+    -> [VCardSource]
+  {
+    if let sourcesData = userDefaults.objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
       return (JSONSerialization.decode(sourcesData) as! [[String: AnyObject]])
         .map { VCardSource.fromDictionary($0) }
     } else {
 #if DEFAULT_SOURCES
       return makeDefaultSources()
 #else
-      return nil
+      return []
 #endif
     }
   }
