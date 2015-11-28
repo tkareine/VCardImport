@@ -2,12 +2,12 @@ import UIKit
 
 class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   private let vcardSourceStore: VCardSourceStore
+  private let cellReuseIdentifier: String
 
-  init(vcardSourceStore: VCardSourceStore) {
+  init(vcardSourceStore: VCardSourceStore, cellReuseIdentifier: String) {
     self.vcardSourceStore = vcardSourceStore
+    self.cellReuseIdentifier = cellReuseIdentifier
   }
-
-  // MARK: Our Data Source API
 
   var hasVCardSources: Bool {
     return !vcardSourceStore.isEmpty
@@ -74,7 +74,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
     -> UITableViewCell
   {
     let cell = tableView.dequeueReusableCellWithIdentifier(
-      Config.UI.TableCellReuseIdentifier, forIndexPath: indexPath) as! VCardSourceCell
+      cellReuseIdentifier, forIndexPath: indexPath) as! VCardSourceCell
     cell.setContents(vcardSourceStore[indexPath.row])
     cell.setContentLeadingSpace(tableView.separatorInset.left)
     return cell

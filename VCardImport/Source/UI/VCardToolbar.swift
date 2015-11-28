@@ -8,8 +8,7 @@ private func makeButton(
   let button = UIButton(type: .System)
   button.setTitle(title, forState: .Normal)
   if let label = button.titleLabel {
-    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-    label.font = bodyFont.fontWithSize(17)
+    label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).fontWithSize(17)
   }
   button.contentHorizontalAlignment = labelAlignment
   return button
@@ -46,8 +45,6 @@ class VCardToolbar: UIView {
 
   private var border: CALayer!
 
-  // MARK: View Life Cycle
-
   override init(frame: CGRect) {
     super.init(frame: frame)
 
@@ -70,10 +67,8 @@ class VCardToolbar: UIView {
   }
 
   required init?(coder decoder: NSCoder) {
-    fatalError("not implemented")
+    fatalError("init(coder:) has not been implemented")
   }
-
-  // MARK: Public API
 
   func beginProgress(text: String) {
     progressLabel.text = text
@@ -109,8 +104,6 @@ class VCardToolbar: UIView {
     progressLabel.text = text
     progressView.setProgress(progress, animated: true)
   }
-
-  // MARK: Laying out Subviews
 
   override func layoutSubviews() {
     super.layoutSubviews()

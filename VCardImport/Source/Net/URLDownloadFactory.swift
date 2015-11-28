@@ -25,12 +25,11 @@ class URLDownloadFactory {
     case .PostForm:
       return PostFormURLDownloader(
         httpRequestsWith: makeHTTPSession(),
-        baseURL: connection.toURL(),
-        loginURLPath: "/login",
-        vcardURLPath:  "/vcards",
-        headers: headers,
+        vcardURL: connection.toURL(),
+        loginURL: connection.loginURLasURL(),
         username: connection.username,
-        password: connection.password)
+        password: connection.password,
+        headers: headers)
     }
   }
 

@@ -3,27 +3,26 @@ import MiniFuture
 
 class PostFormURLDownloader: URLDownloadable {
   private let httpRequests: HTTPRequestable
-  private let loginURL: NSURL
   private let vcardURL: NSURL
-  private let headers: HTTPRequest.Headers
+  private let loginURL: NSURL
   private let username: String
   private let password: String
+  private let headers: HTTPRequest.Headers
 
   init(
     httpRequestsWith httpRequests: HTTPRequestable,
-    baseURL: NSURL,
-    loginURLPath: String,
-    vcardURLPath: String,
-    headers: HTTPRequest.Headers,
+    vcardURL: NSURL,
+    loginURL: NSURL,
     username: String,
-    password: String)
+    password: String,
+    headers: HTTPRequest.Headers)
   {
     self.httpRequests = httpRequests
-    self.loginURL = NSURL(string: loginURLPath, relativeToURL: baseURL)!.absoluteURL
-    self.vcardURL = NSURL(string: vcardURLPath, relativeToURL: baseURL)!.absoluteURL
-    self.headers = headers
+    self.vcardURL = vcardURL
+    self.loginURL = loginURL
     self.username = username
     self.password = password
+    self.headers = headers
   }
 
   func requestFileHeaders() -> Future<NSHTTPURLResponse> {

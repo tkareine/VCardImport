@@ -50,7 +50,8 @@ struct VCardSource {
       url: self.connection.url,
       authenticationMethod: self.connection.authenticationMethod,
       username: username,
-      password: password)
+      password: password,
+      loginURL: self.connection.loginURL)
     return VCardSource(
       name: name,
       connection: connection,
@@ -86,17 +87,26 @@ struct VCardSource {
     let authenticationMethod: HTTPRequest.AuthenticationMethod
     let username: String
     let password: String
+    let loginURL: String?
 
+    /**
+     - precondition: if `authenticationMethod` parameter is `.PostForm`,
+       `loginURL` parameter must be defined.
+     */
     init(
       url: String,
       authenticationMethod: HTTPRequest.AuthenticationMethod,
       username: String = "",
-      password: String = "")
+      password: String = "",
+      loginURL: String? = nil)
     {
       self.url = url.trimmed  // needed by `toURL`
       self.authenticationMethod = authenticationMethod
       self.username = username
       self.password = password
+      self.loginURL = authenticationMethod == .PostForm
+        ? loginURL!.trimmed  // needed by `loginURLasURL`
+        : nil
     }
 
     static func empty() -> Connection {
@@ -105,6 +115,11 @@ struct VCardSource {
 
     func toURL() -> NSURL {
       return NSURL(string: url)!  // guaranteed by trimming in initializer
+    }
+
+    /// - precondition: `authenticationMethod` must be `.PostForm`
+    func loginURLasURL() -> NSURL {
+      return NSURL(string: loginURL!)!  // guaranteed by trimming in initializer
     }
   }
 
@@ -147,16 +162,31 @@ extension VCardSource: DictionaryConvertible {
 
 extension VCardSource.Connection: DictionaryConvertible {
   func toDictionary() -> [String: AnyObject] {
-    return [
+    var dict = [
       "url": url,
       "authenticationMethod": authenticationMethod.rawValue
     ]
+    if let url = loginURL {
+      dict["loginURL"] = url
+    }
+    return dict
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
+    let url = dictionary["url"] as! String
+    let authenticationMethod = HTTPRequest.AuthenticationMethod(rawValue: dictionary["authenticationMethod"] as! String)!
+
+    let loginURL: String?
+    if let url = dictionary["loginURL"] as? String {
+      loginURL = url
+    } else {
+      loginURL = nil
+    }
+
     return self.init(
-      url: dictionary["url"] as! String,
-      authenticationMethod: HTTPRequest.AuthenticationMethod(rawValue: dictionary["authenticationMethod"] as! String)!)
+      url: url,
+      authenticationMethod: authenticationMethod,
+      loginURL: loginURL)
   }
 }
 

@@ -33,8 +33,6 @@ class VCardSourceDetailViewController: UIViewController {
   private var contentView: UIView!
   private var focusedTextField: UITextField!
 
-  // MARK: Controller Life Cycle
-
   init(
     source: VCardSource,
     isNewSource: Bool,
@@ -59,7 +57,7 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   required init?(coder decoder: NSCoder) {
-    fatalError("not implemented")
+    fatalError("init(coder:) has not been implemented")
   }
 
   // MARK: View Life Cycle
@@ -257,18 +255,18 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   func resetFontSizes() {
-    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-    noticeLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 4)
-    nameLabel.font = bodyFont
-    nameField.font = bodyFont
-    urlLabel.font = bodyFont
-    urlField.font = bodyFont
-    urlValidationLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 2)
-    usernameLabel.font = bodyFont
-    usernameField.font = bodyFont
-    passwordLabel.font = bodyFont
-    passwordField.font = bodyFont
-    isEnabledLabel.font = bodyFont
+    let font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    noticeLabel.font = font.fontWithSize(font.pointSize - 4)
+    nameLabel.font = font
+    nameField.font = font
+    urlLabel.font = font
+    urlField.font = font
+    urlValidationLabel.font = font.fontWithSize(font.pointSize - 2)
+    usernameLabel.font = font
+    usernameField.font = font
+    passwordLabel.font = font
+    passwordField.font = font
+    isEnabledLabel.font = font
   }
 
   // MARK: Helpers

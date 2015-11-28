@@ -33,6 +33,17 @@ struct HTTPRequest {
   enum AuthenticationMethod: String {
     case HTTPAuth = "HTTPAuth"
     case PostForm = "PostForm"
+
+    static let allValues = [HTTPAuth, PostForm]
+
+    var usageDescription: String {
+      switch self {
+      case .HTTPAuth:
+        return "HTTP Basic Auth"
+      case .PostForm:
+        return "Post Form"
+      }
+    }
   }
 
   static func makeURLRequest(

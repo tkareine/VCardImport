@@ -8,8 +8,6 @@ class VCardSourceCell: UITableViewCell {
   @IBOutlet weak var headerLabelLeadingConstraint: NSLayoutConstraint!
   @IBOutlet weak var descriptionLabelLeadingConstraint: NSLayoutConstraint!
 
-  // MARK: View Life Cycle
-
   override func awakeFromNib() {
     NSNotificationCenter.defaultCenter().addObserver(
       self,
@@ -53,9 +51,9 @@ class VCardSourceCell: UITableViewCell {
   // MARK: Notification Handlers
 
   func resetFontSizes() {
-    let bodyFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-    headerLabel.font = bodyFont
-    iconLabel.font = bodyFont
-    descriptionLabel.font = UIFont.systemFontOfSize(bodyFont.pointSize - 4)
+    let font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    headerLabel.font = font
+    iconLabel.font = font
+    descriptionLabel.font = font.fontWithSize(font.pointSize - 4)
   }
 }

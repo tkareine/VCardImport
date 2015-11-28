@@ -54,7 +54,6 @@ struct Config {
   struct UI {
     static let AnimationDurationFadeMessage: NSTimeInterval = 0.5
     static let AnimationDelayFadeOutMessage: NSTimeInterval = 5
-    static let TableCellReuseIdentifier = "TableCellReuseIdentifier"
     static let TableCellHeaderTextColor = UIColor.blackColor()
     static let TableCellDescriptionTextColor = UIColor(white: 0.3, alpha: 1)
     static let TableCellDisabledTextColor = UIColor.grayColor()
@@ -66,5 +65,7 @@ struct Config {
     static let ValidationBorderWidth: CGFloat = 2
     static let ValidationCornerRadius: CGFloat = 5
     static let ValidationThrottleInMS = 300
+    static let VCardNewSourceHeader = "Add vCard Source"
+    static let VCardSourceNoteText = "Specify vCard file URL at remote server you trust. Prefer secure connections with https URL. All contacts in the vCard file will be considered for importing."
   }
 }

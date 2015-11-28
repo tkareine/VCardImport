@@ -1,5 +1,7 @@
 import UIKit
 
+private let CellIdentifier = "VCardSourceCell"
+
 class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private let dataSource: VCardSourcesDataSource
   private let urlDownloadFactory: URLDownloadFactory
@@ -11,10 +13,10 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private var vcardImporter: VCardImporter!
   private var vcardImportProgress: VCardImportProgress!
 
-  // MARK: View Controller Life Cycle
-
   init(appContext: AppContext) {
-    dataSource = VCardSourcesDataSource(vcardSourceStore: appContext.vcardSourceStore)
+    dataSource = VCardSourcesDataSource(
+      vcardSourceStore: appContext.vcardSourceStore,
+      cellReuseIdentifier: CellIdentifier)
     urlDownloadFactory = appContext.urlDownloadFactory
 
     super.init(nibName: nil, bundle: nil)
@@ -56,10 +58,8 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   required init?(coder decoder: NSCoder) {
-    fatalError("not implemented")
+    fatalError("init(coder:) has not been implemented")
   }
-
-  // MARK: View Life Cycle
 
   override func loadView() {
     func makeToolbar() -> VCardToolbar {
@@ -77,8 +77,8 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       tv.rowHeight = UITableViewAutomaticDimension
       tv.dataSource = dataSource
       tv.delegate = self
-      let cellNib = UINib(nibName: "VCardSourceCell", bundle: nil)
-      tv.registerNib(cellNib, forCellReuseIdentifier: Config.UI.TableCellReuseIdentifier)
+      let cellNib = UINib(nibName: CellIdentifier, bundle: nil)
+      tv.registerNib(cellNib, forCellReuseIdentifier: CellIdentifier)
       return tv
     }
 
@@ -147,10 +147,10 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     didSelectRowAtIndexPath indexPath: NSIndexPath)
   {
     let oldSource = dataSource.vCardSourceForRow(indexPath.row)
-    let vc = VCardSourceDetailViewController(
+    let vc = VCardSourceDetailViewController2(
       source: oldSource,
       isNewSource: false,
-      downloadsWith: urlDownloadFactory) { newSource in
+      downloadsWith: urlDownloadFactory) { [unowned self] newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
       }
@@ -166,10 +166,10 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   func addVCardSource(sender: AnyObject) {
-    let vc = VCardSourceDetailViewController(
+    let vc = VCardSourceDetailViewController2(
       source: VCardSource.empty(),
       isNewSource: true,
-      downloadsWith: urlDownloadFactory) { newSource in
+      downloadsWith: urlDownloadFactory) { [unowned self] newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadData()
       }
