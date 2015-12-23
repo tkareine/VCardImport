@@ -38,8 +38,6 @@ struct Config {
   static let OS = NSProcessInfo.processInfo().operatingSystemVersionString
 
   struct Net {
-    static let GenericErrorDescription = "Cannot reach URL"
-
     static let VCardHTTPHeaders = [
       "Accept": "text/vcard,text/x-vcard,text/directory;profile=vCard;q=0.9,text/directory;q=0.8,*/*;q=0.7"
     ]

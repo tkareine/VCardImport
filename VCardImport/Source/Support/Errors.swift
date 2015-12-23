@@ -128,6 +128,8 @@ struct Errors {
     case NSURLErrorTimedOut,
          NSURLErrorUserCancelledAuthentication:
       return "Response timed out"
+    case NSURLErrorUnsupportedURL:
+      return "Invalid URL"
     case NSURLErrorCancelled:
       return "Cancelled (authentication rejected?)"
     case NSURLErrorNotConnectedToInternet,
@@ -142,7 +144,7 @@ struct Errors {
          NSURLErrorServerCertificateNotYetValid:
       return "Invalid server certificate"
     default:
-      return Config.Net.GenericErrorDescription
+      return "Cannot reach URL"
     }
   }
 }
