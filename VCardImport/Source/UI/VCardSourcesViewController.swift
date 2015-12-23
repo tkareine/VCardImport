@@ -19,18 +19,18 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     super.init(nibName: nil, bundle: nil)
 
-    vcardImporter = VCardImporter.builder()
-      .downloadsWith(urlDownloadFactory)
-      .queueTo(QueueExecution.mainQueue)
-      .onSourceDownload { [weak self] source, progress in
+    vcardImporter = VCardImporter(
+      downloadsWith: urlDownloadFactory,
+      queueTo: QueueExecution.mainQueue,
+      sourceDownloadHandler: { [weak self] source, progress in
         if let s = self {
           if progress.totalBytesExpected > 0 {
             let ratio = Float(progress.bytes) / Float(progress.totalBytesExpected)
             s.inProgress(.Downloading(completionStepRatio: ratio), forSource: source)
           }
         }
-      }
-      .onSourceComplete { [weak self] source, recordDiff, modifiedHeaderStamp, error in
+      },
+      sourceCompletionHandler: { [weak self] source, recordDiff, modifiedHeaderStamp, error in
         if let s = self {
           if let err = error {
             s.dataSource.setVCardSourceErrorStatus(source, error: err)
@@ -45,15 +45,14 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           s.inProgress(.Completed, forSource: source)
           s.reloadTableViewSourceRow(source)
         }
-      }
-      .onComplete { error in
+      },
+      completionHandler: { error in
         if let err = error {
           self.presentAlertForError(err)
         }
         self.endProgress()
         self.refreshButtonsEnabledStates()
-      }
-      .build()
+      })
   }
 
   required init?(coder decoder: NSCoder) {

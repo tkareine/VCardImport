@@ -15,16 +15,12 @@ class VCardImporter {
 
   private let executionQueue = QueueExecution.makeSerialQueue("VCardImporter")
 
-  class func builder() -> Builder {
-    return Builder()
-  }
-
-  private init(
-    onSourceDownload: OnSourceDownloadCallback,
-    onSourceComplete: OnSourceCompleteCallback,
-    onComplete: OnCompleteCallback,
-    urlDownloadFactory: URLDownloadFactory,
-    callbackQueue: QueueExecution.Queue)
+  init(
+    downloadsWith urlDownloadFactory: URLDownloadFactory,
+    queueTo callbackQueue: QueueExecution.Queue,
+    sourceDownloadHandler onSourceDownload: OnSourceDownloadCallback,
+    sourceCompletionHandler onSourceComplete: OnSourceCompleteCallback,
+    completionHandler onComplete: OnCompleteCallback)
   {
     self.onSourceDownload = onSourceDownload
     self.onSourceComplete = onSourceComplete
@@ -201,47 +197,5 @@ class VCardImporter {
   private enum SourceImportResult {
     case Unchanged
     case Changed([ABRecord], ModifiedHeaderStamp?)
-  }
-
-  class Builder {
-    private var onSourceDownload: OnSourceDownloadCallback?
-    private var onSourceComplete: OnSourceCompleteCallback?
-    private var onComplete: OnCompleteCallback?
-    private var urlDownloadFactory: URLDownloadFactory?
-    private var callbackQueue: QueueExecution.Queue?
-
-    func onSourceDownload(callback: OnSourceDownloadCallback) -> Builder {
-      self.onSourceDownload = callback
-      return self
-    }
-
-    func onSourceComplete(callback: OnSourceCompleteCallback) -> Builder {
-      self.onSourceComplete = callback
-      return self
-    }
-
-    func onComplete(callback: OnCompleteCallback) -> Builder {
-      self.onComplete = callback
-      return self
-    }
-
-    func downloadsWith(urlDownloadFactory: URLDownloadFactory) -> Builder {
-      self.urlDownloadFactory = urlDownloadFactory
-      return self
-    }
-
-    func queueTo(callbackQueue: QueueExecution.Queue) -> Builder {
-      self.callbackQueue = callbackQueue
-      return self
-    }
-
-    func build() -> VCardImporter {
-      return VCardImporter(
-        onSourceDownload: self.onSourceDownload!,
-        onSourceComplete: self.onSourceComplete!,
-        onComplete: self.onComplete!,
-        urlDownloadFactory: self.urlDownloadFactory!,
-        callbackQueue: self.callbackQueue!)
-    }
   }
 }

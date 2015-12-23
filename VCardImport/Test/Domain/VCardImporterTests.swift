@@ -289,15 +289,14 @@ class VCardImporterTests: XCTestCase {
     onComplete: VCardImporter.OnCompleteCallback)
     -> VCardImporter
   {
-    return VCardImporter.builder()
-      .downloadsWith(URLDownloadFactory(httpSessionsWith: {
+    return VCardImporter(
+      downloadsWith: URLDownloadFactory(httpSessionsWith: {
         FakeHTTPSession(using: vcardFile)
-      }))
-      .queueTo(QueueExecution.mainQueue)
-      .onSourceDownload({ _, _ in () })
-      .onSourceComplete(onSourceComplete)
-      .onComplete(onComplete)
-      .build()
+      }),
+      queueTo: QueueExecution.mainQueue,
+      sourceDownloadHandler: { _, _ in () },
+      sourceCompletionHandler: onSourceComplete,
+      completionHandler: onComplete)
   }
 
   private class FakeHTTPSession: HTTPRequestable {
