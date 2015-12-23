@@ -10,6 +10,10 @@ struct VCardSourceStoreMigrations {
       sources = sources.map(vcardSourceWithAuthenticationMethod)
     }
 
+    if previousVersion < 3 {
+      sources = sources.map(vcardSourceWithRenamedVCardURLKey)
+    }
+
     return sources
   }
 
@@ -19,6 +23,16 @@ struct VCardSourceStoreMigrations {
   {
     var connection = sourceDict["connection"] as! [String: AnyObject]
     connection["authenticationMethod"] = HTTPRequest.AuthenticationMethod.HTTPAuth.rawValue
+    sourceDict["connection"] = connection
+    return sourceDict
+  }
+
+  private static func vcardSourceWithRenamedVCardURLKey(
+    var sourceDict: [String: AnyObject])
+    -> [String: AnyObject]
+  {
+    var connection = sourceDict["connection"] as! [String: AnyObject]
+    connection["vcardURL"] = connection.removeValueForKey("url")
     sourceDict["connection"] = connection
     return sourceDict
   }

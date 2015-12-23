@@ -16,7 +16,7 @@ class URLDownloadFactory {
     case .HTTPAuth:
       return HTTPAuthURLDownloader(
         httpRequestsWith: makeHTTPSession(),
-        url: connection.toURL(),
+        url: connection.vcardURLasURL(),
         headers: headers,
         credential: makeCredential(
           username: connection.username,
@@ -25,7 +25,7 @@ class URLDownloadFactory {
     case .PostForm:
       return PostFormURLDownloader(
         httpRequestsWith: makeHTTPSession(),
-        vcardURL: connection.toURL(),
+        vcardURL: connection.vcardURLasURL(),
         loginURL: connection.loginURLasURL(),
         username: connection.username,
         password: connection.password,

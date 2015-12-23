@@ -1,13 +1,15 @@
 import XCTest
 
 class VCardSourceStoreMigrationTests: XCTestCase {
-  func testMigratesAuthenticationMethodForVersion1() {
-    var oldSourceDict = VCardSource.empty().toDictionary()
-    var oldConnectionDict = oldSourceDict["connection"] as! [String: AnyObject]
-    oldConnectionDict.removeValueForKey("authenticationMethod")
-    oldSourceDict["connection"] = oldConnectionDict
-
-    XCTAssertNil(oldSourceDict["connection"]!["authenticationMethod"])
+  func testMigratesAuthenticationMethodForVersion2() {
+    let oldSourceDict: [String: AnyObject] = [
+      "name": "Test",
+      "connection": [
+        "url": "https://example.com/vcards"
+      ],
+      "isEnabled": true,
+      "id": NSUUID().UUIDString
+    ]
 
     let newSourceDicts = VCardSourceStoreMigrations.migrateNonSensitiveData(
       [oldSourceDict],
@@ -16,5 +18,25 @@ class VCardSourceStoreMigrationTests: XCTestCase {
     let newSource = VCardSource.fromDictionary(newSourceDicts.first!)
 
     XCTAssertEqual(newSource.connection.authenticationMethod, HTTPRequest.AuthenticationMethod.HTTPAuth)
+  }
+
+  func testMigratesRenamedVCardURLKeyToVersion3() {
+    let oldSourceDict: [String: AnyObject] = [
+      "name": "Test",
+      "connection": [
+        "url": "https://example.com/vcards",
+        "authenticationMethod": "HTTPAuth"
+      ],
+      "isEnabled": true,
+      "id": NSUUID().UUIDString
+    ]
+
+    let newSourceDicts = VCardSourceStoreMigrations.migrateNonSensitiveData(
+      [oldSourceDict],
+      previousVersion: 2)
+
+    let newSource = VCardSource.fromDictionary(newSourceDicts.first!)
+
+    XCTAssertEqual(newSource.connection.vcardURL, "https://example.com/vcards")
   }
 }

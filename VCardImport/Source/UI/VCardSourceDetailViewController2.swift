@@ -75,7 +75,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       autocorrectionType: .Yes,
       spellCheckingType: .Default)
 
-    fileURLCell = LabeledTextFieldCell(label: "vCard URL", value: source.connection.url)
+    fileURLCell = LabeledTextFieldCell(label: "vCard URL", value: source.connection.vcardURL)
     loginURLCell = LabeledTextFieldCell(label: "Login URL", value: source.connection.loginURL ?? "")
 
     authMethodCell = makeAuthMethodCell()
@@ -129,7 +129,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       let authenticationMethod = authMethodCell.selection.data
 
       let newConnection = VCardSource.Connection(
-        url: fileURLCell.currentText,
+        vcardURL: fileURLCell.currentText,
         authenticationMethod: authenticationMethod,
         username: usernameCell.currentText,
         password: passwordCell.currentText,

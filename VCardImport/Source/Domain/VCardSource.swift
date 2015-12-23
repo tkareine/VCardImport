@@ -35,7 +35,7 @@ struct VCardSource {
     -> VCardSource
   {
     // if url has changed, ditch last import result
-    let stamp = connection.url == self.connection.url ? lastImportResult : nil
+    let stamp = connection.vcardURL == self.connection.vcardURL ? lastImportResult : nil
 
     return VCardSource(
       name: name,
@@ -47,7 +47,7 @@ struct VCardSource {
 
   func with(username username: String, password: String) -> VCardSource {
     let connection = Connection(
-      url: self.connection.url,
+      vcardURL: self.connection.vcardURL,
       authenticationMethod: self.connection.authenticationMethod,
       username: username,
       password: password,
@@ -83,7 +83,7 @@ struct VCardSource {
   }
 
   struct Connection {
-    let url: String
+    let vcardURL: String
     let authenticationMethod: HTTPRequest.AuthenticationMethod
     let username: String
     let password: String
@@ -94,13 +94,13 @@ struct VCardSource {
        `loginURL` parameter must be defined.
      */
     init(
-      url: String,
+      vcardURL: String,
       authenticationMethod: HTTPRequest.AuthenticationMethod,
       username: String = "",
       password: String = "",
       loginURL: String? = nil)
     {
-      self.url = url.trimmed  // needed by `toURL`
+      self.vcardURL = vcardURL.trimmed  // needed by `vcardURLasURL`
       self.authenticationMethod = authenticationMethod
       self.username = username
       self.password = password
@@ -110,11 +110,11 @@ struct VCardSource {
     }
 
     static func empty() -> Connection {
-      return self.init(url: "", authenticationMethod: .HTTPAuth)
+      return self.init(vcardURL: "", authenticationMethod: .HTTPAuth)
     }
 
-    func toURL() -> NSURL {
-      return NSURL(string: url)!  // guaranteed by trimming in initializer
+    func vcardURLasURL() -> NSURL {
+      return NSURL(string: vcardURL)!  // guaranteed by trimming in initializer
     }
 
     /// - precondition: `authenticationMethod` must be `.PostForm`
@@ -163,7 +163,7 @@ extension VCardSource: DictionaryConvertible {
 extension VCardSource.Connection: DictionaryConvertible {
   func toDictionary() -> [String: AnyObject] {
     var dict = [
-      "url": url,
+      "vcardURL": vcardURL,
       "authenticationMethod": authenticationMethod.rawValue
     ]
     if let url = loginURL {
@@ -173,7 +173,7 @@ extension VCardSource.Connection: DictionaryConvertible {
   }
 
   static func fromDictionary(dictionary: [String: AnyObject]) -> VCardSource.Connection {
-    let url = dictionary["url"] as! String
+    let vcardURL = dictionary["vcardURL"] as! String
     let authenticationMethod = HTTPRequest.AuthenticationMethod(rawValue: dictionary["authenticationMethod"] as! String)!
 
     let loginURL: String?
@@ -184,7 +184,7 @@ extension VCardSource.Connection: DictionaryConvertible {
     }
 
     return self.init(
-      url: url,
+      vcardURL: vcardURL,
       authenticationMethod: authenticationMethod,
       loginURL: loginURL)
   }

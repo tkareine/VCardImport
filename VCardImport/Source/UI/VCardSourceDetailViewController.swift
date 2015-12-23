@@ -85,7 +85,7 @@ class VCardSourceDetailViewController: UIViewController {
   override func viewDidLoad() {
     func setupSubviews() {
       nameField.text = source.name
-      urlField.text = source.connection.url
+      urlField.text = source.connection.vcardURL
       isEnabledSwitch.on = source.isEnabled
       urlValidationLabel.alpha = 0
       isValidatingURLIndicator.hidesWhenStopped = true
@@ -188,7 +188,7 @@ class VCardSourceDetailViewController: UIViewController {
 
     if shouldCallDoneCallbackOnViewDisappear {
       let newConnection = VCardSource.Connection(
-        url: urlField.text!,
+        vcardURL: urlField.text!,
         authenticationMethod: .PostForm,
         username: usernameField.text!,
         password: passwordField.text!)
@@ -300,7 +300,7 @@ class VCardSourceDetailViewController: UIViewController {
             password = s.passwordField.text!
           }
           let connection = VCardSource.Connection(
-            url: url,
+            vcardURL: url,
             authenticationMethod: .PostForm,
             username: username,
             password: password)
@@ -380,13 +380,13 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   private func checkIsReachableURL(connection: VCardSource.Connection) -> Future<String> {
-    if connection.toURL().isValidHTTPURL {
+    if connection.vcardURLasURL().isValidHTTPURL {
       return urlDownloadFactory
         .makeDownloader(
           connection: connection,
           headers: Config.Net.VCardHTTPHeaders)
         .requestFileHeaders()
-        .map { _ in connection.url }
+        .map { _ in connection.vcardURL }
     }
     return Future.failed(Errors.urlIsInvalid())
   }
