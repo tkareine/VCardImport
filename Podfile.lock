@@ -1,13 +1,13 @@
 PODS:
-  - Alamofire (3.1.0)
-  - MiniFuture (0.3.0)
+  - Alamofire (3.1.4)
+  - MiniFuture (0.3.1)
 
 DEPENDENCIES:
   - Alamofire (~> 3.1.0)
   - MiniFuture (~> 0.3.0)
 
 SPEC CHECKSUMS:
-  Alamofire: 415bd7f56197722978759078486689f7ef913dce
-  MiniFuture: 351bcc893a373172e36bda90a4b8954315ccfcfe
+  Alamofire: fbc829692f351fa1d8a31dd75fd7f7f56fea31fb
+  MiniFuture: 0b6a84127af05741caa06007ee0aef082bdcd40e
 
 COCOAPODS: 0.39.0
