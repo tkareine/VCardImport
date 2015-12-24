@@ -7,7 +7,7 @@ extension Dictionary {
 }
 
 extension SequenceType {
-  func countWhere(predicate: Self.Generator.Element -> Bool) -> Int {
+  func countWhere(@noescape predicate: Self.Generator.Element -> Bool) -> Int {
     var c = 0
     for e in self {
       if predicate(e) {
@@ -17,7 +17,7 @@ extension SequenceType {
     return c
   }
 
-  func findElementWhere(predicate: Self.Generator.Element -> Bool) -> Self.Generator.Element? {
+  func findElementWhere(@noescape predicate: Self.Generator.Element -> Bool) -> Self.Generator.Element? {
     for e in self {
       if predicate(e) {
         return e
@@ -26,7 +26,7 @@ extension SequenceType {
     return nil
   }
 
-  func findIndexWhere(predicate: Self.Generator.Element -> Bool) -> Int? {
+  func findIndexWhere(@noescape predicate: Self.Generator.Element -> Bool) -> Int? {
     for (idx, e) in enumerate() {
       if predicate(e) {
         return idx

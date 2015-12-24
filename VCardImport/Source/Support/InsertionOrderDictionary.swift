@@ -136,7 +136,7 @@ extension InsertionOrderDictionary: CustomStringConvertible, CustomDebugStringCo
     return describeWith { key, value in "\(String(reflecting: key)): \(String(reflecting: value))" }
   }
 
-  private func describeWith(pairDescriber: (K, V) -> String) -> String {
+  private func describeWith(@noescape pairDescriber: (K, V) -> String) -> String {
     func join(pairs: [String]) -> String {
       let joined = pairs.joinWithSeparator(", ")
       return "[" + joined + "]"
