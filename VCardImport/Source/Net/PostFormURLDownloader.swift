@@ -31,7 +31,7 @@ class PostFormURLDownloader: URLDownloadable {
         loginURL,
         headers: [:],
         parameters: ["username": username, "password": password])
-      .flatMap { [unowned self] response in
+      .flatMap { response in
         let loggedInOrLoginURL = response.URL!
 
         return self.httpRequests

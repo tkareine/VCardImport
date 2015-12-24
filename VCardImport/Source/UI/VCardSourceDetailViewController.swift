@@ -346,7 +346,7 @@ class VCardSourceDetailViewController: UIViewController {
       Config.UI.AnimationDurationFadeMessage,
       delay: 0,
       options: [.CurveEaseIn, .BeginFromCurrentState],
-      animations: {
+      animations: { [unowned self] in
         self.urlValidationLabel.alpha = 1
       },
       completion: nil)
@@ -362,7 +362,7 @@ class VCardSourceDetailViewController: UIViewController {
         Config.UI.AnimationDurationFadeMessage,
         delay: Config.UI.AnimationDelayFadeOutMessage,
         options: [.CurveEaseOut, .BeginFromCurrentState],
-        animations: {
+        animations: { [unowned self] in
           self.urlValidationLabel.alpha = 0
         },
         completion: nil)

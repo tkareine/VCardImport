@@ -2,7 +2,7 @@ import XCTest
 
 class FilesTests: XCTestCase {
   func testWithTempFile() {
-    let tempPath: NSURL = Files.withTempURL { path in
+    let tempPath: NSURL = Files.withTempURL { [unowned self] path in
       self.touch(path)
       return path
     }
@@ -11,7 +11,7 @@ class FilesTests: XCTestCase {
   }
 
   func testCopy() {
-    Files.withTempURL { source -> Void in
+    Files.withTempURL { [unowned self] source -> Void in
       self.touch(source)
       XCTAssertTrue(self.exists(source))
 
@@ -24,7 +24,7 @@ class FilesTests: XCTestCase {
   }
 
   func testMove() {
-    Files.withTempURL { source -> Void in
+    Files.withTempURL { [unowned self] source -> Void in
       self.touch(source)
       XCTAssertTrue(self.exists(source))
 

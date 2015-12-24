@@ -40,9 +40,9 @@ class TextFieldValidator<T> {
       }
     }
 
-    self.textFieldDelegate?.addOnTextChange(textField) { tf, range, replacement in
+    self.textFieldDelegate?.addOnTextChange(textField) { [unowned self] tf, range, replacement in
       let oldText = tf.text!
-      QueueExecution.async(self.queue) {
+      QueueExecution.async(self.queue) { [unowned self] in
         let newText = self.change(text: oldText, range: range, replacement: replacement)
         self.validationDebouncer(newText)
       }
@@ -72,14 +72,14 @@ class TextFieldValidator<T> {
   func validate() {
     if let tf = textField {
       let text = tf.text!
-      QueueExecution.async(queue) { self.validationDebouncer(text) }
+      QueueExecution.async(queue) { [unowned self] in self.validationDebouncer(text) }
     }
   }
 
   private func validate(text: String) {
     // never call Future#get here as switcher completes only the latest Future
     switcher(validator(text)).onComplete { result in
-      QueueExecution.async(QueueExecution.mainQueue) {
+      QueueExecution.async(QueueExecution.mainQueue) { [unowned self] in
         self.setValidationStyle(result)
         self.onValidated(result)
       }

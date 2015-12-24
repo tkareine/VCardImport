@@ -48,12 +48,14 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           s.reloadTableViewSourceRow(source)
         }
       },
-      completionHandler: { error in
-        if let err = error {
-          self.presentAlertForError(err)
+      completionHandler: { [weak self] error in
+        if let s = self {
+          if let err = error {
+            s.presentAlertForError(err)
+          }
+          s.endProgress()
+          s.refreshButtonsEnabledStates()
         }
-        self.endProgress()
-        self.refreshButtonsEnabledStates()
       })
   }
 
@@ -154,7 +156,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
       }
-    self.navigationController!.pushViewController(vc, animated: true)
+    navigationController!.pushViewController(vc, animated: true)
   }
 
   // MARK: Actions
@@ -175,7 +177,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       }
     let nc = UINavigationController(rootViewController: vc)
     nc.modalPresentationStyle = .FormSheet
-    self.presentViewController(nc, animated: true, completion: nil)
+    presentViewController(nc, animated: true, completion: nil)
   }
 
   func importVCardSources(sender: AnyObject) {
@@ -199,7 +201,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {
-    if let row = self.dataSource.rowForVCardSource(source) {
+    if let row = dataSource.rowForVCardSource(source) {
       let indexPath = NSIndexPath(forRow: row, inSection: 0)
       tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
@@ -214,7 +216,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     alertController.addAction(dismissAction)
 
-    self.presentViewController(alertController, animated: true, completion: nil)
+    presentViewController(alertController, animated: true, completion: nil)
   }
 
   private func beginProgress(sources: [VCardSource]) {

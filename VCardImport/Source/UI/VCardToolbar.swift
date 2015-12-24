@@ -78,7 +78,7 @@ class VCardToolbar: UIView {
       Config.UI.AnimationDurationFadeMessage,
       delay: 0,
       options: .CurveEaseIn,
-      animations: {
+      animations: { [unowned self] in
         self.progressLabel.alpha = 1
         self.progressView.alpha = 1
       },
@@ -90,11 +90,11 @@ class VCardToolbar: UIView {
       Config.UI.AnimationDurationFadeMessage,
       delay: Config.UI.AnimationDelayFadeOutMessage,
       options: .CurveEaseOut,
-      animations: {
+      animations: { [unowned self] in
         self.progressLabel.alpha = 0
         self.progressView.alpha = 0
       },
-      completion: { _ in
+      completion: { [unowned self] _ in
         self.progressLabel.text = nil
         self.progressView.setProgress(0, animated: false)
       })

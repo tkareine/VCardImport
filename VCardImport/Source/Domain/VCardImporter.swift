@@ -34,13 +34,15 @@ class VCardImporter {
     // calls to background jobs and back to the user-specified queue in one
     // place.
 
-    QueueExecution.async(executionQueue) {
+    QueueExecution.async(executionQueue) { [unowned self] in
       let addressBook: AddressBook
 
       do {
         addressBook = try AddressBook.sharedInstance()
       } catch {
-        QueueExecution.async(self.callbackQueue) { self.onComplete(error) }
+        QueueExecution.async(self.callbackQueue) { [unowned self] in
+          self.onComplete(error)
+        }
         return
       }
 
@@ -58,7 +60,7 @@ class VCardImporter {
         case .Success(let value):
           switch value {
           case .Unchanged:
-            QueueExecution.async(self.callbackQueue) {
+            QueueExecution.async(self.callbackQueue) { [unowned self] in
               self.onSourceComplete(source, nil, nil, nil)
             }
             continue
@@ -67,7 +69,7 @@ class VCardImporter {
             modifiedHeaderStamp = stamp
           }
         case .Failure(let error):
-          QueueExecution.async(self.callbackQueue) {
+          QueueExecution.async(self.callbackQueue) { [unowned self] in
             self.onSourceComplete(source, nil, nil, Errors.addressBookFailedToLoadVCardSource((error as NSError).localizedDescription))
           }
           continue
@@ -81,7 +83,9 @@ class VCardImporter {
           do {
             try addressBook.addRecords(recordDiff.additions)
           } catch {
-            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error) }
+            QueueExecution.async(self.callbackQueue) { [unowned self] in
+              self.onSourceComplete(source, nil, nil, error)
+            }
             continue
           }
         }
@@ -90,7 +94,9 @@ class VCardImporter {
           do {
             try self.changeRecords(recordDiff.changes)
           } catch {
-            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error) }
+            QueueExecution.async(self.callbackQueue) { [unowned self] in
+              self.onSourceComplete(source, nil, nil, error)
+            }
             continue
           }
         }
@@ -99,18 +105,22 @@ class VCardImporter {
           do {
             try addressBook.save()
           } catch {
-            QueueExecution.async(self.callbackQueue) { self.onSourceComplete(source, nil, nil, error) }
+            QueueExecution.async(self.callbackQueue) { [unowned self] in
+              self.onSourceComplete(source, nil, nil, error)
+            }
             continue
           }
         }
 
         NSLog("vCard source %@: %@", source.name, recordDiff.description)
-        QueueExecution.async(self.callbackQueue) {
+        QueueExecution.async(self.callbackQueue) { [unowned self] in
           self.onSourceComplete(source, recordDiff, modifiedHeaderStamp, nil)
         }
       }
 
-      QueueExecution.async(self.callbackQueue) { self.onComplete(nil) }
+      QueueExecution.async(self.callbackQueue) { [unowned self] in
+        self.onComplete(nil)
+      }
     }
   }
 
@@ -151,7 +161,7 @@ class VCardImporter {
       headers: Config.Net.VCardHTTPHeaders)
     return downloader
       .requestFileHeaders()
-      .flatMap { response in
+      .flatMap { [unowned self] response in
         let newStamp = ModifiedHeaderStamp(headers: response.allHeaderFields)
 
         if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
@@ -169,7 +179,7 @@ class VCardImporter {
   private func downloadSource(source: VCardSource, downloadWith urlDownloader: URLDownloadable) -> Future<[ABRecord]> {
     let fileURL = Files.tempURL()
     let onProgressCallback: HTTPRequest.OnProgressCallback = { progressBytes in
-      QueueExecution.async(QueueExecution.mainQueue) {
+      QueueExecution.async(QueueExecution.mainQueue) { [unowned self] in
         self.onSourceDownload(source, progressBytes)
       }
     }

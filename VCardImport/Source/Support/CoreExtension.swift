@@ -40,8 +40,8 @@ private let WhitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewli
 
 extension String {
   var capitalized: String {
-    if let head = self.characters.first {
-      let tail = String(self.characters.dropFirst())
+    if let head = characters.first {
+      let tail = String(characters.dropFirst())
       return String(head).uppercaseString + tail
     } else {
       return self
