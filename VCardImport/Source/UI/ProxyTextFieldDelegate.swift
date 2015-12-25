@@ -11,8 +11,6 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
   private var onShouldReturnCallees: [TextFieldCallee<OnShouldReturnCallback>] = []
   private var onTextChangeCallees: [TextFieldCallee<OnTextChangeCallback>] = []
 
-  // MARK: Public API
-
   func addOnBeginEditing(textField: UITextField, _ callback: OnBeginEditingCallback) {
     onBeginEditingCallees.append(TextFieldCallee(textField: textField, callback: callback))
   }

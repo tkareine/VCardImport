@@ -22,6 +22,7 @@
 		E92F0B891AA31E2000367705 /* MiniFutureExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F0B881AA31E2000367705 /* MiniFutureExtensionTests.swift */; };
 		E942050C1BEA97A500139A79 /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942050B1BEA97A500139A79 /* HTTPResponse.swift */; };
 		E94205101BEA9A0700139A79 /* HTTPRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */; };
+		E945D5381C2DE841005A79B1 /* ProxyTextFieldDelegate2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E945D5371C2DE841005A79B1 /* ProxyTextFieldDelegate2.swift */; };
 		E947E1591A4F87A200513F77 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E94897401A473E0D004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
 		E94897411A47448C004BA838 /* RecordName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E948973F1A473E0D004BA838 /* RecordName.swift */; };
@@ -142,6 +143,7 @@
 		E92F0B881AA31E2000367705 /* MiniFutureExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiniFutureExtensionTests.swift; path = Support/MiniFutureExtensionTests.swift; sourceTree = "<group>"; };
 		E942050B1BEA97A500139A79 /* HTTPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponse.swift; path = Net/HTTPResponse.swift; sourceTree = "<group>"; };
 		E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestTests.swift; path = Net/HTTPRequestTests.swift; sourceTree = "<group>"; };
+		E945D5371C2DE841005A79B1 /* ProxyTextFieldDelegate2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyTextFieldDelegate2.swift; path = UI/ProxyTextFieldDelegate2.swift; sourceTree = "<group>"; };
 		E947E1581A4F87A200513F77 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Files.swift; path = Support/Files.swift; sourceTree = "<group>"; };
 		E948973F1A473E0D004BA838 /* RecordName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordName.swift; path = Record/RecordName.swift; sourceTree = "<group>"; };
 		E94AF0121BF761700050D186 /* PostFormURLDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostFormURLDownloader.swift; path = Net/PostFormURLDownloader.swift; sourceTree = "<group>"; };
@@ -390,11 +392,12 @@
 			isa = PBXGroup;
 			children = (
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
-				E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */,
 				E95F908C1C0B2CC60003B594 /* MultilineLabel.swift */,
 				E99D45421C131CCA00A43993 /* LabeledSelectionCell.swift */,
 				E99D45401C1315CD00A43993 /* LabeledSwitchCell.swift */,
 				E9FD3FA01C09F44E00126DF0 /* LabeledTextFieldCell.swift */,
+				E9198D781A6B16950000A767 /* ProxyTextFieldDelegate.swift */,
+				E945D5371C2DE841005A79B1 /* ProxyTextFieldDelegate2.swift */,
 				E96A171F1C1A23E30016DEE9 /* SelectionOption.swift */,
 				E96A171D1C1A14520016DEE9 /* SelectionViewController.swift */,
 				E90AB3AF1A64795B002A3A51 /* TextFieldValidator.swift */,
@@ -696,11 +699,12 @@
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
 				E9D37F531BF130AC0028403F /* VCardSourceStoreMigrations.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
-				E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */,
 				E95F908D1C0B2CC60003B594 /* MultilineLabel.swift in Sources */,
 				E99D45431C131CCA00A43993 /* LabeledSelectionCell.swift in Sources */,
 				E99D45411C1315CD00A43993 /* LabeledSwitchCell.swift in Sources */,
 				E9FD3FA11C09F44E00126DF0 /* LabeledTextFieldCell.swift in Sources */,
+				E9198D791A6B16950000A767 /* ProxyTextFieldDelegate.swift in Sources */,
+				E945D5381C2DE841005A79B1 /* ProxyTextFieldDelegate2.swift in Sources */,
 				E96A17201C1A23E30016DEE9 /* SelectionOption.swift in Sources */,
 				E96A171E1C1A14520016DEE9 /* SelectionViewController.swift in Sources */,
 				E90AB3B01A64795B002A3A51 /* TextFieldValidator.swift in Sources */,

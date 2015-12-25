@@ -10,7 +10,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
 
   private var headerView: MultilineLabel!
   private var nameCell: LabeledTextFieldCell!
-  private var fileURLCell: LabeledTextFieldCell!
+  private var vcardURLCell: LabeledTextFieldCell!
   private var loginURLCell: LabeledTextFieldCell!
   private var authMethodCell: LabeledSelectionCell<HTTPRequest.AuthenticationMethod>!
   private var usernameCell: LabeledTextFieldCell!
@@ -20,6 +20,8 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
   private var cellsByIndexPath: [Int: [Int: UITableViewCell]]!
 
   private var shouldCallOnDisappearCallback: Bool
+
+  private var focusedTextField: UITextField?
 
   init(
     source: VCardSource,
@@ -62,29 +64,87 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       return tv
     }
 
+    func makeTextFieldDelegate() -> UITextFieldDelegate {
+      return ProxyTextFieldDelegate2(
+        beginEditingHandler: { [unowned self] tf in
+          self.focusedTextField = tf
+        },
+        endEditingHandler: { [unowned self] _ in
+          self.focusedTextField = nil
+        },
+        shouldReturnHandler: { tf in
+          tf.resignFirstResponder()
+          return true
+        }
+      )
+    }
+
+    func makeNameCell() -> LabeledTextFieldCell {
+      return LabeledTextFieldCell(
+        label: "Name",
+        value: source.name,
+        autocapitalizationType: .Sentences,
+        autocorrectionType: .Yes,
+        spellCheckingType: .Default,
+        textFieldDelegate: makeTextFieldDelegate())
+    }
+
+    func makeVCardURLCell() -> LabeledTextFieldCell {
+      return LabeledTextFieldCell(
+        label: "vCard URL",
+        value: source.connection.vcardURL,
+        textFieldDelegate: makeTextFieldDelegate())
+    }
+
+    func makeLoginURLCell() -> LabeledTextFieldCell {
+      return LabeledTextFieldCell(
+        label: "Login URL",
+        value: source.connection.loginURL ?? "",
+        textFieldDelegate: makeTextFieldDelegate())
+    }
+
+    func makeAuthMethodCell() -> LabeledSelectionCell<HTTPRequest.AuthenticationMethod> {
+      return LabeledSelectionCell(
+        label: "Authentication",
+        selection: SelectionOption(
+          description: source.connection.authenticationMethod.usageDescription,
+          data: source.connection.authenticationMethod))
+    }
+
+    func makeUsernameCell() -> LabeledTextFieldCell {
+      return LabeledTextFieldCell(
+        label: "Username",
+        value: source.connection.username,
+        textFieldDelegate: makeTextFieldDelegate())
+    }
+
+    func makePasswordCell() -> LabeledTextFieldCell {
+      return LabeledTextFieldCell(
+        label: "Password",
+        value: source.connection.password,
+        isSecure: true,
+        textFieldDelegate: makeTextFieldDelegate())
+    }
+
+    func makeIsEnabledCell() -> LabeledSwitchCell {
+      return LabeledSwitchCell(
+        label: "Enabled",
+        isEnabled: source.isEnabled)
+    }
+
     func setupBackgroundTapTo(view: UIView) {
       let tapRecognizer = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
       tapRecognizer.cancelsTouchesInView = false
       view.addGestureRecognizer(tapRecognizer)
     }
 
-    nameCell = LabeledTextFieldCell(
-      label: "Name",
-      value: source.name,
-      autocapitalizationType: .Sentences,
-      autocorrectionType: .Yes,
-      spellCheckingType: .Default)
-
-    fileURLCell = LabeledTextFieldCell(label: "vCard URL", value: source.connection.vcardURL)
-    loginURLCell = LabeledTextFieldCell(label: "Login URL", value: source.connection.loginURL ?? "")
-
+    nameCell = makeNameCell()
+    vcardURLCell = makeVCardURLCell()
+    loginURLCell = makeLoginURLCell()
     authMethodCell = makeAuthMethodCell()
-
-    usernameCell = LabeledTextFieldCell(label: "Username", value: source.connection.username)
-
-    passwordCell = LabeledTextFieldCell(label: "Password", value: source.connection.password, isSecure: true)
-
-    isEnabledCell = LabeledSwitchCell(label: "Enabled", isEnabled: source.isEnabled)
+    usernameCell = makeUsernameCell()
+    passwordCell = makePasswordCell()
+    isEnabledCell = makeIsEnabledCell()
 
     cellsByIndexPath = makeCellsByIndexPath()
 
@@ -120,16 +180,30 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     if let previousSelection = tableView.indexPathForSelectedRow {
       tableView.deselectRowAtIndexPath(previousSelection, animated: true)
     }
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "keyboardDidShow:",
+      name: UIKeyboardDidShowNotification,
+      object: nil)
+
+    NSNotificationCenter.defaultCenter().addObserver(
+      self,
+      selector: "keyboardWillHide:",
+      name: UIKeyboardWillHideNotification,
+      object: nil)
   }
 
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
 
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+
     if shouldCallOnDisappearCallback {
       let authenticationMethod = authMethodCell.selection.data
 
       let newConnection = VCardSource.Connection(
-        vcardURL: fileURLCell.currentText,
+        vcardURL: vcardURLCell.currentText,
         authenticationMethod: authenticationMethod,
         username: usernameCell.currentText,
         password: passwordCell.currentText,
@@ -183,7 +257,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
           self.navigationController!.popViewControllerAnimated(true)
           self.authMethodCell.selection = selectedOption
           if selectedOption.data != selectedAuthMethod {
-            let loginURLCellIndexPath = self.indexPathOfLoginURLCell()
+            let loginURLCellIndexPath = self.indexPathOfCell(self.loginURLCell)
             if selectedOption.data == .PostForm {
               self.tableView.insertRowsAtIndexPaths([loginURLCellIndexPath], withRowAnimation: .Fade)
             } else {
@@ -203,7 +277,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     -> UITableViewCell
   {
     guard let cell = cellAtIndexPath(indexPath) else {
-      fatalError("unknown indexPath: \(indexPath)")
+      fatalError("unknown indexpath: \(indexPath)")
     }
     return cell
   }
@@ -236,25 +310,56 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
 
+  // MARK: Notification Handlers
+
   func backgroundTapped(sender: AnyObject) {
-    view.endEditing(true)
+    tableView.endEditing(true)
+  }
+
+  func keyboardDidShow(notification: NSNotification) {
+    // adapted and modified from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
+
+    func getKeyboardHeight() -> CGFloat? {
+      if let orgRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+        let convRect = tableView.convertRect(orgRect, fromView: nil)
+        return convRect.size.height
+      }
+      return nil
+    }
+
+    if let
+      focusedTF = focusedTextField,
+      keyboardHeight = getKeyboardHeight()
+    {
+      let topOffset = topLayoutGuide.length
+      let contentInsets = UIEdgeInsets(top: topOffset, left: 0, bottom: keyboardHeight, right: 0)
+
+      tableView.contentInset = contentInsets
+      tableView.scrollIndicatorInsets = contentInsets
+
+      if !CGRectContainsPoint(tableView.frame, focusedTF.frame.origin) {
+        tableView.scrollRectToVisible(focusedTF.frame, animated: true)
+      }
+    }
+  }
+
+  func keyboardWillHide(notification: NSNotification) {
+    let contentInsets = UIEdgeInsets(
+      top: topLayoutGuide.length,
+      left: 0,
+      bottom: bottomLayoutGuide.length,
+      right: 0)
+    tableView.contentInset = contentInsets
+    tableView.scrollIndicatorInsets = contentInsets
   }
 
   // MARK: Helpers
-
-  private func makeAuthMethodCell() -> LabeledSelectionCell<HTTPRequest.AuthenticationMethod> {
-    return LabeledSelectionCell(
-      label: "Authentication",
-      selection: SelectionOption(
-        description: source.connection.authenticationMethod.usageDescription,
-        data: source.connection.authenticationMethod))
-  }
 
   private func makeCellsByIndexPath() -> [Int: [Int: UITableViewCell]] {
     return [
       0: [
         0: nameCell,
-        1: fileURLCell,
+        1: vcardURLCell,
         2: loginURLCell
       ],
       1: [
@@ -268,10 +373,6 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     ]
   }
 
-  private func indexPathOfLoginURLCell() -> NSIndexPath {
-    return NSIndexPath(forRow: 2, inSection: 0)
-  }
-
   private func cellAtIndexPath(indexPath: NSIndexPath) -> UITableViewCell? {
     if let
       rows = cellsByIndexPath[indexPath.section],
@@ -279,5 +380,16 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
         return cell
     }
     return nil
+  }
+
+  private func indexPathOfCell(cell: UITableViewCell) -> NSIndexPath {
+    for (sectionNumber, sectionCells) in cellsByIndexPath {
+      for (rowNumber, rowCell) in sectionCells {
+        if cell === rowCell {
+          return NSIndexPath(forRow: rowNumber, inSection: sectionNumber)
+        }
+      }
+    }
+    fatalError("No indexpath found for cell: \(cell)")
   }
 }

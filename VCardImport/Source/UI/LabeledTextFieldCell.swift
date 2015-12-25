@@ -18,7 +18,8 @@ private func makeTextField(
   autocapitalizationType: UITextAutocapitalizationType,
   autocorrectionType: UITextAutocorrectionType,
   spellCheckingType: UITextSpellCheckingType,
-  isSecure: Bool)
+  isSecure: Bool,
+  delegate: UITextFieldDelegate?)
   -> UITextField
 {
   let textField = UITextField()
@@ -30,12 +31,14 @@ private func makeTextField(
   textField.clearButtonMode = .WhileEditing
   textField.text = text
   textField.secureTextEntry = isSecure
+  textField.delegate = delegate
   return textField
 }
 
 class LabeledTextFieldCell: UITableViewCell {
   private let label: UILabel
   private let textField: UITextField
+  private let textFieldDelegate: UITextFieldDelegate?
 
   init(
     label labelText: String,
@@ -43,16 +46,20 @@ class LabeledTextFieldCell: UITableViewCell {
     autocapitalizationType: UITextAutocapitalizationType = .None,
     autocorrectionType: UITextAutocorrectionType = .No,
     spellCheckingType: UITextSpellCheckingType = .No,
-    isSecure: Bool = false)
+    isSecure: Bool = false,
+    textFieldDelegate: UITextFieldDelegate? = nil)
   {
     label = makeLabel(labelText)
+
+    self.textFieldDelegate = textFieldDelegate
 
     textField = makeTextField(
       valueText,
       autocapitalizationType: autocapitalizationType,
       autocorrectionType: autocorrectionType,
       spellCheckingType: spellCheckingType,
-      isSecure: isSecure)
+      isSecure: isSecure,
+      delegate: self.textFieldDelegate)
 
     super.init(style: .Default, reuseIdentifier: nil)
 
