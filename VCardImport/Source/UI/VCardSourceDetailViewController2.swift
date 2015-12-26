@@ -1,4 +1,5 @@
 import UIKit
+import MiniFuture
 
 class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, UITableViewDataSource {
   private let source: VCardSource
@@ -9,6 +10,8 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
   private var tableView: UITableView!
 
   private var headerView: MultilineLabel!
+  private var vcardURLValidationResultView: LabeledActivityIndicator!
+
   private var nameCell: LabeledTextFieldCell!
   private var vcardURLCell: LabeledTextFieldCell!
   private var loginURLCell: LabeledTextFieldCell!
@@ -17,7 +20,8 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
   private var passwordCell: LabeledTextFieldCell!
   private var isEnabledCell: LabeledSwitchCell!
 
-  private var nameValidator: TextValidator!
+  private var nameValidator: InputValidator<String>!
+  private var vcardURLValidator: InputValidator<VCardSource.Connection>!
 
   private var cellsByIndexPath: [Int: [Int: UITableViewCell]]!
 
@@ -102,14 +106,22 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       return LabeledTextFieldCell(
         label: "vCard URL",
         value: source.connection.vcardURL,
-        textFieldDelegate: makeTextFieldDelegate())
+        textFieldDelegate: makeTextFieldDelegate(
+          changedTextHandler: { [unowned self] _, text in
+            self.validateVCardURL(vcardURL: text)
+          }
+        ))
     }
 
     func makeLoginURLCell() -> LabeledTextFieldCell {
       return LabeledTextFieldCell(
         label: "Login URL",
         value: source.connection.loginURL ?? "",
-        textFieldDelegate: makeTextFieldDelegate())
+        textFieldDelegate: makeTextFieldDelegate(
+          changedTextHandler: { [unowned self] _, text in
+            self.validateVCardURL(loginURL: text)
+          }
+        ))
     }
 
     func makeAuthMethodCell() -> LabeledSelectionCell<HTTPRequest.AuthenticationMethod> {
@@ -124,7 +136,11 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       return LabeledTextFieldCell(
         label: "Username",
         value: source.connection.username,
-        textFieldDelegate: makeTextFieldDelegate())
+        textFieldDelegate: makeTextFieldDelegate(
+          changedTextHandler: { [unowned self] _, text in
+            self.validateVCardURL(username: text)
+          }
+        ))
     }
 
     func makePasswordCell() -> LabeledTextFieldCell {
@@ -132,7 +148,11 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
         label: "Password",
         value: source.connection.password,
         isSecure: true,
-        textFieldDelegate: makeTextFieldDelegate())
+        textFieldDelegate: makeTextFieldDelegate(
+          changedTextHandler: { [unowned self] _, text in
+            self.validateVCardURL(password: text)
+          }
+        ))
     }
 
     func makeIsEnabledCell() -> LabeledSwitchCell {
@@ -141,14 +161,74 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
         isEnabled: source.isEnabled)
     }
 
-    func makeNameValidator() -> TextValidator {
-      return TextValidator(
+    func makeNameValidator() -> InputValidator<String> {
+      return InputValidator(
         syncValidation: { text in
           return !text.trimmed.isEmpty ? .Success(text) : .Failure(ValidationError.Empty)
         },
         validationCompletion: { [weak self] result in
           if let s = self {
             s.nameCell.highlightLabel(result.isFailure)
+            s.refreshDoneButtonEnabled()
+          }
+        })
+    }
+
+    func makeVCardURLValidator() -> InputValidator<VCardSource.Connection> {
+      return InputValidator(
+        asyncValidation: { [weak self] connection in
+          if let s = self {
+            func cellsWithInvalidURLs(connection: VCardSource.Connection)
+              -> [LabeledTextFieldCell]
+            {
+              var invalidURLCells: [LabeledTextFieldCell] = []
+              if !connection.vcardURLasURL().isValidHTTPURL {
+                invalidURLCells.append(s.vcardURLCell)
+              }
+              if let url = connection.loginURLasURL() where !url.isValidHTTPURL {
+                invalidURLCells.append(s.loginURLCell)
+              }
+              return invalidURLCells
+            }
+
+            let invalidCells = cellsWithInvalidURLs(connection)
+            guard invalidCells.isEmpty else {
+              throw ValidationError.InvalidURLInput(invalidCells)
+            }
+
+            QueueExecution.async(QueueExecution.mainQueue) {
+              s.vcardURLValidationResultView.start("Validating vCard URL…")
+            }
+
+            return s.urlDownloadFactory
+                .makeDownloader(
+                  connection: connection,
+                  headers: Config.Net.VCardHTTPHeaders)
+                .requestFileHeaders()
+                .map { _ in connection }
+          } else {
+            return Future.failed(ValidationError.Cancelled)
+          }
+        },
+        validationCompletion: { [weak self] result in
+          if let s = self {
+            switch result {
+            case .Success:
+              s.vcardURLCell.highlightLabel(false)
+              s.loginURLCell.highlightLabel(false)
+              s.vcardURLValidationResultView.stop("vCard URL is valid", fadeOut: true)
+            case .Failure(let error):
+              switch error {
+              case ValidationError.InvalidURLInput(let cells):
+                for c in [s.vcardURLCell, s.loginURLCell] {
+                  c.highlightLabel(cells.contains({ $0 === c }))
+                }
+              default:
+                s.vcardURLCell.highlightLabel(false)
+                s.loginURLCell.highlightLabel(false)
+                s.vcardURLValidationResultView.stop((error as NSError).localizedDescription)
+              }
+            }
             s.refreshDoneButtonEnabled()
           }
         })
@@ -169,13 +249,14 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     isEnabledCell = makeIsEnabledCell()
 
     nameValidator = makeNameValidator()
+    vcardURLValidator = makeVCardURLValidator()
 
     cellsByIndexPath = makeCellsByIndexPath()
 
     headerView = MultilineLabel(frame: CGRect(), labelText: Config.UI.VCardSourceNoteText)
+    vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect())
 
     tableView = makeTableView()
-
     tableView.tableHeaderView = headerView
 
     view = tableView
@@ -221,6 +302,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       refreshDoneButtonEnabled()
     } else {
       nameValidator.validate(nameCell.currentText)
+      validateVCardURL()
     }
   }
 
@@ -264,10 +346,23 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     heightForHeaderInSection section: Int)
     -> CGFloat
   {
-    if section == 0 {
-      return 0.0
-    }
-    return 10.0
+    return section == 0 ? 0 : 1
+  }
+
+  func tableView(
+    tableView: UITableView,
+    heightForFooterInSection section: Int)
+    -> CGFloat
+  {
+    return section == 0 ? 40 : 0
+  }
+
+  func tableView(
+    tableView: UITableView,
+    viewForFooterInSection section: Int)
+    -> UIView?
+  {
+    return section == 0 ? vcardURLValidationResultView : nil
   }
 
   func tableView(
@@ -293,6 +388,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
             } else {
               self.tableView.deleteRowsAtIndexPaths([loginURLCellIndexPath], withRowAnimation: .Fade)
             }
+            self.validateVCardURL(authenticationMethod: selectedOption.data)
           }
       }
       navigationController!.pushViewController(vc, animated: true)
@@ -425,7 +521,24 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
 
   private func refreshDoneButtonEnabled() {
     if let button = navigationItem.rightBarButtonItem {
-      button.enabled = nameValidator.isValid ?? false
+      button.enabled = (nameValidator.isValid ?? false) && (vcardURLValidator.isValid ?? false)
     }
+  }
+
+  private func validateVCardURL(
+    vcardURL vcardURL: String? = nil,
+    authenticationMethod: HTTPRequest.AuthenticationMethod? = nil,
+    username: String? = nil,
+    password: String? = nil,
+    loginURL: String? = nil)
+  {
+    let connection = VCardSource.Connection(
+      vcardURL: vcardURL ?? vcardURLCell.currentText,
+      authenticationMethod: authenticationMethod ?? authMethodCell.selection.data,
+      username: username ?? usernameCell.currentText,
+      password: password ?? passwordCell.currentText,
+      loginURL: loginURL ?? loginURLCell.currentText)
+
+    vcardURLValidator.validate(connection)
   }
 }

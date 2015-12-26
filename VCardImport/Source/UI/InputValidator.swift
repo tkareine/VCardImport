@@ -1,22 +1,30 @@
 import MiniFuture
 
-class TextValidator {
-  private var validationDebouncer: (String -> Void)!
+class InputValidator<T> {
+  private var validationDebouncer: (T -> Void)!
   private var isLastValidationSuccess: Bool?
 
   init(
-    asyncValidation textValidator: String -> Future<String>,
-    validationCompletion onValidated: Try<String> -> Void,
+    asyncValidation inputValidator: T throws -> Future<T>,
+    validationCompletion onValidated: Try<T> -> Void,
     queueTo onValidatedQueue: QueueExecution.Queue = QueueExecution.mainQueue)
   {
-    let queue = QueueExecution.makeSerialQueue("InputValidator")
-    let switcher = Future<String>.makeSwitchLatest()
+    func validate(input: T) -> Future<T> {
+      do {
+        return try inputValidator(input)
+      } catch {
+        return Future.failed(error)
+      }
+    }
 
-    validationDebouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) { [weak self] text in
+    let queue = QueueExecution.makeSerialQueue("InputValidator")
+    let switcher = Future<T>.makeSwitchLatest()
+
+    validationDebouncer = QueueExecution.makeDebouncer(Config.UI.ValidationThrottleInMS, queue) { [weak self] input in
       // validator still exists, makes sense to validate?
       if self != nil {
         // never call Future#get here as switcher completes only the latest Future
-        switcher(textValidator(text)).onComplete { result in
+        switcher(validate(input)).onComplete { result in
           // validator still exists, makes sense to pass validation result?
           if let s = self {
             s.isLastValidationSuccess = result.isSuccess
@@ -28,12 +36,12 @@ class TextValidator {
   }
 
   convenience init(
-    syncValidation textValidator: String -> Try<String>,
-    validationCompletion onValidated: Try<String> -> Void,
+    syncValidation textValidator: T throws -> Try<T>,
+    validationCompletion onValidated: Try<T> -> Void,
     queueTo onValidatedQueue: QueueExecution.Queue = QueueExecution.mainQueue)
   {
     self.init(
-      asyncValidation: { Future.fromTry(textValidator($0)) },
+      asyncValidation: { Future.fromTry(try textValidator($0)) },
       validationCompletion: onValidated,
       queueTo: onValidatedQueue)
   }
@@ -42,7 +50,7 @@ class TextValidator {
     return isLastValidationSuccess
   }
 
-  func validate(text: String) {
-    validationDebouncer(text)
+  func validate(input: T) {
+    validationDebouncer(input)
   }
 }

@@ -26,7 +26,7 @@ class URLDownloadFactory {
       return PostFormURLDownloader(
         httpRequestsWith: makeHTTPSession(),
         vcardURL: connection.vcardURLasURL(),
-        loginURL: connection.loginURLasURL(),
+        loginURL: connection.loginURLasURL()!,
         username: connection.username,
         password: connection.password,
         headers: headers)

@@ -117,9 +117,11 @@ struct VCardSource {
       return NSURL(string: vcardURL)!  // guaranteed by trimming in initializer
     }
 
-    /// - precondition: `authenticationMethod` must be `.PostForm`
-    func loginURLasURL() -> NSURL {
-      return NSURL(string: loginURL!)!  // guaranteed by trimming in initializer
+    func loginURLasURL() -> NSURL? {
+      if let url = loginURL {
+        return NSURL(string: url)!  // guaranteed by trimming in initializer
+      }
+      return nil
     }
   }
 
