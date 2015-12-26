@@ -255,13 +255,13 @@ class VCardSourceDetailViewController: UIViewController {
   }
 
   func resetFontSizes() {
-    let font = Fonts.bodyFont()
-    noticeLabel.font = Fonts.sizeAdjusted(font, by: -4)
+    let font = UIFont.fontForBodyStyle()
+    noticeLabel.font = font.sizeAdjusted(-4)
     nameLabel.font = font
     nameField.font = font
     urlLabel.font = font
     urlField.font = font
-    urlValidationLabel.font = Fonts.sizeAdjusted(font, by: -2)
+    urlValidationLabel.font = font.sizeAdjusted(-2)
     usernameLabel.font = font
     usernameField.font = font
     passwordLabel.font = font

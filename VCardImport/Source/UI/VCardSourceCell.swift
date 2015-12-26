@@ -51,9 +51,9 @@ class VCardSourceCell: UITableViewCell {
   // MARK: Notification Handlers
 
   func resetFontSizes() {
-    let font = Fonts.bodyFont()
+    let font = UIFont.fontForBodyStyle()
     headerLabel.font = font
     iconLabel.font = font
-    descriptionLabel.font = Fonts.sizeAdjusted(font, by: -4)
+    descriptionLabel.font = font.sizeAdjusted(-4)
   }
 }
