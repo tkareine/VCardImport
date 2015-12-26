@@ -17,6 +17,8 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
   private var passwordCell: LabeledTextFieldCell!
   private var isEnabledCell: LabeledSwitchCell!
 
+  private var nameValidator: TextValidator!
+
   private var cellsByIndexPath: [Int: [Int: UITableViewCell]]!
 
   private var shouldCallOnDisappearCallback: Bool
@@ -64,7 +66,10 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       return tv
     }
 
-    func makeTextFieldDelegate() -> UITextFieldDelegate {
+    func makeTextFieldDelegate(
+      changedTextHandler onChanged: ProxyTextFieldDelegate2.OnTextChangeCallback? = nil)
+      -> UITextFieldDelegate
+    {
       return ProxyTextFieldDelegate2(
         beginEditingHandler: { [unowned self] tf in
           self.focusedTextField = tf
@@ -75,8 +80,8 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
         shouldReturnHandler: { tf in
           tf.resignFirstResponder()
           return true
-        }
-      )
+        },
+        changedHandler: onChanged)
     }
 
     func makeNameCell() -> LabeledTextFieldCell {
@@ -86,7 +91,11 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
         autocapitalizationType: .Sentences,
         autocorrectionType: .Yes,
         spellCheckingType: .Default,
-        textFieldDelegate: makeTextFieldDelegate())
+        textFieldDelegate: makeTextFieldDelegate(
+          changedTextHandler: { [unowned self] _, text in
+            self.nameValidator.validate(text)
+          }
+        ))
     }
 
     func makeVCardURLCell() -> LabeledTextFieldCell {
@@ -132,6 +141,19 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
         isEnabled: source.isEnabled)
     }
 
+    func makeNameValidator() -> TextValidator {
+      return TextValidator(
+        syncValidation: { text in
+          return !text.trimmed.isEmpty ? .Success(text) : .Failure(ValidationError.Empty)
+        },
+        validationCompletion: { [weak self] result in
+          if let s = self {
+            s.nameCell.highlightLabel(result.isFailure)
+            s.refreshDoneButtonEnabled()
+          }
+        })
+    }
+
     func setupBackgroundTapTo(view: UIView) {
       let tapRecognizer = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
       tapRecognizer.cancelsTouchesInView = false
@@ -145,6 +167,8 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     usernameCell = makeUsernameCell()
     passwordCell = makePasswordCell()
     isEnabledCell = makeIsEnabledCell()
+
+    nameValidator = makeNameValidator()
 
     cellsByIndexPath = makeCellsByIndexPath()
 
@@ -192,6 +216,12 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       selector: "keyboardWillHide:",
       name: UIKeyboardWillHideNotification,
       object: nil)
+
+    if isNewSource {
+      refreshDoneButtonEnabled()
+    } else {
+      nameValidator.validate(nameCell.currentText)
+    }
   }
 
   override func viewWillDisappear(animated: Bool) {
@@ -391,5 +421,11 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
       }
     }
     fatalError("No indexpath found for cell: \(cell)")
+  }
+
+  private func refreshDoneButtonEnabled() {
+    if let button = navigationItem.rightBarButtonItem {
+      button.enabled = nameValidator.isValid ?? false
+    }
   }
 }

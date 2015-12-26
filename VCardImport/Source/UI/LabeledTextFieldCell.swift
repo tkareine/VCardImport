@@ -1,7 +1,13 @@
 import UIKit
 
+private let FontSizeAdjustment: CGFloat = -2
+
 private func makeFont() -> UIFont {
-  return Fonts.sizeAdjusted(Fonts.bodyFont(), by: -2)
+  return Fonts.sizeAdjusted(Fonts.bodyFont(), by: FontSizeAdjustment)
+}
+
+private func fontPointSize() -> CGFloat {
+  return Fonts.bodyFont().pointSize + FontSizeAdjustment
 }
 
 private func makeLabel(text: String) -> UILabel {
@@ -88,12 +94,17 @@ class LabeledTextFieldCell: UITableViewCell {
     return textField.text!
   }
 
+  func highlightLabel(isHighlighted: Bool) {
+    label.textColor = isHighlighted ? UIColor.redColor() : UIColor.blackColor()
+    label.font = isHighlighted ? Fonts.bold(label.font) : Fonts.normal(label.font)
+  }
+
   // MARK: Notification Handlers
 
   func resetFontSizes() {
-    let font = makeFont()
-    label.font = font
-    textField.font = font
+    let fontSize = fontPointSize()
+    label.font = label.font.fontWithSize(fontSize)
+    textField.font = textField.font!.fontWithSize(fontSize)
   }
 
   // MARK: Helpers
