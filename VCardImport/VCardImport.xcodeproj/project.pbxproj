@@ -80,9 +80,9 @@
 		E9AF2E2D1BD81BEF00C7C7D6 /* URLDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF2E2C1BD81BEF00C7C7D6 /* URLDownloadable.swift */; };
 		E9B9B9F41A5BF653004C53CA /* VCardToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B9B9F31A5BF653004C53CA /* VCardToolbar.swift */; };
 		E9C46E731A4A3C98004BD769 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C46E721A4A3C98004BD769 /* HTTPSession.swift */; };
-		E9CF04B21A3CE02A00A13EF6 /* CoreExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */; };
-		E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */; };
-		E9CF04B51A3CE40E00A13EF6 /* CoreExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */; };
+		E9CF04B21A3CE02A00A13EF6 /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* FoundationExtensions.swift */; };
+		E9CF04B41A3CE14400A13EF6 /* FoundationExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B31A3CE14400A13EF6 /* FoundationExtensionsTests.swift */; };
+		E9CF04B51A3CE40E00A13EF6 /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CF04B11A3CE02A00A13EF6 /* FoundationExtensions.swift */; };
 		E9D37F531BF130AC0028403F /* VCardSourceStoreMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D37F521BF130AC0028403F /* VCardSourceStoreMigrations.swift */; };
 		E9D37F561BF143DD0028403F /* VCardSourceStoreMigrationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D37F551BF143DD0028403F /* VCardSourceStoreMigrationsTests.swift */; };
 		E9D37F581BF1447C0028403F /* VCardSourceStoreMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D37F521BF130AC0028403F /* VCardSourceStoreMigrations.swift */; };
@@ -194,8 +194,8 @@
 		E9AF2E2C1BD81BEF00C7C7D6 /* URLDownloadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLDownloadable.swift; path = Net/URLDownloadable.swift; sourceTree = "<group>"; };
 		E9B9B9F31A5BF653004C53CA /* VCardToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardToolbar.swift; path = UI/VCardToolbar.swift; sourceTree = "<group>"; };
 		E9C46E721A4A3C98004BD769 /* HTTPSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPSession.swift; path = Net/HTTPSession.swift; sourceTree = "<group>"; };
-		E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreExtension.swift; path = Support/CoreExtension.swift; sourceTree = "<group>"; };
-		E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreExtensionTests.swift; path = Support/CoreExtensionTests.swift; sourceTree = "<group>"; };
+		E9CF04B11A3CE02A00A13EF6 /* FoundationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoundationExtensions.swift; path = Support/FoundationExtensions.swift; sourceTree = "<group>"; };
+		E9CF04B31A3CE14400A13EF6 /* FoundationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoundationExtensionsTests.swift; path = Support/FoundationExtensionsTests.swift; sourceTree = "<group>"; };
 		E9D37F521BF130AC0028403F /* VCardSourceStoreMigrations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceStoreMigrations.swift; path = Store/VCardSourceStoreMigrations.swift; sourceTree = "<group>"; };
 		E9D37F551BF143DD0028403F /* VCardSourceStoreMigrationsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceStoreMigrationsTests.swift; path = Store/VCardSourceStoreMigrationsTests.swift; sourceTree = "<group>"; };
 		E9E9110D1A9BD38A009E357B /* TestRecords.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestRecords.swift; path = Record/TestRecords.swift; sourceTree = "<group>"; };
@@ -378,8 +378,8 @@
 		E9F0D69D1A78BA7A002191E9 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				E9CF04B11A3CE02A00A13EF6 /* FoundationExtensions.swift */,
 				E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */,
-				E9CF04B11A3CE02A00A13EF6 /* CoreExtension.swift */,
 				E90684B01A58B17900728D0B /* DictionaryConvertible.swift */,
 				E9F31E111A0FD2570015509F /* Errors.swift */,
 				E947E1581A4F87A200513F77 /* Files.swift */,
@@ -434,7 +434,7 @@
 		E9F0D6A11A78BF78002191E9 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				E9CF04B31A3CE14400A13EF6 /* CoreExtensionTests.swift */,
+				E9CF04B31A3CE14400A13EF6 /* FoundationExtensionsTests.swift */,
 				E98FD3F31A508B5300A9DB27 /* FilesTests.swift */,
 				E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */,
 				E92F0B881AA31E2000367705 /* MiniFutureExtensionTests.swift */,
@@ -676,7 +676,7 @@
 			files = (
 				E9F9D8601A361C1B0054DCB8 /* Config.swift in Sources */,
 				E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */,
-				E9CF04B21A3CE02A00A13EF6 /* CoreExtension.swift in Sources */,
+				E9CF04B21A3CE02A00A13EF6 /* FoundationExtensions.swift in Sources */,
 				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E947E1591A4F87A200513F77 /* Files.swift in Sources */,
@@ -731,7 +731,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E91E62011A6B082F00543A40 /* Config.swift in Sources */,
-				E9CF04B51A3CE40E00A13EF6 /* CoreExtension.swift in Sources */,
+				E9CF04B51A3CE40E00A13EF6 /* FoundationExtensions.swift in Sources */,
 				E9AD7D111A69F7A700F1B668 /* DictionaryConvertible.swift in Sources */,
 				E9F228A21A43938E00A10190 /* Errors.swift in Sources */,
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
@@ -756,7 +756,7 @@
 				E9828EAA1A99E27C00757D18 /* VCardImporter.swift in Sources */,
 				E9828EAB1A99E2B700757D18 /* VCardSource.swift in Sources */,
 				E9D37F581BF1447C0028403F /* VCardSourceStoreMigrations.swift in Sources */,
-				E9CF04B41A3CE14400A13EF6 /* CoreExtensionTests.swift in Sources */,
+				E9CF04B41A3CE14400A13EF6 /* FoundationExtensionsTests.swift in Sources */,
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
 				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,
 				E92F0B891AA31E2000367705 /* MiniFutureExtensionTests.swift in Sources */,
