@@ -1,8 +1,7 @@
 import UIKit
 
 private func makeFont() -> UIFont {
-  let font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-  return font.fontWithSize(font.pointSize - 4)
+  return Fonts.sizeAdjusted(Fonts.bodyFont(), by: -4)
 }
 
 private func makeLabel(text: String) -> UILabel {

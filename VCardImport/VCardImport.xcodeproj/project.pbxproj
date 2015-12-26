@@ -59,6 +59,7 @@
 		E983F1DA19E9C76F00219305 /* VCardSourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983F1D919E9C76F00219305 /* VCardSourcesViewController.swift */; };
 		E983F1DF19E9C76F00219305 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E983F1DE19E9C76F00219305 /* Images.xcassets */; };
 		E983F1E219E9C76F00219305 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E983F1E019E9C76F00219305 /* LaunchScreen.xib */; };
++		E988AA521C2E1CEA00D53203 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E988AA511C2E1CEA00D53203 /* Fonts.swift */; };
 		E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FD3F31A508B5300A9DB27 /* FilesTests.swift */; };
 		E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = E947E1581A4F87A200513F77 /* Files.swift */; };
 		E9916B3A1A3DEAAC00378CC2 /* RecordChangeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */; };
@@ -177,6 +178,7 @@
 		E983F1E119E9C76F00219305 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		E983F1E719E9C76F00219305 /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E983F1EC19E9C76F00219305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E988AA511C2E1CEA00D53203 /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Fonts.swift; path = UI/Fonts.swift; sourceTree = "<group>"; };
 		E98FD3F31A508B5300A9DB27 /* FilesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FilesTests.swift; path = Support/FilesTests.swift; sourceTree = "<group>"; };
 		E9916B391A3DEAAC00378CC2 /* RecordChangeSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordChangeSet.swift; path = Record/RecordChangeSet.swift; sourceTree = "<group>"; };
 		E996101A1A894B5C00D52ECF /* aa-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "aa-60.png"; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 			isa = PBXGroup;
 			children = (
 				E983F1D719E9C76F00219305 /* AppDelegate.swift */,
+				E988AA511C2E1CEA00D53203 /* Fonts.swift */,
 				E95F908C1C0B2CC60003B594 /* MultilineLabel.swift */,
 				E99D45421C131CCA00A43993 /* LabeledSelectionCell.swift */,
 				E99D45401C1315CD00A43993 /* LabeledSwitchCell.swift */,
@@ -699,6 +702,7 @@
 				E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */,
 				E9D37F531BF130AC0028403F /* VCardSourceStoreMigrations.swift in Sources */,
 				E983F1D819E9C76F00219305 /* AppDelegate.swift in Sources */,
+				E988AA521C2E1CEA00D53203 /* Fonts.swift in Sources */,
 				E95F908D1C0B2CC60003B594 /* MultilineLabel.swift in Sources */,
 				E99D45431C131CCA00A43993 /* LabeledSelectionCell.swift in Sources */,
 				E99D45411C1315CD00A43993 /* LabeledSwitchCell.swift in Sources */,
