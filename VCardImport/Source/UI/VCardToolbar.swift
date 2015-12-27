@@ -8,7 +8,7 @@ private func makeButton(
   let button = UIButton(type: .System)
   button.setTitle(title, forState: .Normal)
   if let label = button.titleLabel {
-    label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody).fontWithSize(17)
+    label.font = UIFont.fontForBodyStyle().fontWithSize(17)
   }
   button.contentHorizontalAlignment = labelAlignment
   return button
@@ -19,7 +19,7 @@ private func makeProgressLabel() -> UILabel {
   label.textAlignment = .Center
   label.textColor = Config.UI.ToolbarProgressTextColor
   label.adjustsFontSizeToFitWidth = true
-  label.font = label.font.fontWithSize(13)
+  label.font = UIFont.fontForBodyStyle().fontWithSize(13)
   label.minimumScaleFactor = 0.85
   label.lineBreakMode = .ByWordWrapping
   label.numberOfLines = 2
