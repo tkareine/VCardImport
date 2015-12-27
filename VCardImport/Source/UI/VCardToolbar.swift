@@ -40,7 +40,7 @@ private func getBorderLayerRect(bounds: CGRect) -> CGRect {
 class VCardToolbar: UIView {
   let importButton = makeButton("Import", align: .Left)
   let backupButton = makeButton("Backup", align: .Right)
-  let progressLabel  = makeProgressLabel()
+  let progressLabel = makeProgressLabel()
   let progressView = makeProgressView()
 
   private var border: CALayer!
@@ -54,8 +54,8 @@ class VCardToolbar: UIView {
     addSubview(backupButton)
     addSubview(progressLabel)
 
-    // add before border sublayer before progressView so that the latter
-    // obscures the former when shown
+    // add border sublayer before progressView so that the latter obscures the
+    // former when shown
     layer.addSublayer(border)
     addSubview(progressView)
 
