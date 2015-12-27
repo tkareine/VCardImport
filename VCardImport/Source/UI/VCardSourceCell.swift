@@ -22,8 +22,6 @@ class VCardSourceCell: UITableViewCell {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
-  // MARK: Public API
-
   func setContents(source: VCardSource) {
     headerLabel.text = source.name
     headerLabel.textColor = source.isEnabled
