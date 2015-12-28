@@ -9,7 +9,7 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
 
   private var tableView: UITableView!
 
-  private var headerView: MultilineLabel!
+  private var noteLabel: MultilineLabel!
   private var vcardURLValidationResultView: LabeledActivityIndicator!
 
   private var nameCell: LabeledTextFieldCell!
@@ -65,6 +65,10 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
   override func loadView() {
     func makeTableView() -> UITableView {
       let tv = UITableView(frame: CGRect(), style: .Grouped)
+      tv.estimatedSectionHeaderHeight = 50
+      tv.estimatedRowHeight = 40
+      tv.rowHeight = UITableViewAutomaticDimension
+      tv.sectionFooterHeight = 0
       tv.delegate = self
       tv.dataSource = self
       return tv
@@ -253,30 +257,13 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
 
     cellsByIndexPath = makeCellsByIndexPath()
 
-    headerView = MultilineLabel(frame: CGRect(), labelText: Config.UI.VCardSourceNoteText)
+    noteLabel = MultilineLabel(frame: CGRect(), labelText: Config.UI.VCardSourceNoteText)
     vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect())
 
     tableView = makeTableView()
-    tableView.tableHeaderView = headerView
-
     view = tableView
 
     setupBackgroundTapTo(view)
-  }
-
-  override func viewWillLayoutSubviews() {
-    // adapted from <http://roadfiresoftware.com/2015/05/how-to-size-a-table-header-view-using-auto-layout-in-interface-builder/>
-
-    super.viewWillLayoutSubviews()
-
-    headerView.setNeedsLayout()
-    headerView.layoutIfNeeded()
-
-    var frame = headerView.frame
-    frame.size = headerView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
-    headerView.frame = frame
-
-    tableView.tableHeaderView = headerView
   }
 
   override func viewWillAppear(animated: Bool) {
@@ -346,23 +333,27 @@ class VCardSourceDetailViewController2: UIViewController, UITableViewDelegate, U
     heightForHeaderInSection section: Int)
     -> CGFloat
   {
-    return section == 0 ? 0 : 1
+    switch section {
+    case 0, 1:
+      return UITableViewAutomaticDimension
+    default:
+      return 20
+    }
   }
 
   func tableView(
     tableView: UITableView,
-    heightForFooterInSection section: Int)
-    -> CGFloat
-  {
-    return section == 0 ? 40 : 0
-  }
-
-  func tableView(
-    tableView: UITableView,
-    viewForFooterInSection section: Int)
+    viewForHeaderInSection section: Int)
     -> UIView?
   {
-    return section == 0 ? vcardURLValidationResultView : nil
+    switch section {
+    case 0:
+      return noteLabel
+    case 1:
+      return vcardURLValidationResultView
+    default:
+      return nil
+    }
   }
 
   func tableView(

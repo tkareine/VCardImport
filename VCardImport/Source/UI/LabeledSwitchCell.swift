@@ -67,6 +67,7 @@ class LabeledSwitchCell: UITableViewCell {
     theSwitch.translatesAutoresizingMaskIntoConstraints = false
 
     theSwitch.setContentHuggingPriority(251, forAxis: .Horizontal)
+    theSwitch.setContentCompressionResistancePriority(751, forAxis: .Horizontal)
 
     NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[label]-[switch]-|",
@@ -79,10 +80,19 @@ class LabeledSwitchCell: UITableViewCell {
 
     NSLayoutConstraint(
       item: label,
-      attribute: .CenterY,
+      attribute: .Top,
       relatedBy: .Equal,
       toItem: contentView,
-      attribute: .CenterY,
+      attribute: .TopMargin,
+      multiplier: 1,
+      constant: 0).active = true
+
+    NSLayoutConstraint(
+      item: label,
+      attribute: .Bottom,
+      relatedBy: .Equal,
+      toItem: contentView,
+      attribute: .BottomMargin,
       multiplier: 1,
       constant: 0).active = true
 

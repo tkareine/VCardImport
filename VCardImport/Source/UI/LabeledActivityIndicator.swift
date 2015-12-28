@@ -9,6 +9,7 @@ private func makeLabel() -> UILabel {
   label.font = makeFont()
   label.textAlignment = .Center
   label.alpha = 0
+  label.numberOfLines = 1
   return label
 }
 
@@ -87,23 +88,19 @@ class LabeledActivityIndicator: UIView {
     label.translatesAutoresizingMaskIntoConstraints = false
     activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 
-    NSLayoutConstraint(
-      item: label,
-      attribute: .CenterY,
-      relatedBy: .Equal,
-      toItem: self,
-      attribute: .CenterY,
-      multiplier: 1,
-      constant: 0).active = true
+    let viewNamesToObjects = ["label": label]
 
-    NSLayoutConstraint(
-      item: label,
-      attribute: .CenterX,
-      relatedBy: .Equal,
-      toItem: self,
-      attribute: .CenterX,
-      multiplier: 1,
-      constant: 0).active = true
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "H:|-28-[label]-28-|",
+      options: [],
+      metrics: nil,
+      views: viewNamesToObjects))
+
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "V:|-[label(>=20)]-|",
+      options: [],
+      metrics: nil,
+      views: viewNamesToObjects))
 
     NSLayoutConstraint(
       item: activityIndicator,

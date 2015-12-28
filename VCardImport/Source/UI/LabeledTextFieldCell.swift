@@ -114,6 +114,7 @@ class LabeledTextFieldCell: UITableViewCell {
     textField.translatesAutoresizingMaskIntoConstraints = false
 
     label.setContentHuggingPriority(251, forAxis: .Horizontal)
+    label.setContentCompressionResistancePriority(751, forAxis: .Horizontal)
 
     NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[label]-[textField]-|",
@@ -126,19 +127,28 @@ class LabeledTextFieldCell: UITableViewCell {
 
     NSLayoutConstraint(
       item: label,
-      attribute: .CenterY,
+      attribute: .Top,
       relatedBy: .Equal,
       toItem: contentView,
-      attribute: .CenterY,
+      attribute: .TopMargin,
+      multiplier: 1,
+      constant: 0).active = true
+
+    NSLayoutConstraint(
+      item: label,
+      attribute: .Bottom,
+      relatedBy: .Equal,
+      toItem: contentView,
+      attribute: .BottomMargin,
       multiplier: 1,
       constant: 0).active = true
 
     NSLayoutConstraint(
       item: textField,
-      attribute: .CenterY,
+      attribute: .Baseline,
       relatedBy: .Equal,
-      toItem: contentView,
-      attribute: .CenterY,
+      toItem: label,
+      attribute: .Baseline,
       multiplier: 1,
       constant: 0).active = true
   }

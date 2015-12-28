@@ -44,7 +44,8 @@ class MultilineLabel: UIView {
   // MARK: Laying out Subviews
 
   override func layoutSubviews() {
-    label.preferredMaxLayoutWidth = bounds.width
+    super.layoutSubviews()
+    label.preferredMaxLayoutWidth = label.frame.size.width
     super.layoutSubviews()
   }
 
@@ -57,12 +58,9 @@ class MultilineLabel: UIView {
   // MARK: Helpers
 
   private func setupLayout() {
-    self.translatesAutoresizingMaskIntoConstraints = false
     label.translatesAutoresizingMaskIntoConstraints = false
 
-    let viewNamesToObjects = [
-      "label": label
-    ]
+    let viewNamesToObjects = ["label": label]
 
     NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[label]-|",
@@ -71,7 +69,7 @@ class MultilineLabel: UIView {
       views: viewNamesToObjects))
 
     NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:|-[label]-|",
+      "V:|-15-[label]-15-|",
       options: [],
       metrics: nil,
       views: viewNamesToObjects))
