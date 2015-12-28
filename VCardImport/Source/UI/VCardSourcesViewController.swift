@@ -75,7 +75,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     func makeTableView() -> UITableView {
       let tv = UITableView()
-      tv.estimatedRowHeight = 95
+      tv.estimatedRowHeight = 80
       tv.rowHeight = UITableViewAutomaticDimension
       tv.dataSource = dataSource
       tv.delegate = self
