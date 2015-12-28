@@ -128,80 +128,78 @@ class VCardToolbar: UIView {
     progressLabel.setContentCompressionResistancePriority(749, forAxis: .Horizontal)
     progressView.translatesAutoresizingMaskIntoConstraints = false
 
-    let viewNamesToObjects = [
-      "importButton": importButton,
-      "backupButton": backupButton,
-      "progressLabel": progressLabel,
-      "progressView": progressView
-    ]
-
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: importButton,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: backupButton,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: importButton,
       attribute: .Width,
       relatedBy: .Equal,
       toItem: backupButton,
       attribute: .Width,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: progressLabel,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: progressView,
       attribute: .Width,
       relatedBy: .Equal,
       toItem: self,
       attribute: .Width,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: progressView,
       attribute: .Top,
       relatedBy: .Equal,
       toItem: self,
       attribute: .Top,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: progressView,
       attribute: .Height,
       relatedBy: .Equal,
       toItem: nil,
       attribute: .NotAnAttribute,
       multiplier: 1,
-      constant: 4))
+      constant: 4).active = true
 
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[importButton(>=50)]-10-[progressLabel]-10-[backupButton(>=50)]-|",
       options: [],
       metrics: nil,
-      views: viewNamesToObjects))
+      views: [
+        "importButton": importButton,
+        "backupButton": backupButton,
+        "progressLabel": progressLabel,
+        "progressView": progressView
+      ]))
   }
 }

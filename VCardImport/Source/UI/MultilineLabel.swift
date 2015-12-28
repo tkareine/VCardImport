@@ -64,13 +64,13 @@ class MultilineLabel: UIView {
       "label": label
     ]
 
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[label]-|",
       options: [],
       metrics: nil,
       views: viewNamesToObjects))
 
-    addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "V:|-[label]-|",
       options: [],
       metrics: nil,

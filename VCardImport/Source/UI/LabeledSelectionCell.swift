@@ -74,33 +74,31 @@ class LabeledSelectionCell<T>: UITableViewCell {
 
     label.setContentHuggingPriority(251, forAxis: .Horizontal)
 
-    let viewNamesToObjects = [
-      "label": label,
-      "selection": selectionText
-    ]
-
-    contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[label]-[selection]-|",
       options: [],
       metrics: nil,
-      views: viewNamesToObjects))
+      views: [
+        "label": label,
+        "selection": selectionText
+      ]))
 
-    contentView.addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: label,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: contentView,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    contentView.addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: selectionText,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: contentView,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
   }
 }

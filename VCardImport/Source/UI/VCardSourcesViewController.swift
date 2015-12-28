@@ -102,19 +102,19 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       tableView.translatesAutoresizingMaskIntoConstraints = false
       toolbar.translatesAutoresizingMaskIntoConstraints = false
 
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[tableView]|",
         options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[toolbar]|",
         options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
-      view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "V:|[tableView][toolbar(==58)]|",
         options: [],
         metrics: nil,

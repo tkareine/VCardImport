@@ -115,33 +115,31 @@ class LabeledTextFieldCell: UITableViewCell {
 
     label.setContentHuggingPriority(251, forAxis: .Horizontal)
 
-    let viewNamesToObjects = [
-      "label": label,
-      "textField": textField
-    ]
-
-    contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "H:|-[label]-[textField]-|",
       options: [],
       metrics: nil,
-      views: viewNamesToObjects))
+      views: [
+        "label": label,
+        "textField": textField
+      ]))
 
-    contentView.addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: label,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: contentView,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    contentView.addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: textField,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: contentView,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
   }
 }

@@ -87,40 +87,40 @@ class LabeledActivityIndicator: UIView {
     label.translatesAutoresizingMaskIntoConstraints = false
     activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: label,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: label,
       attribute: .CenterX,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterX,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: activityIndicator,
       attribute: .CenterY,
       relatedBy: .Equal,
       toItem: self,
       attribute: .CenterY,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
 
-    addConstraint(NSLayoutConstraint(
+    NSLayoutConstraint(
       item: activityIndicator,
       attribute: .Trailing,
       relatedBy: .Equal,
       toItem: self,
       attribute: .TrailingMargin,
       multiplier: 1,
-      constant: 0))
+      constant: 0).active = true
   }
 }
