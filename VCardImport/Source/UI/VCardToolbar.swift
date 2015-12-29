@@ -38,10 +38,10 @@ private func getBorderLayerRect(bounds: CGRect) -> CGRect {
 }
 
 class VCardToolbar: UIView {
-  let importButton = makeButton("Import", align: .Left)
-  let backupButton = makeButton("Backup", align: .Right)
-  let progressLabel = makeProgressLabel()
-  let progressView = makeProgressView()
+  private let importButton = makeButton("Import", align: .Left)
+  private let backupButton = makeButton("Backup", align: .Right)
+  private let progressLabel = makeProgressLabel()
+  private let progressView = makeProgressView()
 
   private var border: CALayer!
 
@@ -68,6 +68,23 @@ class VCardToolbar: UIView {
 
   required init?(coder decoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  var importButtonEnabled: Bool {
+    get {
+      return importButton.enabled
+    }
+    set {
+      importButton.enabled = newValue
+    }
+  }
+
+  func addImportButtonTarget(
+    target: AnyObject?,
+    action: Selector,
+    forControlEvents: UIControlEvents)
+  {
+    importButton.addTarget(target, action: action, forControlEvents: forControlEvents)
   }
 
   func beginProgress(text: String) {

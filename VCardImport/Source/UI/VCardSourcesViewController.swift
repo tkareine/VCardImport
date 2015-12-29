@@ -77,7 +77,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   override func loadView() {
     func makeToolbar() -> VCardToolbar {
       let tb = VCardToolbar()
-      tb.importButton.addTarget(
+      tb.addImportButtonTarget(
         self,
         action: "importVCardSources:",
         forControlEvents: .TouchUpInside)
@@ -190,7 +190,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     editButton.enabled = dataSource.hasVCardSources
 
-    toolbar.importButton.enabled =
+    toolbar.importButtonEnabled =
       !editing &&
       downloadProgress == nil &&
       dataSource.hasEnabledVCardSources
