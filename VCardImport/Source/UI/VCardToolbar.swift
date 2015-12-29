@@ -215,8 +215,7 @@ class VCardToolbar: UIView {
       views: [
         "importButton": importButton,
         "backupButton": backupButton,
-        "progressLabel": progressLabel,
-        "progressView": progressView
+        "progressLabel": progressLabel
       ]))
   }
 }
