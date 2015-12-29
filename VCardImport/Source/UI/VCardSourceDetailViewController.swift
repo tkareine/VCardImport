@@ -44,7 +44,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     super.init(nibName: nil, bundle: nil)
 
     if isNewSource {
-      navigationItem.title = Config.UI.VCardNewSourceHeader
+      navigationItem.title = "Add vCard Source"
 
       navigationItem.leftBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .Cancel,
@@ -257,7 +257,10 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
     cellsByIndexPath = makeCellsByIndexPath()
 
-    noteLabel = MultilineLabel(frame: CGRect(), labelText: Config.UI.VCardSourceNoteText)
+    noteLabel = MultilineLabel(
+      frame: CGRect(),
+      labelText: "Specify vCard file URL at remote server you trust. Prefer secure connections with https URLs. All contacts in the vCard file will be considered for importing.")
+
     vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect())
 
     tableView = makeTableView()
