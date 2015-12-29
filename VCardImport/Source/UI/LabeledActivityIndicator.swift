@@ -14,13 +14,10 @@ private func makeLabel() -> UILabel {
 }
 
 class LabeledActivityIndicator: UIView {
-  private let label: UILabel
-  private let activityIndicator: UIActivityIndicatorView
+  private let label = makeLabel()
+  private let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
 
   override init(frame: CGRect) {
-    label = makeLabel()
-    activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-
     super.init(frame: frame)
 
     addSubview(label)
