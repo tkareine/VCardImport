@@ -59,9 +59,6 @@ struct Config {
     static let ToolbarBackgroundColor = UIColor(white: 0.97, alpha: 1)
     static let ToolbarBorderColor = UIColor(white: 0.8, alpha: 1).CGColor
     static let ToolbarProgressTextColor = TableCellDescriptionTextColor
-    static let ValidationBorderColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.6).CGColor
-    static let ValidationBorderWidth: CGFloat = 2
-    static let ValidationCornerRadius: CGFloat = 5
     static let ValidationThrottleInMS = 300
     static let VCardNewSourceHeader = "Add vCard Source"
     static let VCardSourceNoteText = "Specify vCard file URL at remote server you trust. Prefer secure connections with https URL. All contacts in the vCard file will be considered for importing."
