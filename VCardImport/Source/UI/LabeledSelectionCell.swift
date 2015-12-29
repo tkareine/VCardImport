@@ -19,7 +19,7 @@ class LabeledSelectionCell<T>: UITableViewCell {
 
   init(label labelText: String, selection: SelectionOption<T>) {
     label = makeLabel(labelText, textAlignment: .Left)
-    selectionText = makeLabel(selection.description, textAlignment: .Right)
+    selectionText = makeLabel(selection.shortDescription, textAlignment: .Right)
     selectionData = selection.data
 
     super.init(style: .Default, reuseIdentifier: nil)
@@ -52,10 +52,10 @@ class LabeledSelectionCell<T>: UITableViewCell {
 
   var selection: SelectionOption<T> {
     get {
-      return SelectionOption(description: selectionText.text!, data: selectionData)
+      return SelectionOption(data: selectionData, shortDescription: selectionText.text!)
     }
     set {
-      selectionText.text = newValue.description
+      selectionText.text = newValue.shortDescription
       selectionData = newValue.data
     }
   }

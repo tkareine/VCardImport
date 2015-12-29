@@ -100,6 +100,7 @@
 		E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */; };
 		E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */; };
 		E9F9D8601A361C1B0054DCB8 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
+		E9FA70B81C33319000B76027 /* SelectionOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA70B71C33319000B76027 /* SelectionOptionCell.swift */; };
 		E9FD3F9F1C09EABD00126DF0 /* VCardSourceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FD3F9E1C09EABD00126DF0 /* VCardSourceDetailViewController.swift */; };
 		E9FD3FA11C09F44E00126DF0 /* LabeledTextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FD3FA01C09F44E00126DF0 /* LabeledTextFieldCell.swift */; };
 		FE8CF8A46BB7043B6A93B3D7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; };
@@ -204,6 +205,7 @@
 		E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppContext.swift; path = Support/AppContext.swift; sourceTree = "<group>"; };
 		E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourcesDataSource.swift; path = UI/VCardSourcesDataSource.swift; sourceTree = "<group>"; };
 		E9F9D85F1A361C1B0054DCB8 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		E9FA70B71C33319000B76027 /* SelectionOptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectionOptionCell.swift; path = UI/SelectionOptionCell.swift; sourceTree = "<group>"; };
 		E9FD3F9E1C09EABD00126DF0 /* VCardSourceDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceDetailViewController.swift; path = UI/VCardSourceDetailViewController.swift; sourceTree = "<group>"; };
 		E9FD3FA01C09F44E00126DF0 /* LabeledTextFieldCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LabeledTextFieldCell.swift; path = UI/LabeledTextFieldCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -398,6 +400,7 @@
 				E9FD3FA01C09F44E00126DF0 /* LabeledTextFieldCell.swift */,
 				E945D5371C2DE841005A79B1 /* ProxyTextFieldDelegate.swift */,
 				E96A171F1C1A23E30016DEE9 /* SelectionOption.swift */,
+				E9FA70B71C33319000B76027 /* SelectionOptionCell.swift */,
 				E96A171D1C1A14520016DEE9 /* SelectionViewController.swift */,
 				E988AA4F1C2DF71200D53203 /* InputValidator.swift */,
 				E97BCB091BC9BB7B000307D6 /* ValidationError.swift */,
@@ -703,6 +706,7 @@
 				E9FD3FA11C09F44E00126DF0 /* LabeledTextFieldCell.swift in Sources */,
 				E945D5381C2DE841005A79B1 /* ProxyTextFieldDelegate.swift in Sources */,
 				E96A17201C1A23E30016DEE9 /* SelectionOption.swift in Sources */,
+				E9FA70B81C33319000B76027 /* SelectionOptionCell.swift in Sources */,
 				E96A171E1C1A14520016DEE9 /* SelectionViewController.swift in Sources */,
 				E988AA501C2DF71200D53203 /* InputValidator.swift in Sources */,
 				E97BCB0A1BC9BB7B000307D6 /* ValidationError.swift in Sources */,

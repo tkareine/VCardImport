@@ -132,8 +132,8 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       return LabeledSelectionCell(
         label: "Authentication",
         selection: SelectionOption(
-          description: source.connection.authenticationMethod.usageDescription,
-          data: source.connection.authenticationMethod))
+          data: source.connection.authenticationMethod,
+          shortDescription: source.connection.authenticationMethod.shortDescription))
     }
 
     func makeUsernameCell() -> LabeledTextFieldCell {
@@ -362,7 +362,10 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   {
     if let cell = cellAtIndexPath(indexPath) where cell === authMethodCell {
       let selectionOptions = HTTPRequest.AuthenticationMethod.allValues.map {
-        SelectionOption(description: $0.usageDescription, data: $0)
+        SelectionOption(
+          data: $0,
+          shortDescription: $0.shortDescription,
+          longDescription: $0.longDescription)
       }
       let selectedAuthMethod = authMethodCell.selection.data
       let preselectionIndex = selectionOptions.findIndexWhere({ $0.data == selectedAuthMethod })!

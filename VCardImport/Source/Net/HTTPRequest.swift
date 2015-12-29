@@ -36,12 +36,21 @@ struct HTTPRequest {
 
     static let allValues = [HTTPAuth, PostForm]
 
-    var usageDescription: String {
+    var shortDescription: String {
       switch self {
       case .HTTPAuth:
         return "HTTP Basic Auth"
       case .PostForm:
         return "Post Form"
+      }
+    }
+
+    var longDescription: String {
+      switch self {
+      case .HTTPAuth:
+        return "The standard HTTP authentication with username and password."
+      case .PostForm:
+        return "Cookie based HTTP session authentication by login form submission with POST method, sending username and password as URL encoded values. The URL for the login submission must be separate from the vCard file URL. The app employs detection for authentication outcome, which is not fully reliable."
       }
     }
   }

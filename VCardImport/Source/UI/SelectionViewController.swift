@@ -29,10 +29,11 @@ class SelectionViewController<T>: UIViewController, UITableViewDelegate, UITable
   override func loadView() {
     func makeTableView() -> UITableView {
       let tv = UITableView()
+      tv.estimatedRowHeight = 79
       tv.rowHeight = UITableViewAutomaticDimension
       tv.dataSource = self
       tv.delegate = self
-      tv.registerClass(UITableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+      tv.registerClass(SelectionOptionCell.self, forCellReuseIdentifier: CellIdentifier)
       return tv
     }
 
@@ -63,8 +64,11 @@ class SelectionViewController<T>: UIViewController, UITableViewDelegate, UITable
     cellForRowAtIndexPath indexPath: NSIndexPath)
     -> UITableViewCell
   {
-    let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath)
-    cell.textLabel!.text = selectionOptions[indexPath.row].description
+    let cell = tableView.dequeueReusableCellWithIdentifier(
+      CellIdentifier, forIndexPath: indexPath) as! SelectionOptionCell
+    let option = selectionOptions[indexPath.row]
+    cell.headerText = option.shortDescription
+    cell.descriptionText = option.longDescription
     cell.accessoryType = indexPath.row == preselectionIndex ? .Checkmark : .None
     return cell
   }
