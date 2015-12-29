@@ -8,6 +8,7 @@ class SelectionViewController<T>: UIViewController, UITableViewDelegate, UITable
   private let preselectionIndex: Int
 
   init(
+    title: String,
     selectionOptions: [SelectionOption<T>],
     preselectionIndex: Int,
     selectionHandler onSelect: SelectionOption<T> -> Void)
@@ -17,6 +18,8 @@ class SelectionViewController<T>: UIViewController, UITableViewDelegate, UITable
     self.onSelect = onSelect
 
     super.init(nibName: nil, bundle: nil)
+
+    navigationItem.title = title
   }
 
   required init?(coder aDecoder: NSCoder) {

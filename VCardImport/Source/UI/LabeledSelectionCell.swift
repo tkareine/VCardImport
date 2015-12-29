@@ -48,6 +48,10 @@ class LabeledSelectionCell<T>: UITableViewCell {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
+  var labelText: String {
+    return label.text!
+  }
+
   var selection: SelectionOption<T> {
     get {
       return SelectionOption(description: selectionText.text!, data: selectionData)

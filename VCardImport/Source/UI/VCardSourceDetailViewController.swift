@@ -367,6 +367,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       let selectedAuthMethod = authMethodCell.selection.data
       let preselectionIndex = selectionOptions.findIndexWhere({ $0.data == selectedAuthMethod })!
       let vc = SelectionViewController(
+        title: authMethodCell.labelText,
         selectionOptions: selectionOptions,
         preselectionIndex: preselectionIndex
         ) { [unowned self] selectedOption in
