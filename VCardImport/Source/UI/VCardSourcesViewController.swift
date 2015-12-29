@@ -11,7 +11,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
   private var vcardImporter: VCardImporter!
-  private var downloadProgress: DownloadProgress!
+  private var downloadProgress: DownloadProgress?
 
   init(appContext: AppContext) {
     dataSource = VCardSourcesDataSource(
@@ -228,7 +228,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     type: DownloadProgress.Progress,
     forSource source: VCardSource)
   {
-    let progress = downloadProgress.step(type, forId: source.id)
+    let progress = downloadProgress!.step(type, forId: source.id)
     let text = type.describeProgress(source.name)
     NSLog("Import progress: %0.1f%% %@", progress * 100, text)
     toolbar.inProgress(text: text, progress: progress)
