@@ -288,7 +288,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     if isNewSource {
       refreshDoneButtonEnabled()
     } else {
-      nameValidator.validate(nameCell.currentText)
+      nameValidator.validate(nameCell.textFieldText)
       validateVCardURL()
     }
   }
@@ -302,16 +302,16 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       let authenticationMethod = authMethodCell.selection.data
 
       let newConnection = VCardSource.Connection(
-        vcardURL: vcardURLCell.currentText,
+        vcardURL: vcardURLCell.textFieldText,
         authenticationMethod: authenticationMethod,
-        username: usernameCell.currentText,
-        password: passwordCell.currentText,
-        loginURL: authenticationMethod == .PostForm ? loginURLCell.currentText : nil)
+        username: usernameCell.textFieldText,
+        password: passwordCell.textFieldText,
+        loginURL: authenticationMethod == .PostForm ? loginURLCell.textFieldText : nil)
 
       let newSource = source.with(
-        name: nameCell.currentText.trimmed,
+        name: nameCell.textFieldText.trimmed,
         connection: newConnection,
-        isEnabled: isEnabledCell.on
+        isEnabled: isEnabledCell.switchOn
       )
 
       onDisappear(newSource)
@@ -525,11 +525,11 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     loginURL: String? = nil)
   {
     let connection = VCardSource.Connection(
-      vcardURL: vcardURL ?? vcardURLCell.currentText,
+      vcardURL: vcardURL ?? vcardURLCell.textFieldText,
       authenticationMethod: authenticationMethod ?? authMethodCell.selection.data,
-      username: username ?? usernameCell.currentText,
-      password: password ?? passwordCell.currentText,
-      loginURL: loginURL ?? loginURLCell.currentText)
+      username: username ?? usernameCell.textFieldText,
+      password: password ?? passwordCell.textFieldText,
+      loginURL: loginURL ?? loginURLCell.textFieldText)
 
     vcardURLValidator.validate(connection)
   }

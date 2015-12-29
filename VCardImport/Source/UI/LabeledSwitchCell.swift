@@ -50,7 +50,7 @@ class LabeledSwitchCell: UITableViewCell {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
-  var on: Bool {
+  var switchOn: Bool {
     return theSwitch.on
   }
 

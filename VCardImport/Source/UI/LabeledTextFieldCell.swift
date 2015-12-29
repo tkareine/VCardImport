@@ -90,7 +90,7 @@ class LabeledTextFieldCell: UITableViewCell {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
-  var currentText: String {
+  var textFieldText: String {
     return textField.text!
   }
 
