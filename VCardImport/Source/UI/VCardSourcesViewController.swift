@@ -11,7 +11,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
   private var vcardImporter: VCardImporter!
-  private var vcardImportProgress: VCardImportProgress!
+  private var downloadProgress: DownloadProgress!
 
   init(appContext: AppContext) {
     dataSource = VCardSourcesDataSource(
@@ -196,7 +196,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     toolbar.importButton.enabled =
       !editing &&
-      vcardImportProgress == nil &&
+      downloadProgress == nil &&
       dataSource.hasEnabledVCardSources
   }
 
@@ -220,22 +220,22 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   private func beginProgress(sources: [VCardSource]) {
-    vcardImportProgress = VCardImportProgress(sourceIds: sources.map { $0.id })
+    downloadProgress = DownloadProgress(sourceIds: sources.map { $0.id })
     toolbar.beginProgress("Checking for changes…")
   }
 
   private func inProgress(
-    type: VCardImportProgress.Progress,
+    type: DownloadProgress.Progress,
     forSource source: VCardSource)
   {
-    let progress = vcardImportProgress.step(type, forId: source.id)
+    let progress = downloadProgress.step(type, forId: source.id)
     let text = type.describeProgress(source.name)
     NSLog("Import progress: %0.1f%% %@", progress * 100, text)
     toolbar.inProgress(text: text, progress: progress)
   }
 
   private func endProgress() {
-    vcardImportProgress = nil
+    downloadProgress = nil
     toolbar.endProgress()
   }
 }

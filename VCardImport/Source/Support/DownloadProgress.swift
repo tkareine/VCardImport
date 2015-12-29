@@ -1,7 +1,7 @@
 private let MaxDownloadingToCompletionRatio: Float = 0.7
 private let MaxCompletionToDownloadingRatio = 1 - MaxDownloadingToCompletionRatio
 
-class VCardImportProgress {
+class DownloadProgress {
   private var lastProgress: Float = 0
   private let numSources: Float
   private var downloadLeftBySourceId: [String: Float]

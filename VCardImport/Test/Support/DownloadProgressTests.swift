@@ -2,7 +2,7 @@ import XCTest
 
 class VCardImportProgressTests: XCTestCase {
   func testSteppingTwoSources() {
-    let importProgress = VCardImportProgress(sourceIds: ["a", "b"])
+    let importProgress = DownloadProgress(sourceIds: ["a", "b"])
 
     var progress = importProgress.step(.Downloading(completionStepRatio: 0.4), forId: "a")
     XCTAssertEqualWithAccuracy(progress, Float(0.14), accuracy: 0.005)
@@ -24,7 +24,7 @@ class VCardImportProgressTests: XCTestCase {
   }
 
   func testSourcesCompletingWithoutDownloadProgress() {
-    let importProgress = VCardImportProgress(sourceIds: ["a", "b"])
+    let importProgress = DownloadProgress(sourceIds: ["a", "b"])
 
     var progress = importProgress.step(.Completed, forId: "a")
     XCTAssertEqualWithAccuracy(progress, Float(0.5), accuracy: 0.005)
@@ -34,7 +34,7 @@ class VCardImportProgressTests: XCTestCase {
   }
 
   func testSourcesCompletingManyTimes() {
-    let importProgress = VCardImportProgress(sourceIds: ["a", "b"])
+    let importProgress = DownloadProgress(sourceIds: ["a", "b"])
 
     var progress = importProgress.step(.Completed, forId: "a")
     XCTAssertEqualWithAccuracy(progress, Float(0.5), accuracy: 0.005)
@@ -50,7 +50,7 @@ class VCardImportProgressTests: XCTestCase {
   }
 
   func testSourceExceedingDownloadProgressBudget() {
-    let importProgress = VCardImportProgress(sourceIds: ["a"])
+    let importProgress = DownloadProgress(sourceIds: ["a"])
 
     var progress = importProgress.step(.Downloading(completionStepRatio: 0.7), forId: "a")
     XCTAssertEqualWithAccuracy(progress, Float(0.49), accuracy: 0.005)
