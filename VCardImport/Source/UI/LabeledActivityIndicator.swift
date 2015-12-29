@@ -44,7 +44,7 @@ class LabeledActivityIndicator: UIView {
     label.text = text
 
     UIView.animateWithDuration(
-      Config.UI.AnimationDurationFadeMessage,  // TODO: Rename const
+      Config.UI.MessageFadeAnimationDuration,
       delay: 0,
       options: .CurveEaseIn,
       animations: { [unowned self] in
@@ -61,8 +61,8 @@ class LabeledActivityIndicator: UIView {
 
     if fadeOut {
       UIView.animateWithDuration(
-        Config.UI.AnimationDurationFadeMessage,  // TODO: Rename const
-        delay: Config.UI.AnimationDelayFadeOutMessage,  // TODO: Rename const
+        Config.UI.MessageFadeAnimationDuration,
+        delay: Config.UI.MessageFadeOutAnimationDelay,
         options: .CurveEaseOut,
         animations: { [unowned self] in
           self.label.alpha = 0

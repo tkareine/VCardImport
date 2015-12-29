@@ -50,8 +50,8 @@ struct Config {
   }
 
   struct UI {
-    static let AnimationDurationFadeMessage: NSTimeInterval = 0.5
-    static let AnimationDelayFadeOutMessage: NSTimeInterval = 5
+    static let MessageFadeAnimationDuration: NSTimeInterval = 0.5
+    static let MessageFadeOutAnimationDelay: NSTimeInterval = 5
     static let TableCellHeaderTextColor = UIColor.blackColor()
     static let TableCellDescriptionTextColor = UIColor.darkGrayColor()
     static let TableCellDisabledTextColor = UIColor.grayColor()
