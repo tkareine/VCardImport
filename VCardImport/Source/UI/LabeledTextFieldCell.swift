@@ -78,8 +78,6 @@ class LabeledTextFieldCell: UITableViewCell {
       selector: "resetFontSizes",
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
-
-    resetFontSizes()
   }
 
   required init?(coder aDecoder: NSCoder) {
