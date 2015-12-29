@@ -1,68 +1,45 @@
 import UIKit
 
 class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
-  typealias OnBeginEditingCallback = UITextField -> Void
-  typealias OnEndEditingCallback = UITextField -> Void
-  typealias OnShouldReturnCallback = UITextField -> Bool
-  typealias OnTextChangeCallback = (textField: UITextField, range: NSRange, replacement: String) -> Bool
+  typealias OnTextChangeCallback = (UITextField, String) -> Void
 
-  private var onBeginEditingCallees: [TextFieldCallee<OnBeginEditingCallback>] = []
-  private var onEndEditingCallees: [TextFieldCallee<OnEndEditingCallback>] = []
-  private var onShouldReturnCallees: [TextFieldCallee<OnShouldReturnCallback>] = []
-  private var onTextChangeCallees: [TextFieldCallee<OnTextChangeCallback>] = []
+  private let onBeginEditing: UITextField -> Void
+  private let onEndEditing: UITextField -> Void
+  private let onShouldReturn: UITextField -> Bool
+  private let onChanged: OnTextChangeCallback?
 
-  func addOnBeginEditing(textField: UITextField, _ callback: OnBeginEditingCallback) {
-    onBeginEditingCallees.append(TextFieldCallee(textField: textField, callback: callback))
+  init(
+    beginEditingHandler onBeginEditing: UITextField -> Void,
+    endEditingHandler onEndEditing: UITextField -> Void,
+    shouldReturnHandler onShouldReturn: UITextField -> Bool,
+    changedHandler onChanged: OnTextChangeCallback? = nil)
+  {
+    self.onBeginEditing = onBeginEditing
+    self.onEndEditing = onEndEditing
+    self.onShouldReturn = onShouldReturn
+    self.onChanged = onChanged
   }
 
-  func addOnEndEditing(textField: UITextField, _ callback: OnEndEditingCallback) {
-    onEndEditingCallees.append(TextFieldCallee(textField: textField, callback: callback))
-  }
-
-  func addOnShouldReturn(textField: UITextField, _ callback: OnShouldReturnCallback) {
-    onShouldReturnCallees.append(TextFieldCallee(textField: textField, callback: callback))
-  }
-
-  func addOnTextChange(textField: UITextField, _ callback: OnTextChangeCallback) {
-    onTextChangeCallees.append(TextFieldCallee(textField: textField, callback: callback))
-  }
-
-  func removeOnBeginEditing(textField: UITextField) {
-    removeCallee(with: textField, from: onBeginEditingCallees)
-  }
-
-  func removeOnEndEditing(textField: UITextField) {
-    removeCallee(with: textField, from: onEndEditingCallees)
-  }
-
-  func removeOnShouldReturn(textField: UITextField) {
-    removeCallee(with: textField, from: onShouldReturnCallees)
-  }
-
-  func removeOnTextChange(textField: UITextField) {
-    removeCallee(with: textField, from: onTextChangeCallees)
-  }
-
-  // MARK: UITextFieldDelegate Methods
+  // MARK: UITextFieldDelegate
 
   func textFieldDidBeginEditing(textField: UITextField) {
-    if let callee = findCallee(with: textField, from: onBeginEditingCallees) {
-      callee.callback(textField)
-    }
+    onBeginEditing(textField)
   }
 
   func textFieldDidEndEditing(textField: UITextField) {
-    if let callee = findCallee(with: textField, from: onEndEditingCallees) {
-      callee.callback(textField)
-    }
+    onEndEditing(textField)
   }
 
   func textFieldShouldReturn(textField: UITextField) -> Bool {
-    if let callee = findCallee(with: textField, from: onShouldReturnCallees) {
-      return callee.callback(textField)
-    } else {
-      return false
+    return onShouldReturn(textField)
+  }
+
+  func textFieldShouldClear(textField: UITextField) -> Bool {
+    if let callback = onChanged {
+      callback(textField, "")
     }
+
+    return true  // always allow clearing
   }
 
   func textField(
@@ -71,34 +48,16 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
     replacementString string: String)
     -> Bool
   {
-    if let callee = findCallee(with: textField, from: onTextChangeCallees) {
-      return callee.callback(textField: textField, range: range, replacement: string)
-    } else {
-      return true
+    func changedText(text: String) -> String {
+      let unaffectedStart = (text as NSString).substringToIndex(range.location)
+      let unaffectedEnd = (text as NSString).substringFromIndex(range.location + range.length)
+      return unaffectedStart + string + unaffectedEnd
     }
-  }
 
-  // MARK: Helpers
-
-  private func findCallee<T>(
-    with textField: UITextField,
-    from callees: [TextFieldCallee<T>])
-    -> TextFieldCallee<T>?
-  {
-    return callees.findElementWhere { $0.textField === textField }
-  }
-
-  private func removeCallee<T>(
-    with textField: UITextField,
-    var from callees: [TextFieldCallee<T>])
-  {
-    if let index = callees.findIndexWhere({ $0.textField === textField }) {
-      callees.removeAtIndex(index)
+    if let callback = onChanged {
+      callback(textField, changedText(textField.text!))
     }
-  }
-}
 
-private struct TextFieldCallee<T> {
-  let textField: UITextField
-  let callback: T
+    return true  // always allow text change
+  }
 }

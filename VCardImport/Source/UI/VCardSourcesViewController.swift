@@ -149,7 +149,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     didSelectRowAtIndexPath indexPath: NSIndexPath)
   {
     let oldSource = dataSource.vCardSourceForRow(indexPath.row)
-    let vc = VCardSourceDetailViewController2(
+    let vc = VCardSourceDetailViewController(
       source: oldSource,
       isNewSource: false,
       downloadsWith: urlDownloadFactory) { [unowned self] newSource in
@@ -168,7 +168,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   func addVCardSource(sender: AnyObject) {
-    let vc = VCardSourceDetailViewController2(
+    let vc = VCardSourceDetailViewController(
       source: VCardSource.empty(),
       isNewSource: true,
       downloadsWith: urlDownloadFactory) { [unowned self] newSource in
