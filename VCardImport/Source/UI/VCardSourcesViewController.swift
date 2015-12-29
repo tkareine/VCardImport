@@ -57,6 +57,17 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           s.refreshButtonsEnabledStates()
         }
       })
+
+    editButton = editButtonItem()
+    navigationItem.leftBarButtonItem = editButton
+
+    addButton = UIBarButtonItem(
+      barButtonSystemItem: .Add,
+      target: self,
+      action: "addVCardSource:")
+    navigationItem.rightBarButtonItem = addButton
+
+    navigationItem.title = Config.Executable
   }
 
   required init?(coder decoder: NSCoder) {
@@ -84,15 +95,6 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       return tv
     }
 
-    toolbar = makeToolbar()
-    tableView = makeTableView()
-
-    view = UIView()
-    view.addSubview(tableView)
-    view.addSubview(toolbar)
-  }
-
-  override func viewDidLoad() {
     func setupLayout() {
       let viewNamesToObjects = [
         "tableView": tableView,
@@ -121,20 +123,14 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
         views: viewNamesToObjects))
     }
 
-    super.viewDidLoad()
+    toolbar = makeToolbar()
+    tableView = makeTableView()
+
+    view = UIView()
+    view.addSubview(tableView)
+    view.addSubview(toolbar)
 
     setupLayout()
-
-    editButton = editButtonItem()
-    navigationItem.leftBarButtonItem = editButton
-
-    addButton = UIBarButtonItem(
-      barButtonSystemItem: .Add,
-      target: self,
-      action: "addVCardSource:")
-    navigationItem.rightBarButtonItem = addButton
-
-    navigationItem.title = Config.Executable
   }
 
   override func viewWillAppear(animated: Bool) {
