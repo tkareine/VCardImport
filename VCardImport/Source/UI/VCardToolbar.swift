@@ -38,8 +38,14 @@ private func makeProgressView() -> UIProgressView {
   return view
 }
 
-private func getBorderLayerRect(bounds: CGRect) -> CGRect {
-  return CGRect(x: 0, y: 0, width: bounds.size.width, height: 1)
+private func makeBorderLayer() -> CALayer {
+  let layer = CALayer()
+  layer.backgroundColor = Config.UI.ToolbarBorderColor
+  return layer
+}
+
+private func getBorderLayerRect(width: CGFloat) -> CGRect {
+  return CGRect(x: 0, y: 0, width: width, height: 1)
 }
 
 class VCardToolbar: UIView {
@@ -131,17 +137,10 @@ class VCardToolbar: UIView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    border.frame = getBorderLayerRect(bounds)
+    border.frame = getBorderLayerRect(bounds.size.width)
   }
 
   // MARK: Helpers
-
-  private func makeBorderLayer() -> CALayer {
-    let layer = CALayer()
-    layer.frame = getBorderLayerRect(bounds)
-    layer.backgroundColor = Config.UI.ToolbarBorderColor
-    return layer
-  }
 
   private func setupLayout() {
     effectView.translatesAutoresizingMaskIntoConstraints = false
