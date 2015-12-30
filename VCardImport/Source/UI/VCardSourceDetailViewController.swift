@@ -26,6 +26,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   private var cellsByIndexPath: [Int: [Int: UITableViewCell]]!
 
   private var shouldCallOnDisappearCallback: Bool
+  private var isFirstTimeViewAppears = true
 
   private var focusedTextField: UITextField?
 
@@ -288,11 +289,14 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       name: UIKeyboardWillHideNotification,
       object: nil)
 
-    if isNewSource {
-      refreshDoneButtonEnabled()
-    } else {
-      nameValidator.validate(nameCell.textFieldText)
-      validateVCardURL()
+    if isFirstTimeViewAppears {
+      if isNewSource {
+        refreshDoneButtonEnabled()
+      } else {
+        nameValidator.validate(nameCell.textFieldText)
+        validateVCardURL()
+      }
+      isFirstTimeViewAppears = false
     }
   }
 
