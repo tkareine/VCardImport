@@ -59,6 +59,6 @@ struct Config {
     static let ToolbarBackgroundColor = UIColor(white: 0.92, alpha: 0.6)
     static let ToolbarBorderColor = UIColor(white: 0.8, alpha: 1).CGColor
     static let ToolbarProgressTextColor = TableCellDescriptionTextColor
-    static let ValidationThrottleInMS = 300
+    static let ValidationThrottleInMS = 500
   }
 }
