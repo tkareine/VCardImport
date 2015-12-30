@@ -448,22 +448,37 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     // adapted and modified from http://spin.atomicobject.com/2014/03/05/uiscrollview-autolayout-ios/
 
     func getKeyboardHeight() -> CGFloat? {
-      if let orgRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-        let convRect = tableView.convertRect(orgRect, fromView: nil)
-        return convRect.size.height
+      if let rect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+        return rect.size.height
       }
+      return nil
+    }
+
+    func coveredKeyboardHeightInViewFrame(keyboardHeight: CGFloat) -> CGFloat? {
+      let frameInWindow = tableView.convertRect(tableView.bounds, toView: nil)
+
+      if let window = tableView.window {
+        let keyboardTopYCoord = window.bounds.size.height - keyboardHeight
+        let viewBottomYCoord = frameInWindow.origin.y + frameInWindow.size.height
+        return max(0, viewBottomYCoord - keyboardTopYCoord)
+      }
+
       return nil
     }
 
     if let
       focusedTF = focusedTextField,
-      keyboardHeight = getKeyboardHeight()
+      keyboardHeight = getKeyboardHeight(),
+      coveredKeyboardHeight = coveredKeyboardHeightInViewFrame(keyboardHeight)
     {
-      let topOffset = topLayoutGuide.length
-      let contentInsets = UIEdgeInsets(top: topOffset, left: 0, bottom: keyboardHeight, right: 0)
+      let insets = UIEdgeInsets(
+        top: topLayoutGuide.length,
+        left: 0,
+        bottom: coveredKeyboardHeight,
+        right: 0)
 
-      tableView.contentInset = contentInsets
-      tableView.scrollIndicatorInsets = contentInsets
+      tableView.contentInset = insets
+      tableView.scrollIndicatorInsets = insets
 
       if !CGRectContainsPoint(tableView.frame, focusedTF.frame.origin) {
         tableView.scrollRectToVisible(focusedTF.frame, animated: true)
@@ -472,13 +487,13 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   }
 
   func keyboardWillHide(notification: NSNotification) {
-    let contentInsets = UIEdgeInsets(
+    let insets = UIEdgeInsets(
       top: topLayoutGuide.length,
       left: 0,
       bottom: bottomLayoutGuide.length,
       right: 0)
-    tableView.contentInset = contentInsets
-    tableView.scrollIndicatorInsets = contentInsets
+    tableView.contentInset = insets
+    tableView.scrollIndicatorInsets = insets
   }
 
   // MARK: Helpers
