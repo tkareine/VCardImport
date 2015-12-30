@@ -1,5 +1,22 @@
 # Upcoming
 
+New features:
+
+* Add support for cookie based HTTP session authentication by login
+  form submission with POST method
+* Replace vCard source detail view with table based layout, which is
+  more stylish
+* Make toolbar translucent
+* Increase timeout for validation throttle a bit
+
+Bug fixes:
+
+* App shouldncrash when showing vCard source detail view on iOS 9
+* Set valid value for HTTP User-Agent header
+* Ensure vCard source warning icon shows on large text
+
+# 1.2.0 / 2015-03-07
+
 * Show the number of contacts skipped from importing in the table cell
   of the vCard source
 * Consider only records from local address book for importing, fixing
