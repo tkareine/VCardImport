@@ -1,5 +1,10 @@
 import UIKit
 
+private func makeEffectView() -> UIVisualEffectView {
+  let blurEffect = UIBlurEffect(style: .Light)
+  return UIVisualEffectView(effect: blurEffect)
+}
+
 private func makeButton(
   title: String,
   align labelAlignment: UIControlContentHorizontalAlignment)
@@ -38,6 +43,7 @@ private func getBorderLayerRect(bounds: CGRect) -> CGRect {
 }
 
 class VCardToolbar: UIView {
+  private let effectView = makeEffectView()
   private let importButton = makeButton("Import", align: .Left)
   private let backupButton = makeButton("Backup", align: .Right)
   private let progressLabel = makeProgressLabel()
@@ -50,6 +56,7 @@ class VCardToolbar: UIView {
 
     border = makeBorderLayer()
 
+    addSubview(effectView)
     addSubview(importButton)
     addSubview(backupButton)
     addSubview(progressLabel)
@@ -137,6 +144,7 @@ class VCardToolbar: UIView {
   }
 
   private func setupLayout() {
+    effectView.translatesAutoresizingMaskIntoConstraints = false
     importButton.translatesAutoresizingMaskIntoConstraints = false
     importButton.setContentHuggingPriority(251, forAxis: .Horizontal)
     backupButton.translatesAutoresizingMaskIntoConstraints = false
@@ -144,6 +152,20 @@ class VCardToolbar: UIView {
     progressLabel.translatesAutoresizingMaskIntoConstraints = false
     progressLabel.setContentCompressionResistancePriority(749, forAxis: .Horizontal)
     progressView.translatesAutoresizingMaskIntoConstraints = false
+
+    let effectViewToObject = ["effect": effectView]
+
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "H:|[effect]|",
+      options: [],
+      metrics: nil,
+      views: effectViewToObject))
+
+    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+      "V:|[effect]|",
+      options: [],
+      metrics: nil,
+      views: effectViewToObject))
 
     NSLayoutConstraint(
       item: importButton,

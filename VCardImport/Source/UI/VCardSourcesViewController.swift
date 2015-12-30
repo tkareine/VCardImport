@@ -1,6 +1,7 @@
 import UIKit
 
 private let CellIdentifier = "VCardSourceCell"
+private let ToolbarHeight: CGFloat = 52
 
 class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private let dataSource: VCardSourcesDataSource
@@ -111,15 +112,21 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
         views: viewNamesToObjects))
 
       NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+        "V:|[tableView]|",
+        options: [],
+        metrics: nil,
+        views: viewNamesToObjects))
+
+      NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
         "H:|[toolbar]|",
         options: [],
         metrics: nil,
         views: viewNamesToObjects))
 
       NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:|[tableView][toolbar(==58)]|",
+        "V:[toolbar(==toolbarHeight)]|",
         options: [],
-        metrics: nil,
+        metrics: ["toolbarHeight": ToolbarHeight],
         views: viewNamesToObjects))
     }
 
@@ -136,6 +143,13 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     refreshButtonsEnabledStates()
+  }
+
+  override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+    let insets = makeTableContentInsets()
+    tableView.contentInset = insets
+    tableView.scrollIndicatorInsets = insets
   }
 
   // MARK: UITableViewDelegate
@@ -213,6 +227,14 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     alertController.addAction(dismissAction)
 
     presentViewController(alertController, animated: true, completion: nil)
+  }
+
+  private func makeTableContentInsets() -> UIEdgeInsets {
+    return UIEdgeInsets(
+      top: topLayoutGuide.length,
+      left: 0,
+      bottom: bottomLayoutGuide.length + ToolbarHeight,
+      right: 0)
   }
 
   private func beginProgress(sources: [VCardSource]) {

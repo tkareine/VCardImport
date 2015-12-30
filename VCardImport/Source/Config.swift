@@ -56,7 +56,7 @@ struct Config {
     static let TableCellDescriptionTextColor = UIColor.darkGrayColor()
     static let TableCellDisabledTextColor = UIColor.grayColor()
     static let TintColor = UIColor(red: 0.000, green: 0.664, blue: 0.434, alpha: 1)  // #00AA6F
-    static let ToolbarBackgroundColor = UIColor(white: 0.97, alpha: 1)
+    static let ToolbarBackgroundColor = UIColor(white: 0.46, alpha: 0.1)
     static let ToolbarBorderColor = UIColor(white: 0.8, alpha: 1).CGColor
     static let ToolbarProgressTextColor = TableCellDescriptionTextColor
     static let ValidationThrottleInMS = 300
