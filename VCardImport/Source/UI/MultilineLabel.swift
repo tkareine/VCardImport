@@ -41,14 +41,6 @@ class MultilineLabel: UIView {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
-  // MARK: Laying out Subviews
-
-  override func layoutSubviews() {
-    super.layoutSubviews()
-    label.preferredMaxLayoutWidth = label.frame.size.width
-    super.layoutSubviews()
-  }
-
   // MARK: Notification Handlers
 
   func resetFontSizes() {
