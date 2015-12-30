@@ -166,7 +166,7 @@ class VCardSourceStore {
         name: "Body Corp",
         connection: VCardSource.Connection(
           vcardURL: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf",
-          authenticationMethod: .PostForm),
+          authenticationMethod: .HTTPAuth),
         isEnabled: true),
       VCardSource(
         name: "Cold Temp",
