@@ -31,10 +31,12 @@ class VCardSourceCell: UITableViewCell {
 
     if let res = source.lastImportResult {
       descriptionLabel.text = "\(res.importedAt.localeMediumString) - \(res.message)"
-      iconLabel.text = res.isSuccess ? nil : "⚠️"
+      iconLabel.text = res.isSuccess ? nil : "⚠️"  // no text saves space
+      iconLabel.hidden = res.isSuccess
     } else {
       descriptionLabel.text = "Not imported yet"
-      iconLabel.text = nil
+      iconLabel.text = nil  // no text saves space
+      iconLabel.hidden = true
     }
   }
 
