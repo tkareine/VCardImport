@@ -11,7 +11,7 @@ New features:
 
 Bug fixes:
 
-* App shouldncrash when showing vCard source detail view on iOS 9
+* App shouldn't crash when showing vCard source detail view on iOS 9
 * Set valid value for HTTP User-Agent header
 * Ensure vCard source warning icon shows on large text
 
