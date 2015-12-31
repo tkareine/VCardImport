@@ -20,7 +20,9 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: makeHTTPSession(
+        downloadURL: source.connection.vcardURLasURL(),
+        fromFile: OneTestRecordVCardFile),
       onSourceComplete: { src, recordDiff, _, error in
         XCTAssertNil(error)
         XCTAssertEqual(src.id, source.id)
@@ -63,7 +65,9 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: makeHTTPSession(
+        downloadURL: source.connection.vcardURLasURL(),
+        fromFile: OneTestRecordVCardFile),
       onSourceComplete: { src, recordDiff, _, error in
         XCTAssertNil(error)
         XCTAssertEqual(src.id, source.id)
@@ -102,10 +106,15 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let firstSource = makeVCardSource("first")
     let secondSource = makeVCardSource("second")
+    let httpSession = FakeHTTPSession()
+
+    httpSession.fakeDownload(firstSource.connection.vcardURLasURL(), file: OneTestRecordVCardFile)
+    httpSession.fakeDownload(secondSource.connection.vcardURLasURL(), file: OneTestRecordVCardFile)
+
     var sourceCompletions: [String: RecordDifferences] = [:]
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: httpSession,
       onSourceComplete: { source, recordDiff, _, error in
         XCTAssertNil(error)
         sourceCompletions[source.id] = recordDiff!
@@ -145,10 +154,15 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let firstSource = makeVCardSource("first")
     let secondSource = makeVCardSource("second")
+    let httpSession = FakeHTTPSession()
+
+    httpSession.fakeDownload(firstSource.connection.vcardURLasURL(), file: OneTestRecordVCardFile)
+    httpSession.fakeDownload(secondSource.connection.vcardURLasURL(), file: OneTestRecordVCardFile)
+
     var sourceCompletions: [String: RecordDifferences] = [:]
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: httpSession,
       onSourceComplete: { source, recordDiff, _, error in
         XCTAssertNil(error)
         sourceCompletions[source.id] = recordDiff!
@@ -186,7 +200,9 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      usingVCardFile: DuplicateTestRecordsVCardFile,
+      usingHTTPSession: makeHTTPSession(
+        downloadURL: source.connection.vcardURLasURL(),
+        fromFile: DuplicateTestRecordsVCardFile),
       onSourceComplete: { src, recordDiff, _, error in
         XCTAssertNil(error)
         XCTAssertEqual(src.id, source.id)
@@ -216,7 +232,9 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: makeHTTPSession(
+        downloadURL: source.connection.vcardURLasURL(),
+        fromFile: OneTestRecordVCardFile),
       onSourceComplete: { src, recordDiff, _, error in
         XCTAssertNil(error)
         XCTAssertEqual(src.id, source.id)
@@ -242,7 +260,9 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: makeHTTPSession(
+        downloadURL: source.connection.vcardURLasURL(),
+        fromFile: OneTestRecordVCardFile),
       onSourceComplete: { _, _, modifiedHeaderStamp, error in
         XCTAssertNil(modifiedHeaderStamp)
         XCTAssertNil(error)
@@ -264,8 +284,11 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
     let vcardURL = source.connection.vcardURLasURL()
 
-    let fakeHTTPSession = FakeHTTPSession(using: OneTestRecordVCardFile)
-    fakeHTTPSession.respondTo(
+    let httpSession = makeHTTPSession(
+      downloadURL: vcardURL,
+      fromFile: OneTestRecordVCardFile)
+
+    httpSession.fakeRespondTo(
       vcardURL,
       withResponse: NSHTTPURLResponse(
         URL: vcardURL,
@@ -274,8 +297,7 @@ class VCardImporterTests: XCTestCase {
         headerFields: ["Last-Modified": "Fri, 1 Jan 2016 00:43:54 GMT"])!)
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
-      usingHTTPSession: fakeHTTPSession,
+      usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNotNil(recordDiff)
         XCTAssertEqual(modifiedHeaderStamp, ModifiedHeaderStamp(name: "Last-Modified", value: "Fri, 1 Jan 2016 00:43:54 GMT"))
@@ -298,8 +320,11 @@ class VCardImporterTests: XCTestCase {
     let source = makeVCardSource()
     let vcardURL = source.connection.vcardURLasURL()
 
-    let fakeHTTPSession = FakeHTTPSession(using: OneTestRecordVCardFile)
-    fakeHTTPSession.respondTo(
+    let httpSession = makeHTTPSession(
+      downloadURL: vcardURL,
+      fromFile: OneTestRecordVCardFile)
+
+    httpSession.fakeRespondTo(
       vcardURL,
       withResponse: NSHTTPURLResponse(
         URL: vcardURL,
@@ -308,8 +333,7 @@ class VCardImporterTests: XCTestCase {
         headerFields: ["ETag": "1407855624n"])!)
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
-      usingHTTPSession: fakeHTTPSession,
+      usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNotNil(recordDiff)
         XCTAssertEqual(modifiedHeaderStamp, ModifiedHeaderStamp(name: "ETag", value: "1407855624n"))
@@ -331,13 +355,17 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let modifiedHeaderStamp = ModifiedHeaderStamp(name: "ETag", value: "1407855624n")
     let source = makeVCardSource().withLastImportResult(
-      true, message: "Downloaded",
+      true,
+      message: "Downloaded",
       at: NSDate.init(),
       modifiedHeaderStamp: modifiedHeaderStamp)
     let vcardURL = source.connection.vcardURLasURL()
 
-    let fakeHTTPSession = FakeHTTPSession(using: OneTestRecordVCardFile)
-    fakeHTTPSession.respondTo(
+    let httpSession = makeHTTPSession(
+      downloadURL: vcardURL,
+      fromFile: OneTestRecordVCardFile)
+
+    httpSession.fakeRespondTo(
       vcardURL,
       withResponse: NSHTTPURLResponse(
         URL: vcardURL,
@@ -346,8 +374,7 @@ class VCardImporterTests: XCTestCase {
         headerFields: ["ETag": "1407855624n"])!)
 
     let importer = makeVCardImporter(
-      usingVCardFile: OneTestRecordVCardFile,
-      usingHTTPSession: fakeHTTPSession,
+      usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNil(recordDiff)
         XCTAssertNil(modifiedHeaderStamp)
@@ -411,92 +438,27 @@ class VCardImporterTests: XCTestCase {
       isEnabled: true)
   }
 
+  private func makeHTTPSession(
+    downloadURL url: NSURL,
+    fromFile file: String)
+    -> FakeHTTPSession
+  {
+    let session = FakeHTTPSession()
+    session.fakeDownload(url, file: file)
+    return session
+  }
+
   private func makeVCardImporter(
-    usingVCardFile vcardFile: String,
-    usingHTTPSession httpSession: HTTPRequestable? = nil,
+    usingHTTPSession httpSession: HTTPRequestable,
     onSourceComplete: VCardImporter.OnSourceCompleteCallback,
     onComplete: VCardImporter.OnCompleteCallback)
     -> VCardImporter
   {
-    let theHTTPSession = httpSession ?? FakeHTTPSession(using: vcardFile)
     return VCardImporter(
-      downloadsWith: URLDownloadFactory(httpSessionsWith: { theHTTPSession }),
+      downloadsWith: URLDownloadFactory(httpSessionsWith: { httpSession }),
       queueTo: QueueExecution.mainQueue,
       sourceDownloadHandler: { _, _ in () },
       sourceCompletionHandler: onSourceComplete,
       completionHandler: onComplete)
-  }
-
-  private class FakeHTTPSession: HTTPRequestable {
-    private let vcardFile: String
-    private var cannedResponses: [NSURL: NSHTTPURLResponse] = [:]
-
-    init(using vcardFile: String) {
-      self.vcardFile = vcardFile
-    }
-
-    func respondTo(url: NSURL, withResponse response: NSHTTPURLResponse) {
-      cannedResponses[url] = response
-    }
-
-    func defaultResponseTo(url: NSURL) -> NSHTTPURLResponse {
-      return NSHTTPURLResponse(
-        URL: url,
-        statusCode: 200,
-        HTTPVersion: "HTTP/1.1",
-        headerFields: [:])!
-    }
-
-    func request(
-      method: HTTPRequest.RequestMethod,
-      url: NSURL,
-      headers: HTTPRequest.Headers,
-      credential: NSURLCredential?,
-      onProgress: HTTPRequest.OnProgressCallback? = nil)
-      -> Future<NSHTTPURLResponse>
-    {
-      let response: NSHTTPURLResponse
-
-      if let cannedResponse = cannedResponses[url] {
-        response = cannedResponse
-      } else {
-        response = defaultResponseTo(url)
-      }
-
-      return Future.succeeded(response)
-    }
-
-    func head(
-      url: NSURL,
-      headers: HTTPRequest.Headers,
-      credential: NSURLCredential?)
-      -> Future<NSHTTPURLResponse>
-    {
-      return request(.HEAD, url: url, headers: headers, credential: credential)
-    }
-
-    func post(
-      url: NSURL,
-      headers: HTTPRequest.Headers,
-      parameters: HTTPRequest.Parameters)
-      -> Future<NSHTTPURLResponse>
-    {
-      fatalError("post(:headers:parameters:) has not been implemented")
-    }
-
-    func download(
-      url: NSURL,
-      to destination: NSURL,
-      headers: HTTPRequest.Headers,
-      credential: NSURLCredential?,
-      onProgress: HTTPRequest.OnProgressCallback?)
-      -> Future<NSURL>
-    {
-      let dst = Files.tempURL()
-      let src = NSBundle(forClass: VCardImporterTests.self)
-        .URLForResource(vcardFile, withExtension: "vcf")!
-      Files.copy(from: src, to: dst)
-      return Future.succeeded(dst)
-    }
   }
 }
