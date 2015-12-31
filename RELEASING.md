@@ -9,21 +9,35 @@
 
 ### HTTP proxy
 
-Run HTTP proxy with Basic Auth (username `foo`, password `bar`) to base URL `https://dl.dropboxusercontent.com/u/1404049/`:
+Use the HTTP proxy in `Support/rproxy.rb` to test the app with HTTP basic authentication and HTTP caching. Usage:
 
 ``` sh
-RPROXY_BASIC_AUTH=foo:bar make rproxy
+$ make rproxy
+Proxy URL:            https://dl.dropboxusercontent.com/u/1404049/
+Basic auth:           uname:passwd
+Delete cache headers: false
 ```
+
+This starts the proxy with default configuration. Use `http://localhost:8080/u/1404049/vcards/bodycorp.vcf` as the vCard URL in the app.
+
+Use environment variables for configuration:
+
+* `RPROXY_URL=$url` for the URL to proxy
+* `RPROXY_BASIC_AUTH=$username:$password` for the username and password for HTTP basic auth, use empty value to disable
+* `RPROXY_DELETE_CACHE_HEADERS=true|false` to enable deletion of HTTP cache headers from responses
 
 ### Tests to do manually
 
-1. Import default sources
-2. Add, update, and remove vCard sources
-3. Try how GUI reacts to
+1. Import default sources, see imported contacts in the Contacts app
+2. Try HTTP caching effect when importing vCard source again. If the remote supports HTTP cache mechanism, the app shouldn't download the remote file again. If the remote does not support HTTP caching, the app downloads the remote file on every import.
+3. Add, update, and remove vCard sources
+4. Start import, select vCard source to see its details. Import should proceed in the background.
+5. Try how GUI reacts to
   * Rotating to different device orientations
   * Text sizes while the app is running (set via Settings → General → Accessibility → Larger Text)
-4. Disallow access to Contacts (required for the app's Import action, set via Settings → vCard Turbo → Contacts)
-5. Try validations
+  * Different devices (iPhone 4S, iPhone 6 Plus, iPad Air 2)
+6. Disallow app's access to Contacts (required for the app's Import action, set via Settings → vCard Turbo → Contacts)
+7. Try validations
   * Empty and nonempty text for Name, vCard URL, and Login URL fields
   * Invalid HTTP URLs for vCard and Login URL fields
   * 404 response for nonexisting URL
@@ -31,23 +45,23 @@ RPROXY_BASIC_AUTH=foo:bar make rproxy
 
 ## Release steps
 
-1. Check dependencies are up to date: `$ make check-pods`
+1. Check that dependencies are up to date: `$ make check-pods`
 2. Run automatic tests: `$ make test`
-3. Do manual tests, described above
-4. Update "Upcoming" section in changelog:
+3. Do the manual tests described above
+4. In `CHANGELOG.md`, rename "Upcoming" section to "$VERSION (prepared)":
 ``` sh
-$EDITOR CHANGELOG.md
-git add -p
-git commit -m 'Update changelog'
-git push origin master
+$ $EDITOR CHANGELOG.md
+$ git add -p
+$ git commit -m "Prepare $VERSION release"
+$ git push origin master
 ```
 5. Build and upload app archive for AppStore, submit for review
 6. …
-7. After getting review approval, update changelog and tag release. Replace "Upcoming" section with release section in changelog:
+7. After getting approved review, update `CHANGELOG.md` and git tag the release. Replace "$VERSION (prepared)" section with "$VERSION / $DATE" in the changelog:
 ``` sh
-$EDITOR CHANGELOG.md
-git add -p
-git commit -m 'Prepare $VERSION release'
-git tag $VERSION
-git push --tags origin master
+$ $EDITOR CHANGELOG.md
+$ git add -p
+$ git commit -m "Release $VERSION"
+$ git tag $VERSION
+$ git push --tags origin master
 ```
