@@ -236,6 +236,134 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
+  func testReturnsNilModifiedHeaderStampIfRemoteDoesNotSupportHTTPCaching() {
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
+
+    let importer = makeVCardImporter(
+      usingVCardFile: OneTestRecordVCardFile,
+      onSourceComplete: { _, _, modifiedHeaderStamp, error in
+        XCTAssertNil(modifiedHeaderStamp)
+        XCTAssertNil(error)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testReturnsModifiedHeaderStampIfRemoteSupportsHTTPCachingWithLastModifiedHeader() {
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
+    let vcardURL = source.connection.vcardURLasURL()
+
+    let fakeHTTPSession = FakeHTTPSession(using: OneTestRecordVCardFile)
+    fakeHTTPSession.respondTo(
+      vcardURL,
+      withResponse: NSHTTPURLResponse(
+        URL: vcardURL,
+        statusCode: 200,
+        HTTPVersion: "HTTP/1.1",
+        headerFields: ["Last-Modified": "Fri, 1 Jan 2016 00:43:54 GMT"])!)
+
+    let importer = makeVCardImporter(
+      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: fakeHTTPSession,
+      onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
+        XCTAssertNotNil(recordDiff)
+        XCTAssertEqual(modifiedHeaderStamp, ModifiedHeaderStamp(name: "Last-Modified", value: "Fri, 1 Jan 2016 00:43:54 GMT"))
+        XCTAssertNil(error)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testReturnsModifiedHeaderStampIfRemoteSupportsHTTPCachingWithETagHeader() {
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let source = makeVCardSource()
+    let vcardURL = source.connection.vcardURLasURL()
+
+    let fakeHTTPSession = FakeHTTPSession(using: OneTestRecordVCardFile)
+    fakeHTTPSession.respondTo(
+      vcardURL,
+      withResponse: NSHTTPURLResponse(
+        URL: vcardURL,
+        statusCode: 200,
+        HTTPVersion: "HTTP/1.1",
+        headerFields: ["ETag": "1407855624n"])!)
+
+    let importer = makeVCardImporter(
+      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: fakeHTTPSession,
+      onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
+        XCTAssertNotNil(recordDiff)
+        XCTAssertEqual(modifiedHeaderStamp, ModifiedHeaderStamp(name: "ETag", value: "1407855624n"))
+        XCTAssertNil(error)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testDoesNotDownloadVCardFileIfRemoteFileHasUnmodifiedHeaderStamp() {
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let modifiedHeaderStamp = ModifiedHeaderStamp(name: "ETag", value: "1407855624n")
+    let source = makeVCardSource().withLastImportResult(
+      true, message: "Downloaded",
+      at: NSDate.init(),
+      modifiedHeaderStamp: modifiedHeaderStamp)
+    let vcardURL = source.connection.vcardURLasURL()
+
+    let fakeHTTPSession = FakeHTTPSession(using: OneTestRecordVCardFile)
+    fakeHTTPSession.respondTo(
+      vcardURL,
+      withResponse: NSHTTPURLResponse(
+        URL: vcardURL,
+        statusCode: 200,
+        HTTPVersion: "HTTP/1.1",
+        headerFields: ["ETag": "1407855624n"])!)
+
+    let importer = makeVCardImporter(
+      usingVCardFile: OneTestRecordVCardFile,
+      usingHTTPSession: fakeHTTPSession,
+      onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
+        XCTAssertNil(recordDiff)
+        XCTAssertNil(modifiedHeaderStamp)
+        XCTAssertNil(error)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
   private func recordIsOfTestOrganization(record: ABRecord) -> Bool {
     if let orgName = Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String {
       return orgName == TestOrganization
@@ -285,14 +413,14 @@ class VCardImporterTests: XCTestCase {
 
   private func makeVCardImporter(
     usingVCardFile vcardFile: String,
+    usingHTTPSession httpSession: HTTPRequestable? = nil,
     onSourceComplete: VCardImporter.OnSourceCompleteCallback,
     onComplete: VCardImporter.OnCompleteCallback)
     -> VCardImporter
   {
+    let theHTTPSession = httpSession ?? FakeHTTPSession(using: vcardFile)
     return VCardImporter(
-      downloadsWith: URLDownloadFactory(httpSessionsWith: {
-        FakeHTTPSession(using: vcardFile)
-      }),
+      downloadsWith: URLDownloadFactory(httpSessionsWith: { theHTTPSession }),
       queueTo: QueueExecution.mainQueue,
       sourceDownloadHandler: { _, _ in () },
       sourceCompletionHandler: onSourceComplete,
@@ -301,9 +429,22 @@ class VCardImporterTests: XCTestCase {
 
   private class FakeHTTPSession: HTTPRequestable {
     private let vcardFile: String
+    private var cannedResponses: [NSURL: NSHTTPURLResponse] = [:]
 
     init(using vcardFile: String) {
       self.vcardFile = vcardFile
+    }
+
+    func respondTo(url: NSURL, withResponse response: NSHTTPURLResponse) {
+      cannedResponses[url] = response
+    }
+
+    func defaultResponseTo(url: NSURL) -> NSHTTPURLResponse {
+      return NSHTTPURLResponse(
+        URL: url,
+        statusCode: 200,
+        HTTPVersion: "HTTP/1.1",
+        headerFields: [:])!
     }
 
     func request(
@@ -314,11 +455,15 @@ class VCardImporterTests: XCTestCase {
       onProgress: HTTPRequest.OnProgressCallback? = nil)
       -> Future<NSHTTPURLResponse>
     {
-      return Future.succeeded(NSHTTPURLResponse(
-        URL: url,
-        statusCode: 200,
-        HTTPVersion: "HTTP/1.1",
-        headerFields: [:])!)
+      let response: NSHTTPURLResponse
+
+      if let cannedResponse = cannedResponses[url] {
+        response = cannedResponse
+      } else {
+        response = defaultResponseTo(url)
+      }
+
+      return Future.succeeded(response)
     }
 
     func head(
