@@ -14,6 +14,7 @@ Bug fixes:
 * App shouldn't crash when showing vCard source detail view on iOS 9
 * Set valid value for HTTP User-Agent header
 * Ensure vCard source warning icon shows on large text
+* Set scroll bars at proper positions when showing keyboard while adding new vCard source and device allows form sheet modal presentation style (on iPads and big-screen iPhones in landscape orientation)
 
 # 1.2.0 / 2015-03-07
 
