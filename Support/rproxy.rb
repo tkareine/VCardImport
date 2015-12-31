@@ -19,6 +19,19 @@ class Config
     basic_auth_username != nil
   end
 
+  def describe
+    format_str = <<-END
+Proxy URL:            %s
+Basic auth:           %s
+Delete cache headers: %s
+    END
+    sprintf(
+      format_str,
+      @uri,
+      @basic_auth_username ? "#{@basic_auth_username}:#{@basic_auth_password}" : false,
+      @delete_cache_headers)
+  end
+
   private
 
   def get_uri_from_env
@@ -26,18 +39,18 @@ class Config
   end
 
   def get_basic_auth_from_env
-    ENV.fetch("RPROXY_BASIC_AUTH", "").split(":", 2)
+    ENV.fetch("RPROXY_BASIC_AUTH", "uname:passwd").split(":", 2)
   end
 
   def get_delete_cache_headers_from_env
-    ENV["RPROXY_DELETE_CACHE_HEADERS"] =~ /1|(?:true)/
+    !!(ENV["RPROXY_DELETE_CACHE_HEADERS"] =~ /1|(?:true)/)
   end
 end
 
 class DumpHeaders
   def initialize(app, options = {})
     @app = app
-    @delete_cache_headers = options.fetch(:delete_cache_headers, false)
+    @delete_cache_headers = options.fetch(:delete_cache_headers)
   end
 
   def call(env)
@@ -63,6 +76,8 @@ end
 
 config = Config.new
 
+$stdout.puts config.describe
+
 app = ->(_) { [404, {'Content-Type' => 'text/plain'}, ["not reverse proxied"]] }
 
 stack = Rack::Builder.new do
@@ -71,7 +86,7 @@ stack = Rack::Builder.new do
 
   if config.use_basic_auth?
     use Rack::Auth::Basic, "RProxy Realm" do |username, password|
-      password == config.basic_auth_password
+      username == config.basic_auth_username && password == config.basic_auth_password
     end
   end
 
