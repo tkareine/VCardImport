@@ -2,10 +2,10 @@
 
 New features:
 
-* Add support for cookie based HTTP session authentication by login
-  form submission with POST method
-* Replace vCard source detail view with table based layout, which is
-  more stylish
+* Add support for login form authentication with username and password (POST
+  request to a login URL)
+* Replace vCard source detail view with table based layout; the view is more
+  stylish and easier to expand now
 * Make toolbar translucent
 * Increase timeout for validation throttle a bit
 
@@ -14,15 +14,16 @@ Bug fixes:
 * App shouldn't crash when showing vCard source detail view on iOS 9
 * Set valid value for HTTP User-Agent header
 * Ensure vCard source warning icon shows on large text
-* Set scroll bars at proper positions when showing keyboard while adding new vCard source and device allows form sheet modal presentation style (on iPads and big-screen iPhones in landscape orientation)
+* Set scroll bars at proper positions when showing keyboard while adding new
+  vCard source and device allows form sheet modal presentation style (on iPads
+  and big-screen iPhones in landscape orientation)
 
 # 1.2.0 / 2015-03-07
 
-* Show the number of contacts skipped from importing in the table cell
-  of the vCard source
-* Consider only records from local address book for importing, fixing
-  attempts to change read-only records (such as those imported from
-  Facebook)
+* Show the number of contacts skipped from importing in the table cell of the
+  vCard source
+* Consider only records from local address book for importing, fixing attempts
+  to change read-only records (such as those imported from Facebook)
 
 # 1.1.0 / 2015-02-20
 
@@ -31,7 +32,8 @@ New features:
 * Add notice to be shown when modifying or adding a new vCard source
 * Add new icon with green gradient background
 * Set green tint color for UI controls
-* Discriminate person and organization contact kinds, allowing updating organization contacts
+* Discriminate person and organization contact kinds, allowing updating
+  organization contacts
 * Add more fields to check and update for changed contacts:
   - prefix, suffix, and nickname fields
   - instant message and social profile fields
