@@ -70,7 +70,7 @@ class VCardImporter {
           }
         case .Failure(let error):
           QueueExecution.async(self.callbackQueue) { [unowned self] in
-            self.onSourceComplete(source, nil, nil, Errors.addressBookFailedToLoadVCardSource((error as NSError).localizedDescription))
+            self.onSourceComplete(source, nil, nil, error)
           }
           continue
         }
