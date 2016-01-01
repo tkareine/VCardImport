@@ -48,18 +48,19 @@ Use environment variables for configuration:
 1. Check that dependencies are up to date: `$ make check-pods`
 2. Run automatic tests: `$ make test`
 3. Do the manual tests described above
-4. In `CHANGELOG.md`, rename "Upcoming" section to "$VERSION (prepared)":
+4. In `CHANGELOG.md`, rename "Upcoming" section to "$VERSION (prepared)"
+5. Increase version and build number in `VCardImport/Source/Info.plist`
+6. Git commit:
 ``` sh
-$ $EDITOR CHANGELOG.md
 $ git add -p
-$ git commit -m "Prepare $VERSION release"
+$ git commit -m "Prepare release $VERSION"
 $ git push origin master
 ```
-5. Build and upload app archive for AppStore, submit for review
-6. …
-7. After getting approved review, update `CHANGELOG.md` and git tag the release. Replace "$VERSION (prepared)" section with "$VERSION / $DATE" in the changelog:
+7. Build and upload app archive to App Store, submit for review
+8. …
+9. After getting approved review, update `CHANGELOG.md`: replace "$VERSION (prepared)" section with "$VERSION / $DATE".
+10. Git commit and tag the release:
 ``` sh
-$ $EDITOR CHANGELOG.md
 $ git add -p
 $ git commit -m "Release $VERSION"
 $ git tag $VERSION
