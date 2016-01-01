@@ -7,7 +7,7 @@ New features:
 * Replace vCard source detail view with table based layout; the view is more
   stylish and easier to expand now
 * Make toolbar translucent
-* Increase timeout for validation throttle a bit
+* Increase timeout for validation throttle a bit, decreasing network traffic
 
 Bug fixes:
 
@@ -17,6 +17,10 @@ Bug fixes:
 * Set scroll bars at proper positions when showing keyboard while adding new
   vCard source and device allows form sheet modal presentation style (on iPads
   and big-screen iPhones in landscape orientation)
+* Fix word pluralization if only 1 contact was skipped in vCard last
+  import message
+* Don't wrap error message if vCard file has no vCard data inside it
+* Update button states in main view after swipe to delete vCard source
 
 # 1.2.0 / 2015-03-07
 
