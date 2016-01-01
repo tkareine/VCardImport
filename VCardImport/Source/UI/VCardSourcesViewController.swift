@@ -169,6 +169,13 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     navigationController!.pushViewController(vc, animated: true)
   }
 
+  func tableView(
+    tableView: UITableView,
+    didEndEditingRowAtIndexPath indexPath: NSIndexPath)
+  {
+    refreshButtonsEnabledStates()
+  }
+
   // MARK: Actions
 
   override func setEditing(editing: Bool, animated: Bool) {
