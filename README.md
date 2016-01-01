@@ -24,8 +24,8 @@ sources from importing, too.
 trust. The app is designed to import all contacts from the sources you
 specify. You should make a backup of your contacts before use.
 
-<img src="Resources/screenshot-importing-iphone5s.png?raw=true" width="213" height="378">
-<img src="Resources/screenshot-add-source-iphone5s.png?raw=true" width="213" height="378">
+<img src="Resources/screenshot-importing-vcard-sources-4-inch.png?raw=true" width="213" height="378">
+<img src="Resources/screenshot-edit-vcard-source-4-inch.png?raw=true" width="213" height="378">
 
 ## Contact importing algorithm
 
