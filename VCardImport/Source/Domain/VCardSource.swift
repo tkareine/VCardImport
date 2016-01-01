@@ -110,7 +110,7 @@ struct VCardSource {
     }
 
     static func empty() -> Connection {
-      return self.init(vcardURL: "", authenticationMethod: .HTTPAuth)
+      return self.init(vcardURL: "", authenticationMethod: .BasicAuth)
     }
 
     func vcardURLasURL() -> NSURL {

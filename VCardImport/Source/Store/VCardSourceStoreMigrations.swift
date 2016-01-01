@@ -22,7 +22,7 @@ struct VCardSourceStoreMigrations {
     -> [String: AnyObject]
   {
     var connection = sourceDict["connection"] as! [String: AnyObject]
-    connection["authenticationMethod"] = HTTPRequest.AuthenticationMethod.HTTPAuth.rawValue
+    connection["authenticationMethod"] = HTTPRequest.AuthenticationMethod.BasicAuth.rawValue
     sourceDict["connection"] = connection
     return sourceDict
   }

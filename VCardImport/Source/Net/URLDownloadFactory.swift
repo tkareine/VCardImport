@@ -13,8 +13,8 @@ class URLDownloadFactory {
     -> URLDownloadable
   {
     switch connection.authenticationMethod {
-    case .HTTPAuth:
-      return HTTPAuthURLDownloader(
+    case .BasicAuth:
+      return BasicAuthURLDownloader(
         httpRequestsWith: makeHTTPSession(),
         url: connection.vcardURLasURL(),
         headers: headers,

@@ -166,13 +166,13 @@ class VCardSourceStore {
         name: "Body Corp",
         connection: VCardSource.Connection(
           vcardURL: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf",
-          authenticationMethod: .HTTPAuth),
+          authenticationMethod: .BasicAuth),
         isEnabled: true),
       VCardSource(
         name: "Cold Temp",
         connection: VCardSource.Connection(
           vcardURL: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf",
-          authenticationMethod: .HTTPAuth),
+          authenticationMethod: .BasicAuth),
         isEnabled: true)
     ]
   }

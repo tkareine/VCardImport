@@ -65,8 +65,8 @@
 		E996101B1A894B5C00D52ECF /* aa-60.png in Resources */ = {isa = PBXBuildFile; fileRef = E996101A1A894B5C00D52ECF /* aa-60.png */; };
 		E996101D1A89524200D52ECF /* bb-60.png in Resources */ = {isa = PBXBuildFile; fileRef = E996101C1A89524200D52ECF /* bb-60.png */; };
 		E998B2281BEF73C200994121 /* URLDownloadFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998B2271BEF73C200994121 /* URLDownloadFactory.swift */; };
-		E998B22A1BEF744B00994121 /* HTTPAuthURLDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998B2291BEF744B00994121 /* HTTPAuthURLDownloader.swift */; };
-		E998B22B1BEF7E1000994121 /* HTTPAuthURLDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998B2291BEF744B00994121 /* HTTPAuthURLDownloader.swift */; };
+		E998B22A1BEF744B00994121 /* BasicAuthURLDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998B2291BEF744B00994121 /* BasicAuthURLDownloader.swift */; };
+		E998B22B1BEF7E1000994121 /* BasicAuthURLDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998B2291BEF744B00994121 /* BasicAuthURLDownloader.swift */; };
 		E998B22C1BEF7E1400994121 /* URLDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF2E2C1BD81BEF00C7C7D6 /* URLDownloadable.swift */; };
 		E998B22D1BEF7E1600994121 /* URLDownloadFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998B2271BEF73C200994121 /* URLDownloadFactory.swift */; };
 		E99CC2491C2EA4A600B19149 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CC2481C2EA4A600B19149 /* UIKitExtensions.swift */; };
@@ -184,7 +184,7 @@
 		E996101A1A894B5C00D52ECF /* aa-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "aa-60.png"; sourceTree = "<group>"; };
 		E996101C1A89524200D52ECF /* bb-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bb-60.png"; sourceTree = "<group>"; };
 		E998B2271BEF73C200994121 /* URLDownloadFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLDownloadFactory.swift; path = Net/URLDownloadFactory.swift; sourceTree = "<group>"; };
-		E998B2291BEF744B00994121 /* HTTPAuthURLDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPAuthURLDownloader.swift; path = Net/HTTPAuthURLDownloader.swift; sourceTree = "<group>"; };
+		E998B2291BEF744B00994121 /* BasicAuthURLDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BasicAuthURLDownloader.swift; path = Net/BasicAuthURLDownloader.swift; sourceTree = "<group>"; };
 		E99CC2481C2EA4A600B19149 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIKitExtensions.swift; path = Support/UIKitExtensions.swift; sourceTree = "<group>"; };
 		E99D45401C1315CD00A43993 /* LabeledSwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LabeledSwitchCell.swift; path = UI/LabeledSwitchCell.swift; sourceTree = "<group>"; };
 		E99D45421C131CCA00A43993 /* LabeledSelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LabeledSelectionCell.swift; path = UI/LabeledSelectionCell.swift; sourceTree = "<group>"; };
@@ -269,7 +269,7 @@
 				E9828EAD1A99E67C00757D18 /* HTTPRequestable.swift */,
 				E9C46E721A4A3C98004BD769 /* HTTPSession.swift */,
 				E9AF2E2C1BD81BEF00C7C7D6 /* URLDownloadable.swift */,
-				E998B2291BEF744B00994121 /* HTTPAuthURLDownloader.swift */,
+				E998B2291BEF744B00994121 /* BasicAuthURLDownloader.swift */,
 				E94AF0121BF761700050D186 /* PostFormURLDownloader.swift */,
 				E998B2271BEF73C200994121 /* URLDownloadFactory.swift */,
 			);
@@ -690,7 +690,7 @@
 				E9828EAE1A99E67C00757D18 /* HTTPRequestable.swift in Sources */,
 				E9C46E731A4A3C98004BD769 /* HTTPSession.swift in Sources */,
 				E9AF2E2D1BD81BEF00C7C7D6 /* URLDownloadable.swift in Sources */,
-				E998B22A1BEF744B00994121 /* HTTPAuthURLDownloader.swift in Sources */,
+				E998B22A1BEF744B00994121 /* BasicAuthURLDownloader.swift in Sources */,
 				E94AF0131BF761700050D186 /* PostFormURLDownloader.swift in Sources */,
 				E998B2281BEF73C200994121 /* URLDownloadFactory.swift in Sources */,
 				E97D05C91A96806500740659 /* AddressBook.swift in Sources */,
@@ -743,7 +743,7 @@
 				E9828EB51A99F12B00757D18 /* HTTPRequestable.swift in Sources */,
 				E956195E1BF929A90087B813 /* HTTPSession.swift in Sources */,
 				E998B22C1BEF7E1400994121 /* URLDownloadable.swift in Sources */,
-				E998B22B1BEF7E1000994121 /* HTTPAuthURLDownloader.swift in Sources */,
+				E998B22B1BEF7E1000994121 /* BasicAuthURLDownloader.swift in Sources */,
 				E91631E91BF7932D00B38B5F /* PostFormURLDownloader.swift in Sources */,
 				E998B22D1BEF7E1600994121 /* URLDownloadFactory.swift in Sources */,
 				E9828EB31A99F10E00757D18 /* AddressBook.swift in Sources */,

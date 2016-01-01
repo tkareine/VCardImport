@@ -17,7 +17,7 @@ class VCardSourceStoreMigrationTests: XCTestCase {
 
     let newSource = VCardSource.fromDictionary(newSourceDicts.first!)
 
-    XCTAssertEqual(newSource.connection.authenticationMethod, HTTPRequest.AuthenticationMethod.HTTPAuth)
+    XCTAssertEqual(newSource.connection.authenticationMethod, HTTPRequest.AuthenticationMethod.BasicAuth)
   }
 
   func testMigratesRenamedVCardURLKeyToVersion3() {
@@ -25,7 +25,7 @@ class VCardSourceStoreMigrationTests: XCTestCase {
       "name": "Test",
       "connection": [
         "url": "https://example.com/vcards",
-        "authenticationMethod": "HTTPAuth"
+        "authenticationMethod": "BasicAuth"
       ],
       "isEnabled": true,
       "id": NSUUID().UUIDString

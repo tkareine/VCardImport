@@ -31,14 +31,14 @@ struct HTTPRequest {
   }
 
   enum AuthenticationMethod: String {
-    case HTTPAuth = "HTTPAuth"
+    case BasicAuth = "BasicAuth"
     case PostForm = "PostForm"
 
-    static let allValues = [HTTPAuth, PostForm]
+    static let allValues = [BasicAuth, PostForm]
 
     var shortDescription: String {
       switch self {
-      case .HTTPAuth:
+      case .BasicAuth:
         return "HTTP Basic Auth"
       case .PostForm:
         return "Post Form"
@@ -47,7 +47,7 @@ struct HTTPRequest {
 
     var longDescription: String {
       switch self {
-      case .HTTPAuth:
+      case .BasicAuth:
         return "The standard HTTP authentication with username and password."
       case .PostForm:
         return "Login form authentication with username and password. The app sends the credentials in a POST request to a login URL. The server must establish cookie based session upon successful authentication. The login URL must differ from the vCard file URL. The app employs detection for authentication outcome."

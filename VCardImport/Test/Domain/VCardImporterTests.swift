@@ -428,7 +428,7 @@ class VCardImporterTests: XCTestCase {
       name: name,
       connection: VCardSource.Connection(
         vcardURL: "https://example.com/vcards/\(name).vcf",
-        authenticationMethod: .HTTPAuth),
+        authenticationMethod: .BasicAuth),
       isEnabled: true)
   }
 

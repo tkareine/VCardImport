@@ -2,7 +2,7 @@ import MiniFuture
 import XCTest
 
 class URLDownloadFactoryTests: XCTestCase {
-  func testHTTPAuthMethodSendsCredentials() {
+  func testBasicAuthMethodSendsCredentials() {
     let headRequestedExpectation = expectationWithDescription("HEAD requested")
 
     class TestHttpSession: FakeHTTPSession {
@@ -31,7 +31,7 @@ class URLDownloadFactoryTests: XCTestCase {
     })
 
     makeURLDownloadFactory(usingHTTPSession: httpSession)
-      .makeDownloader(connection: makeConnection(.HTTPAuth), headers: [:])
+      .makeDownloader(connection: makeConnection(.BasicAuth), headers: [:])
       .requestFileHeaders()
 
     waitForExpectationsWithTimeout(1, handler: nil)
