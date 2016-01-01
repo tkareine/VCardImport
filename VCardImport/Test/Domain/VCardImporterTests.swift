@@ -346,14 +346,14 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
-  func testDoesNotDownloadVCardFileIfRemoteFileHasUnmodifiedHeaderStamp() {
+  func testDoesNotDownloadVCardFileIfHTTPCachingHeaderStampSignifiesNoChangeInRemoteFile() {
     let importSourceCompletionExpectation = expectationWithDescription("import source completion")
     let importCompletionExpectation = expectationWithDescription("import completion")
     let modifiedHeaderStamp = ModifiedHeaderStamp(name: "ETag", value: "1407855624n")
     let source = makeVCardSource().withLastImportResult(
       true,
       message: "Downloaded",
-      at: NSDate.init(),
+      at: NSDate(),
       modifiedHeaderStamp: modifiedHeaderStamp)
     let vcardURL = source.connection.vcardURLasURL()
 
