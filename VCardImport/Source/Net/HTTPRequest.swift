@@ -50,7 +50,7 @@ struct HTTPRequest {
       case .HTTPAuth:
         return "The standard HTTP authentication with username and password."
       case .PostForm:
-        return "Cookie based HTTP session authentication by login form submission with POST method, sending username and password as URL encoded values. The URL for the login submission must be separate from the vCard file URL. The app employs detection for authentication outcome, which is not fully reliable."
+        return "Login form authentication with username and password. The app sends the credentials in a POST request to a login URL. The server must establish cookie based session upon successful authentication. The login URL must differ from the vCard file URL. The app employs detection for authentication outcome."
       }
     }
   }
