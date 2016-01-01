@@ -136,11 +136,21 @@ extension RecordDifferences: CustomStringConvertible {
     }
 
     if countSkippedNewRecordsWithDuplicateNames > 0 {
-      print(", skipped \(countSkippedNewRecordsWithDuplicateNames) contacts in vCard file due to duplicate names", terminator: "", toStream: &result)
+      print(String(
+          format: ", skipped %d %@ in vCard file due to duplicate names",
+          countSkippedNewRecordsWithDuplicateNames,
+          countSkippedNewRecordsWithDuplicateNames > 1 ? "contacts" : "contact"),
+        terminator: "",
+        toStream: &result)
     }
 
     if countSkippedAmbiguousMatchesToExistingRecords > 0 {
-      print(", skipped updates to \(countSkippedAmbiguousMatchesToExistingRecords) contacts due to ambiguous name matches", terminator: "", toStream: &result)
+      print(String(
+          format: ", skipped updates to %d %@ due to ambiguous name matches",
+          countSkippedAmbiguousMatchesToExistingRecords,
+          countSkippedAmbiguousMatchesToExistingRecords > 1 ? "contacts" : "contact"),
+        terminator: "",
+        toStream: &result)
     }
 
     return result
