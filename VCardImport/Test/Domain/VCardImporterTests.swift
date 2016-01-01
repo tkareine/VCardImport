@@ -290,11 +290,9 @@ class VCardImporterTests: XCTestCase {
 
     httpSession.fakeRespondTo(
       vcardURL,
-      withResponse: NSHTTPURLResponse(
-        URL: vcardURL,
-        statusCode: 200,
-        HTTPVersion: "HTTP/1.1",
-        headerFields: ["Last-Modified": "Fri, 1 Jan 2016 00:43:54 GMT"])!)
+      withResponse: makeHTTPResponse(
+        url: vcardURL,
+        headerFields: ["Last-Modified": "Fri, 1 Jan 2016 00:43:54 GMT"]))
 
     let importer = makeVCardImporter(
       usingHTTPSession: httpSession,
@@ -326,11 +324,9 @@ class VCardImporterTests: XCTestCase {
 
     httpSession.fakeRespondTo(
       vcardURL,
-      withResponse: NSHTTPURLResponse(
-        URL: vcardURL,
-        statusCode: 200,
-        HTTPVersion: "HTTP/1.1",
-        headerFields: ["ETag": "1407855624n"])!)
+      withResponse: makeHTTPResponse(
+        url: vcardURL,
+        headerFields: ["ETag": "1407855624n"]))
 
     let importer = makeVCardImporter(
       usingHTTPSession: httpSession,
@@ -367,11 +363,9 @@ class VCardImporterTests: XCTestCase {
 
     httpSession.fakeRespondTo(
       vcardURL,
-      withResponse: NSHTTPURLResponse(
-        URL: vcardURL,
-        statusCode: 200,
-        HTTPVersion: "HTTP/1.1",
-        headerFields: ["ETag": "1407855624n"])!)
+      withResponse: makeHTTPResponse(
+        url: vcardURL,
+        headerFields: ["ETag": "1407855624n"]))
 
     let importer = makeVCardImporter(
       usingHTTPSession: httpSession,
@@ -436,6 +430,18 @@ class VCardImporterTests: XCTestCase {
         vcardURL: "https://example.com/vcards/\(name).vcf",
         authenticationMethod: .HTTPAuth),
       isEnabled: true)
+  }
+
+  private func makeHTTPResponse(
+    url url: NSURL,
+    headerFields: [String: String])
+    -> NSHTTPURLResponse
+  {
+    return NSHTTPURLResponse(
+      URL: url,
+      statusCode: 200,
+      HTTPVersion: "HTTP/1.1",
+      headerFields: headerFields)!
   }
 
   private func makeHTTPSession(
