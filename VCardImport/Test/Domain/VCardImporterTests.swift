@@ -385,6 +385,43 @@ class VCardImporterTests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
+  func testDownloadsVCardFileIfRemoteDoesNotSupportHTTPCachingAndPreviousHeaderStampExists() {
+    let importSourceCompletionExpectation = expectationWithDescription("import source completion")
+    let importCompletionExpectation = expectationWithDescription("import completion")
+    let modifiedHeaderStamp = ModifiedHeaderStamp(name: "ETag", value: "1407855624n")
+    let source = makeVCardSource().withLastImportResult(
+      true,
+      message: "Downloaded",
+      at: NSDate(),
+      modifiedHeaderStamp: modifiedHeaderStamp)
+    let vcardURL = source.connection.vcardURLasURL()
+
+    let httpSession = makeHTTPSession(
+      downloadURL: vcardURL,
+      fromFile: OneTestRecordVCardFile)
+
+    httpSession.fakeRespondTo(
+      vcardURL,
+      withResponse: makeHTTPResponse(url: vcardURL))
+
+    let importer = makeVCardImporter(
+      usingHTTPSession: httpSession,
+      onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
+        XCTAssertNotNil(recordDiff)
+        XCTAssertNil(modifiedHeaderStamp)
+        XCTAssertNil(error)
+        importSourceCompletionExpectation.fulfill()
+      },
+      onComplete: { error in
+        XCTAssertNil(error)
+        importCompletionExpectation.fulfill()
+    })
+
+    importer.importFrom([source])
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
   private func recordIsOfTestOrganization(record: ABRecord) -> Bool {
     if let orgName = Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String {
       return orgName == TestOrganization
@@ -434,7 +471,7 @@ class VCardImporterTests: XCTestCase {
 
   private func makeHTTPResponse(
     url url: NSURL,
-    headerFields: [String: String])
+    headerFields: [String: String] = [:])
     -> NSHTTPURLResponse
   {
     return NSHTTPURLResponse(
