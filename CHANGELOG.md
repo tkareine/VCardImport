@@ -1,4 +1,4 @@
-# Upcoming
+# 1.3.0 (prepared)
 
 New features:
 
