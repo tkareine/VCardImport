@@ -57,12 +57,13 @@ $ git commit -m "Prepare release $VERSION"
 $ git push origin master
 ```
 7. Build and upload app archive to App Store, submit for review
-8. …
-9. After getting approved review, update `CHANGELOG.md`: replace "$VERSION (prepared)" section with "$VERSION / $DATE".
-10. Git commit and tag the release:
+8. Possibly add more features, if so, update `CHANGELOG.md` to have "Upcoming" section at the top
+9. …
+10. After getting review approved and having the app released, update `CHANGELOG.md`: replace "$VERSION (prepared)" section with "$VERSION / $DATE".
+11. Git commit changes in `CHANGELOG.md`, tag the commit that was released earlier:
 ``` sh
 $ git add -p
-$ git commit -m "Release $VERSION"
-$ git tag $VERSION
+$ git commit -m "Release $VERSION is available"
+$ git tag $VERSION $PREPARE_RELEASE_COMMIT_ID
 $ git push --tags origin master
 ```
