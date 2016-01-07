@@ -42,16 +42,29 @@ private let ISODateFormatter: NSDateFormatter = {
   return formatter
 }()
 
-private let LocaleMediumDateFormatter: NSDateFormatter = {
+private let LocaleMediumDateTimeFormatter: NSDateFormatter = {
   let formatter = NSDateFormatter()
   formatter.dateStyle = .MediumStyle
   formatter.timeStyle = .ShortStyle
   return formatter
 }()
 
+private let LocaleShortTimeFormatter: NSDateFormatter = {
+  let formatter = NSDateFormatter()
+  formatter.dateStyle = .NoStyle
+  formatter.timeStyle = .ShortStyle
+  return formatter
+}()
+
+private let CurrentCalendar = NSCalendar.currentCalendar()
+
 extension NSDate {
-  var localeMediumString: String {
-    return LocaleMediumDateFormatter.stringFromDate(self)
+  var localeMediumDateTimeString: String {
+    return LocaleMediumDateTimeFormatter.stringFromDate(self)
+  }
+
+  var localeShortTimeString: String {
+    return LocaleShortTimeFormatter.stringFromDate(self)
   }
 
   var ISOString: String {
@@ -60,6 +73,34 @@ extension NSDate {
 
   static func dateFromISOString(string: String) -> NSDate? {
     return ISODateFormatter.dateFromString(string)
+  }
+
+  func dateAtMidnight(calendar: NSCalendar? = nil) -> NSDate {
+    let cal: NSCalendar
+    if let c = calendar {
+      cal = c
+    } else {
+      cal = CurrentCalendar
+    }
+    let comp = cal.components([.Year, .Month, .Day], fromDate: self)
+    return cal.dateFromComponents(comp)!
+  }
+
+  func isBefore(date: NSDate) -> Bool {
+    return compare(date) == .OrderedAscending
+  }
+
+  func describeRelativeDateToHuman(calendar: NSCalendar? = nil) -> String {
+    let today = NSDate().dateAtMidnight(calendar)
+    let yesterday = today.dateByAddingTimeInterval(-24 * 60 * 60)
+
+    if !isBefore(today) {
+      return "today \(localeShortTimeString)"
+    } else if !isBefore(yesterday) {
+      return "yesterday \(localeShortTimeString)"
+    } else {
+      return localeMediumDateTimeString
+    }
   }
 }
 

@@ -42,6 +42,51 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertEqual(date.ISOString as String, isoString)
   }
 
+  func testDateAtMidnight() {
+    let calendar = NSCalendar(identifier: NSCalendarIdentifierGregorian)!
+    calendar.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+
+    let comp = NSDateComponents()
+    comp.year = 2016
+    comp.month = 2
+    comp.day = 29
+    comp.hour = 13
+    comp.minute = 23
+    comp.second = 34
+
+    let date = calendar.dateFromComponents(comp)!
+
+    XCTAssertEqual(date.dateAtMidnight(calendar).ISOString, "2016-02-29T00:00:00Z")
+  }
+
+  func testDateIsBefore() {
+    let before = NSDate(timeIntervalSinceReferenceDate: 1)
+    let after = NSDate(timeIntervalSinceReferenceDate: 2)
+    XCTAssertTrue(before.isBefore(after))
+    XCTAssertFalse(after.isBefore(before))
+    XCTAssertFalse(before.isBefore(before))
+  }
+
+  func testDateDescribeRelativeDateToHuman() {
+    let secondsInDay: NSTimeInterval = 24 * 60 * 60
+    let secondsIn10minutes: NSTimeInterval = 10 * 60
+
+    let calendar = NSCalendar(identifier: NSCalendarIdentifierGregorian)!
+    calendar.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+
+    let comp = calendar.components([.Year, .Month, .Day], fromDate: NSDate())
+    comp.hour = 14
+    comp.minute = 56
+
+    let todayAfternoon = calendar.dateFromComponents(comp)!
+    let yesterdayAfternoon = todayAfternoon.dateByAddingTimeInterval(-secondsInDay + secondsIn10minutes)
+    let theDayAfterAtAfternoon = yesterdayAfternoon.dateByAddingTimeInterval(-secondsInDay - secondsIn10minutes)
+
+    XCTAssertEqual(todayAfternoon.describeRelativeDateToHuman(calendar), "today \(todayAfternoon.localeShortTimeString)")
+    XCTAssertEqual(yesterdayAfternoon.describeRelativeDateToHuman(calendar), "yesterday \(yesterdayAfternoon.localeShortTimeString)")
+    XCTAssertEqual(theDayAfterAtAfternoon.describeRelativeDateToHuman(calendar), theDayAfterAtAfternoon.localeMediumDateTimeString)
+  }
+
   func testURLHTTPURLValidation() {
     XCTAssertTrue(NSURL(string: "http://192.168.0.1/")!.isValidHTTPURL)
     XCTAssertTrue(NSURL(string: "http://0.0.0.0/")!.isValidHTTPURL)
