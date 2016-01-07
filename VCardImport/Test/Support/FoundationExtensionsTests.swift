@@ -13,22 +13,6 @@ class CoreExtensionTests: XCTestCase {
     XCTAssertEqual(["a": 1, "b": 2, "c": 3].countWhere { $1 % 2 == 0 }, 1)
   }
 
-  func testCollectionTypeFindElementWhere() {
-    XCTAssertNil([1, 2].findElementWhere { $0 % 3 == 0 })
-
-    XCTAssertEqual([1, 2, 3, 4].findElementWhere { $0 % 2 == 0 }, 2)
-
-    let pair = ["a": 1, "b": 2, "c": 5].findElementWhere { $1 % 2 == 0 }
-    XCTAssert(pair != nil)
-    XCTAssertEqual(pair!.0, "b")
-    XCTAssertEqual(pair!.1, 2)
-  }
-
-  func testCollectionTypeFindIndexWhere() {
-    XCTAssertNil(["a", "b"].findIndexWhere { $0 == "d" })
-    XCTAssertEqual(["a", "b", "b"].findIndexWhere { $0 == "b" }, 1)
-  }
-
   func testStringCapitalized() {
     XCTAssertEqual("a".capitalized, "A")
     XCTAssertEqual("foo bar".capitalized, "Foo bar")

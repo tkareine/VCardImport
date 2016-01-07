@@ -16,24 +16,6 @@ extension SequenceType {
     }
     return c
   }
-
-  func findElementWhere(@noescape predicate: Self.Generator.Element -> Bool) -> Self.Generator.Element? {
-    for e in self {
-      if predicate(e) {
-        return e
-      }
-    }
-    return nil
-  }
-
-  func findIndexWhere(@noescape predicate: Self.Generator.Element -> Bool) -> Int? {
-    for (idx, e) in enumerate() {
-      if predicate(e) {
-        return idx
-      }
-    }
-    return nil
-  }
 }
 
 private let WhitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
