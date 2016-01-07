@@ -30,7 +30,7 @@ class VCardSourceCell: UITableViewCell {
       : Config.UI.TableCellDisabledTextColor
 
     if let res = source.lastImportResult {
-      descriptionLabel.text = "\(res.importedAt.localeMediumString) - \(res.message)"
+      descriptionLabel.text = "\(res.importedAt.describeRelativeDateToHuman().capitalized) - \(res.message)"
       iconLabel.text = res.isSuccess ? nil : "⚠️"  // no text saves space
       iconLabel.hidden = res.isSuccess
     } else {
