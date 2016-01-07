@@ -58,7 +58,7 @@ extension NSDate {
     return ISODateFormatter.stringFromDate(self)
   }
 
-  class func dateFromISOString(string: String) -> NSDate? {
+  static func dateFromISOString(string: String) -> NSDate? {
     return ISODateFormatter.dateFromString(string)
   }
 }

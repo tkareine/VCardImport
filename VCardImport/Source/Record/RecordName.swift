@@ -10,7 +10,7 @@ class RecordName: Hashable, Equatable, CustomStringConvertible {
     fatalError("must be overridden")
   }
 
-  class func of(record: ABRecord) -> RecordName? {
+  static func of(record: ABRecord) -> RecordName? {
     let kind = (Records.getSingleValueProperty(kABPersonKindProperty, of: record) as? NSNumber) ?? (kABPersonKindPerson as NSNumber)
 
     if kind.isEqualToNumber(kABPersonKindPerson) {

@@ -98,7 +98,7 @@ class AddressBook {
     }
   }
 
-  class func sharedInstance() throws -> AddressBook {
+  static func sharedInstance() throws -> AddressBook {
     struct Static {
       static var instance: AddressBook?
       static var error: ErrorType?
