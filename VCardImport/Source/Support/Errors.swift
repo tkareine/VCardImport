@@ -131,7 +131,7 @@ struct Errors {
     case NSURLErrorUnsupportedURL:
       return "Invalid URL"
     case NSURLErrorCancelled:
-      return "Cancelled (authentication rejected?)"
+      return "Cancelled (authentication failed?)"
     case NSURLErrorNotConnectedToInternet,
          NSURLErrorNetworkConnectionLost:
       return "No internet connection"

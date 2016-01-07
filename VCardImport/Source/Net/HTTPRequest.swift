@@ -50,7 +50,7 @@ struct HTTPRequest {
       case .BasicAuth:
         return "The standard HTTP authentication with username and password."
       case .PostForm:
-        return "Login form authentication with username and password. The app sends the credentials in a POST request to a login URL. The server must establish cookie based session upon successful authentication. The login URL must differ from the vCard file URL. The app employs detection for authentication outcome."
+        return "Login form authentication with username and password. The app sends the credentials in a POST request to a login URL you provide. The server must establish a cookie based session upon successful authentication. The login URL must differ from the vCard file URL: detection for authentication outcome depends on it."
       }
     }
   }
