@@ -50,11 +50,11 @@ private let LocaleMediumDateFormatter: NSDateFormatter = {
 }()
 
 extension NSDate {
-  var localeMediumString: NSString {
+  var localeMediumString: String {
     return LocaleMediumDateFormatter.stringFromDate(self)
   }
 
-  var ISOString: NSString {
+  var ISOString: String {
     return ISODateFormatter.stringFromDate(self)
   }
 
