@@ -86,10 +86,10 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     }
 
     func makeTableView() -> UITableView {
-      let tv = UITableView(frame: CGRect(), style: .Plain)
+      let tv = UITableView(frame: CGRect.zero, style: .Plain)
       tv.estimatedRowHeight = 80
       tv.rowHeight = UITableViewAutomaticDimension
-      tv.tableFooterView = UIView(frame: CGRect())
+      tv.tableFooterView = UIView(frame: CGRect.zero)
       tv.dataSource = dataSource
       tv.delegate = self
       let cellNib = UINib(nibName: CellIdentifier, bundle: nil)

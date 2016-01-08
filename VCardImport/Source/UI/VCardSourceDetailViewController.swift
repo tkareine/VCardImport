@@ -65,7 +65,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
   override func loadView() {
     func makeTableView() -> UITableView {
-      let tv = UITableView(frame: CGRect(), style: .Grouped)
+      let tv = UITableView(frame: CGRect.zero, style: .Grouped)
       tv.estimatedSectionHeaderHeight = 50
       tv.estimatedRowHeight = 40
       tv.rowHeight = UITableViewAutomaticDimension
@@ -259,10 +259,10 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     cellsByIndexPath = makeCellsByIndexPath()
 
     noteLabel = MultilineLabel(
-      frame: CGRect(),
+      frame: CGRect.zero,
       labelText: "Specify vCard file URL at remote server you trust. Prefer secure connections with https URLs. All contacts in the vCard file will be considered for importing.")
 
-    vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect())
+    vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect.zero)
 
     tableView = makeTableView()
     view = tableView
