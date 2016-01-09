@@ -6,7 +6,7 @@ New features:
 * Describe the dates of vCard sources' last import results in relative
   terms ("Today 3:34 PM")
 
-# 1.3.0 (prepared)
+# 1.3.0 / 2016-01-08
 
 New features:
 
