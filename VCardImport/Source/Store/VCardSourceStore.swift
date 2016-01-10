@@ -62,10 +62,26 @@ class VCardSourceStore {
     let userDefaults = NSUserDefaults.standardUserDefaults()
     let previousStoreVersion = userDefaults.integerForKey(Config.Persistence.VersionKey)
     let needsMigration = previousStoreVersion > 0 && previousStoreVersion < CurrentStoreVersion
-    let sources = needsMigration
-      ? migrateNonSensitiveDataFromUserDefaults(userDefaults, previousVersion: previousStoreVersion)
-      : loadNonSensitiveDataFromUserDefaults(userDefaults)
-    resetFrom(loadSensitiveDataFromKeychain(sources))
+
+    var dictionaries = loadNonSensitiveDataFromUserDefaults(userDefaults)
+
+    if needsMigration {
+      dictionaries = VCardSourceStoreMigrations.migrateNonSensitiveData(
+        dictionaries,
+        previousVersion: previousStoreVersion)
+    }
+
+    let sources = dictionaries.map { VCardSource.fromDictionary($0) }
+    let sourcesToResetFrom: [VCardSource]
+
+    #if DEFAULT_SOURCES
+      sourcesToResetFrom = previousStoreVersion == 0 ? makeDefaultSources() : sources
+    #else
+      sourcesToResetFrom = sources
+    #endif
+
+    resetFrom(loadSensitiveDataFromKeychain(sourcesToResetFrom))
+
     if needsMigration {
       saveNonSensitiveDataToUserDefaults(userDefaults)
       NSLog("Migrated vCard sources from version %d to %d", previousStoreVersion, CurrentStoreVersion)
@@ -73,6 +89,35 @@ class VCardSourceStore {
   }
 
   // MARK: Helpers
+
+  private func loadNonSensitiveDataFromUserDefaults(
+    userDefaults: NSUserDefaults)
+    -> [[String: AnyObject]]
+  {
+    if let
+      data = userDefaults.objectForKey(Config.Persistence.VCardSourcesKey) as? NSData,
+      dicts = JSONSerialization.decode(data) as? [[String: AnyObject]]
+    {
+      return dicts
+    } else {
+      return []
+    }
+  }
+
+  private func loadSensitiveDataFromKeychain(sources: [VCardSource]) -> [VCardSource] {
+    if let credsData = keychainItem.objectForKey(kSecAttrGeneric) as? NSData {
+      let creds = JSONSerialization.decode(credsData) as! [String: [String: String]]
+      return sources.map { source in
+        if let cred = creds[source.id] {
+          return source.with(username: cred["username"] ?? "", password: cred["password"] ?? "")
+        } else {
+          return source  // this source has no credentials
+        }
+      }
+    } else {
+      return sources  // no source has credentials
+    }
+  }
 
   private func saveNonSensitiveDataToUserDefaults(userDefaults: NSUserDefaults) {
     // attempt to serialize vcard sources before persisting them
@@ -105,52 +150,6 @@ class VCardSourceStore {
     keychainItem.setObject(credsData, forKey: kSecAttrGeneric)
   }
 
-  private func migrateNonSensitiveDataFromUserDefaults(
-    userDefaults: NSUserDefaults,
-    previousVersion: Int)
-    -> [VCardSource]
-  {
-    if let sourcesData = userDefaults.objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
-      let oldSourcesDicts = JSONSerialization.decode(sourcesData) as! [[String: AnyObject]]
-      let newSourcesDicts = VCardSourceStoreMigrations.migrateNonSensitiveData(
-        oldSourcesDicts,
-        previousVersion: previousVersion)
-      return newSourcesDicts.map { VCardSource.fromDictionary($0) }
-    } else {
-      return []
-    }
-  }
-
-  private func loadNonSensitiveDataFromUserDefaults(userDefaults: NSUserDefaults)
-    -> [VCardSource]
-  {
-    if let sourcesData = userDefaults.objectForKey(Config.Persistence.VCardSourcesKey) as? NSData {
-      return (JSONSerialization.decode(sourcesData) as! [[String: AnyObject]])
-        .map { VCardSource.fromDictionary($0) }
-    } else {
-#if DEFAULT_SOURCES
-      return makeDefaultSources()
-#else
-      return []
-#endif
-    }
-  }
-
-  private func loadSensitiveDataFromKeychain(sources: [VCardSource]) -> [VCardSource] {
-    if let credsData = keychainItem.objectForKey(kSecAttrGeneric) as? NSData {
-      let creds = JSONSerialization.decode(credsData) as! [String: [String: String]]
-      return sources.map { source in
-        if let cred = creds[source.id] {
-          return source.with(username: cred["username"] ?? "", password: cred["password"] ?? "")
-        } else {
-          return source  // this source has no credentials
-        }
-      }
-    } else {
-      return sources  // no source has credentials
-    }
-  }
-
   private func resetFrom(sources: [VCardSource]) {
     var store: InsertionOrderDictionary<String, VCardSource> = InsertionOrderDictionary()
     for source in sources {
@@ -161,6 +160,7 @@ class VCardSourceStore {
 
 #if DEFAULT_SOURCES
   private func makeDefaultSources() -> [VCardSource] {
+    NSLog("Loading default sources")
     return [
       VCardSource(
         name: "Body Corp",
