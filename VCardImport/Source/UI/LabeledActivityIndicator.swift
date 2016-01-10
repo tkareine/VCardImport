@@ -55,7 +55,7 @@ class LabeledActivityIndicator: UIView {
     activityIndicator.startAnimating()
   }
 
-  func stop(text: String, fadeOut: Bool = false) {
+  func stop(text: String? = nil, fadeOut: Bool = false) {
     label.text = text
     activityIndicator.stopAnimating()
 

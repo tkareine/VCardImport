@@ -223,16 +223,19 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
               s.loginURLCell.highlightLabel(false)
               s.vcardURLValidationResultView.stop("vCard URL is valid", fadeOut: true)
             case .Failure(let error):
+              let validationResultText: String?
               switch error {
               case ValidationError.InvalidURLInput(let cells):
                 for c in [s.vcardURLCell, s.loginURLCell] {
                   c.highlightLabel(cells.contains({ $0 === c }))
                 }
+                validationResultText = nil
               default:
                 s.vcardURLCell.highlightLabel(false)
                 s.loginURLCell.highlightLabel(false)
-                s.vcardURLValidationResultView.stop((error as NSError).localizedDescription)
+                validationResultText = (error as NSError).localizedDescription
               }
+              s.vcardURLValidationResultView.stop(validationResultText)
             }
             s.refreshDoneButtonEnabled()
           }
