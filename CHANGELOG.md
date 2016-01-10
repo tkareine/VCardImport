@@ -2,9 +2,16 @@
 
 New features:
 
-* Hide empty vCard source row placeholders from the main table view
+* Hide empty vCard source row placeholders from the main table
+  view. Thanks to Lauri Heino (@laurihoo) for the implementation tip.
 * Describe the dates of vCard sources' last import results in relative
   terms ("Today 3:34 PM")
+* Add option to have no authentication for vCard source
+
+Bug fixes:
+
+* Fix possible crash on user input validation. Thanks to Juha-Pekka
+  Laine (juha-pekka.laine@reaktor.com) for the bug report.
 
 # 1.3.0 / 2016-01-08
 
