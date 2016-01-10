@@ -153,7 +153,7 @@ class VCardImporter {
   }
 
   private func checkAndDownloadSource(source: VCardSource) -> Future<SourceImportResult> {
-    NSLog("vCard source %@: checking if remote has changed, using %@ authentication method…",
+    NSLog("vCard source %@: checking if vCard resource has changed, using %@ authentication method…",
       source.name,
       source.connection.authenticationMethod.rawValue)
     let downloader = urlDownloadFactory.makeDownloader(
@@ -166,12 +166,12 @@ class VCardImporter {
 
         if let oldStamp = source.lastImportResult?.modifiedHeaderStamp {
           if oldStamp == newStamp {
-            NSLog("vCard source %@: remote is unchanged since last import (\(oldStamp))", source.name)
+            NSLog("vCard source %@: vCard resource is unchanged since last import (\(oldStamp))", source.name)
             return Future.succeeded(.Unchanged)
           }
         }
 
-        NSLog("vCard source %@: remote has changed (\(newStamp)), downloading…", source.name)
+        NSLog("vCard source %@: vCard resource has changed (\(newStamp)), downloading…", source.name)
         return self.downloadSource(source, downloadWith: downloader).map { records in .Changed(records, newStamp) }
     }
   }

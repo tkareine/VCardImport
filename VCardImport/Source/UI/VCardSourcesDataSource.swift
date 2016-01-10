@@ -44,7 +44,7 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   func setVCardSourceUnchangedStatus(source: VCardSource) {
     setVCardSourceStatus(
       true,
-      message: "Remote is unchanged since last import",
+      message: "vCard is unchanged since last import",
       modifiedHeaderStamp: nil,
       to: source)
   }
