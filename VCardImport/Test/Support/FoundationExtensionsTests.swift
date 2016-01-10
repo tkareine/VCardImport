@@ -1,6 +1,6 @@
 import XCTest
 
-class CoreExtensionTests: XCTestCase {
+class FoundationExtensionsTests: XCTestCase {
   func testDictionaryHasKey() {
     let dict = ["foo": 1]
     XCTAssertTrue(dict.hasKey("foo"))
