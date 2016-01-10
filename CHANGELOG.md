@@ -12,6 +12,9 @@ Bug fixes:
 
 * Fix possible crash on user input validation. Thanks to Juha-Pekka
   Laine (juha-pekka.laine@reaktor.com) for the bug report.
+* Fix hiding validation progress upon Login URL validation failure
+  when user selects Post Form authentication and previous validation
+  is still in progress
 
 # 1.3.0 / 2016-01-08
 
