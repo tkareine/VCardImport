@@ -86,7 +86,9 @@ class VCardSourcesDataSource: NSObject, UITableViewDataSource {
   {
     if (editingStyle == .Delete) {
       removeVCardSource(indexPath.row)
+      tableView.beginUpdates()
       tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:.Fade)
+      tableView.endUpdates()
     }
   }
 

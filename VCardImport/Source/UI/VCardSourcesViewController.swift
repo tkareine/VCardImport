@@ -163,10 +163,13 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     let vc = VCardSourceDetailViewController(
       source: oldSource,
       isNewSource: false,
-      downloadsWith: urlDownloadFactory) { [unowned self] newSource in
+      downloadsWith: urlDownloadFactory,
+      disappearHandler: { [unowned self] newSource in
         self.dataSource.saveVCardSource(newSource)
+        self.tableView.beginUpdates()
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-      }
+        self.tableView.endUpdates()
+      })
     navigationController!.pushViewController(vc, animated: true)
   }
 
@@ -224,7 +227,9 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private func reloadTableViewSourceRow(source: VCardSource) {
     if let row = dataSource.rowForVCardSource(source) {
       let indexPath = NSIndexPath(forRow: row, inSection: 0)
+      tableView.beginUpdates()
       tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+      tableView.endUpdates()
     }
   }
 
