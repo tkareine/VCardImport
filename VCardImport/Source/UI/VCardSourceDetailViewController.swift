@@ -182,6 +182,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     func makeVCardURLValidator() -> InputValidator<VCardSource.Connection> {
       return InputValidator(
         asyncValidation: { [weak self] connection in
+          // executed in background serial thread
           if let s = self {
             func cellsWithInvalidURLs(connection: VCardSource.Connection)
               -> [LabeledTextFieldCell]
