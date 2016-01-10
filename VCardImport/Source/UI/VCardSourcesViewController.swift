@@ -164,7 +164,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       source: oldSource,
       isNewSource: false,
       downloadsWith: urlDownloadFactory,
-      disappearHandler: { [unowned self] newSource in
+      saveHandler: { [unowned self] newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.beginUpdates()
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
@@ -195,7 +195,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       source: VCardSource.empty(),
       isNewSource: true,
       downloadsWith: urlDownloadFactory,
-      disappearHandler: { [unowned self] newSource in
+      saveHandler: { [unowned self] newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadData()
       })

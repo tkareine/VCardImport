@@ -5,7 +5,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   private let source: VCardSource
   private let isNewSource: Bool
   private let urlDownloadFactory: URLDownloadFactory
-  private let onDisappear: VCardSource -> Void
+  private let onSave: VCardSource -> Void
 
   private var tableView: UITableView!
 
@@ -25,7 +25,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
   private var cellsByIndexPath: [Int: [Int: UITableViewCell]]!
 
-  private var shouldCallOnDisappearCallback: Bool
+  private var shouldCallOnSave: Bool
   private var isFirstTimeViewAppears = true
 
   private var focusedTextField: UITextField?
@@ -34,13 +34,13 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     source: VCardSource,
     isNewSource: Bool,
     downloadsWith urlDownloadFactory: URLDownloadFactory,
-    disappearHandler onDisappear: VCardSource -> Void)
+    saveHandler onSave: VCardSource -> Void)
   {
     self.source = source
     self.isNewSource = isNewSource
     self.urlDownloadFactory = urlDownloadFactory
-    self.onDisappear = onDisappear
-    self.shouldCallOnDisappearCallback = !isNewSource
+    self.onSave = onSave
+    self.shouldCallOnSave = !isNewSource
 
     super.init(nibName: nil, bundle: nil)
 
@@ -76,7 +76,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     }
 
     func makeTextFieldDelegate(
-      changedTextHandler onChanged: ProxyTextFieldDelegate.OnTextChangeCallback? = nil)
+      changeTextHandler onChange: ProxyTextFieldDelegate.OnTextChangeCallback? = nil)
       -> UITextFieldDelegate
     {
       return ProxyTextFieldDelegate(
@@ -90,7 +90,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
           tf.resignFirstResponder()
           return true
         },
-        changedHandler: onChanged)
+        changeHandler: onChange)
     }
 
     func makeNameCell() -> LabeledTextFieldCell {
@@ -101,7 +101,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         autocorrectionType: .Yes,
         spellCheckingType: .Default,
         textFieldDelegate: makeTextFieldDelegate(
-          changedTextHandler: { [unowned self] _, text in
+          changeTextHandler: { [unowned self] _, text in
             self.nameValidator.validate(text)
           }
         ))
@@ -112,7 +112,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         label: "vCard URL",
         value: source.connection.vcardURL,
         textFieldDelegate: makeTextFieldDelegate(
-          changedTextHandler: { [unowned self] _, text in
+          changeTextHandler: { [unowned self] _, text in
             self.validateVCardURL(vcardURL: text)
           }
         ))
@@ -123,7 +123,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         label: "Login URL",
         value: source.connection.loginURL ?? "",
         textFieldDelegate: makeTextFieldDelegate(
-          changedTextHandler: { [unowned self] _, text in
+          changeTextHandler: { [unowned self] _, text in
             self.validateVCardURL(loginURL: text)
           }
         ))
@@ -142,7 +142,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         label: "Username",
         value: source.connection.username ?? "",
         textFieldDelegate: makeTextFieldDelegate(
-          changedTextHandler: { [unowned self] _, text in
+          changeTextHandler: { [unowned self] _, text in
             self.validateVCardURL(username: text)
           }
         ))
@@ -154,7 +154,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         value: source.connection.password ?? "",
         isSecure: true,
         textFieldDelegate: makeTextFieldDelegate(
-          changedTextHandler: { [unowned self] _, text in
+          changeTextHandler: { [unowned self] _, text in
             self.validateVCardURL(password: text)
           }
         ))
@@ -305,7 +305,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
     NSNotificationCenter.defaultCenter().removeObserver(self)
 
-    if shouldCallOnDisappearCallback {
+    if shouldCallOnSave {
       let authenticationMethod = authMethodCell.selection.data
 
       let newConnection = VCardSource.Connection(
@@ -320,7 +320,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         connection: newConnection,
         isEnabled: isEnabledCell.switchOn)
 
-      onDisappear(newSource)
+      onSave(newSource)
     }
   }
 
@@ -460,7 +460,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   }
 
   func done(sender: AnyObject) {
-    shouldCallOnDisappearCallback = true
+    shouldCallOnSave = true
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
 

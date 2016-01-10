@@ -6,18 +6,18 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
   private let onBeginEditing: UITextField -> Void
   private let onEndEditing: UITextField -> Void
   private let onShouldReturn: UITextField -> Bool
-  private let onChanged: OnTextChangeCallback?
+  private let onChange: OnTextChangeCallback?
 
   init(
     beginEditingHandler onBeginEditing: UITextField -> Void,
     endEditingHandler onEndEditing: UITextField -> Void,
     shouldReturnHandler onShouldReturn: UITextField -> Bool,
-    changedHandler onChanged: OnTextChangeCallback? = nil)
+    changeHandler onChange: OnTextChangeCallback? = nil)
   {
     self.onBeginEditing = onBeginEditing
     self.onEndEditing = onEndEditing
     self.onShouldReturn = onShouldReturn
-    self.onChanged = onChanged
+    self.onChange = onChange
   }
 
   // MARK: UITextFieldDelegate
@@ -35,7 +35,7 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
   }
 
   func textFieldShouldClear(textField: UITextField) -> Bool {
-    if let callback = onChanged {
+    if let callback = onChange {
       callback(textField, "")
     }
 
@@ -54,7 +54,7 @@ class ProxyTextFieldDelegate: NSObject, UITextFieldDelegate {
       return unaffectedStart + string + unaffectedEnd
     }
 
-    if let callback = onChanged {
+    if let callback = onChange {
       callback(textField, changedText(textField.text!))
     }
 
