@@ -45,7 +45,7 @@ struct VCardSource {
       lastImportResult: stamp)
   }
 
-  func with(username username: String, password: String) -> VCardSource {
+  func with(username username: String?, password: String?) -> VCardSource {
     let connection = Connection(
       vcardURL: self.connection.vcardURL,
       authenticationMethod: self.connection.authenticationMethod,
@@ -85,19 +85,19 @@ struct VCardSource {
   struct Connection {
     let vcardURL: String
     let authenticationMethod: HTTPRequest.AuthenticationMethod
-    let username: String
-    let password: String
+    let username: String?
+    let password: String?
     let loginURL: String?
 
     /**
-     - precondition: if `authenticationMethod` parameter is `.PostForm`,
+     - precondition: if `authenticationMethod` parameter is `.PostForm`, then
        `loginURL` parameter must be defined.
      */
     init(
       vcardURL: String,
       authenticationMethod: HTTPRequest.AuthenticationMethod,
-      username: String = "",
-      password: String = "",
+      username: String? = nil,
+      password: String? = nil,
       loginURL: String? = nil)
     {
       self.vcardURL = vcardURL.trimmed  // needed by `vcardURLasURL`

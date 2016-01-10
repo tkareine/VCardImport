@@ -13,38 +13,28 @@ class URLDownloadFactory {
     -> URLDownloadable
   {
     switch connection.authenticationMethod {
+    case .None:
+      return StandardURLDownloader(
+        httpRequestsWith: makeHTTPSession(),
+        url: connection.vcardURLasURL(),
+        headers: headers)
     case .BasicAuth:
-      return BasicAuthURLDownloader(
+      return StandardURLDownloader(
         httpRequestsWith: makeHTTPSession(),
         url: connection.vcardURLasURL(),
         headers: headers,
-        credential: makeCredential(
-          username: connection.username,
-          password: connection.password,
+        credential: NSURLCredential(
+          user: connection.username ?? "",
+          password: connection.password ?? "",
           persistence: .ForSession))
     case .PostForm:
       return PostFormURLDownloader(
         httpRequestsWith: makeHTTPSession(),
         vcardURL: connection.vcardURLasURL(),
         loginURL: connection.loginURLasURL()!,
-        username: connection.username,
-        password: connection.password,
+        username: connection.username ?? "",
+        password: connection.password ?? "",
         headers: headers)
-    }
-  }
-
-  // MARK: Helpers
-
-  private func makeCredential(
-    username username: String,
-    password: String,
-    persistence: NSURLCredentialPersistence = .None)
-    -> NSURLCredential?
-  {
-    if !username.isEmpty {
-      return NSURLCredential(user: username, password: password, persistence: persistence)
-    } else {
-      return nil
     }
   }
 }

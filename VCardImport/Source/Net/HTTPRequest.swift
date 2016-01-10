@@ -31,13 +31,16 @@ struct HTTPRequest {
   }
 
   enum AuthenticationMethod: String {
+    case None = "None"
     case BasicAuth = "BasicAuth"
     case PostForm = "PostForm"
 
-    static let allValues = [BasicAuth, PostForm]
+    static let allValues = [None, BasicAuth, PostForm]
 
     var shortDescription: String {
       switch self {
+      case .None:
+        return "None"
       case .BasicAuth:
         return "HTTP Basic Auth"
       case .PostForm:
@@ -45,8 +48,10 @@ struct HTTPRequest {
       }
     }
 
-    var longDescription: String {
+    var longDescription: String? {
       switch self {
+      case .None:
+        return "For public resources requiring no authentication."
       case .BasicAuth:
         return "The standard HTTP authentication with username and password."
       case .PostForm:

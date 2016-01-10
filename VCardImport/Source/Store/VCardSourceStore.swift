@@ -109,7 +109,7 @@ class VCardSourceStore {
       let creds = JSONSerialization.decode(credsData) as! [String: [String: String]]
       return sources.map { source in
         if let cred = creds[source.id] {
-          return source.with(username: cred["username"] ?? "", password: cred["password"] ?? "")
+          return source.with(username: cred["username"], password: cred["password"])
         } else {
           return source  // this source has no credentials
         }
@@ -133,11 +133,11 @@ class VCardSourceStore {
       for (id, source) in store {
         let conn = source.connection
         var cred: [String: String] = [:]
-        if !conn.username.isEmpty {
-          cred["username"] = conn.username
+        if let uname = conn.username {
+          cred["username"] = uname
         }
-        if !conn.password.isEmpty {
-          cred["password"] = conn.password
+        if let passwd = conn.password {
+          cred["password"] = passwd
         }
         if !cred.isEmpty {
           result[id] = cred
@@ -166,7 +166,7 @@ class VCardSourceStore {
         name: "Body Corp",
         connection: VCardSource.Connection(
           vcardURL: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf",
-          authenticationMethod: .BasicAuth),
+          authenticationMethod: .None),
         isEnabled: true),
       VCardSource(
         name: "Cold Temp",

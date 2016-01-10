@@ -140,7 +140,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     func makeUsernameCell() -> LabeledTextFieldCell {
       return LabeledTextFieldCell(
         label: "Username",
-        value: source.connection.username,
+        value: source.connection.username ?? "",
         textFieldDelegate: makeTextFieldDelegate(
           changedTextHandler: { [unowned self] _, text in
             self.validateVCardURL(username: text)
@@ -151,7 +151,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     func makePasswordCell() -> LabeledTextFieldCell {
       return LabeledTextFieldCell(
         label: "Password",
-        value: source.connection.password,
+        value: source.connection.password ?? "",
         isSecure: true,
         textFieldDelegate: makeTextFieldDelegate(
           changedTextHandler: { [unowned self] _, text in
@@ -311,15 +311,14 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       let newConnection = VCardSource.Connection(
         vcardURL: vcardURLCell.textFieldText,
         authenticationMethod: authenticationMethod,
-        username: usernameCell.textFieldText,
-        password: passwordCell.textFieldText,
+        username: authenticationMethod == .None ? nil : usernameCell.textFieldText,
+        password: authenticationMethod == .None ? nil : passwordCell.textFieldText,
         loginURL: authenticationMethod == .PostForm ? loginURLCell.textFieldText : nil)
 
       let newSource = source.with(
         name: nameCell.textFieldText.trimmed,
         connection: newConnection,
-        isEnabled: isEnabledCell.switchOn
-      )
+        isEnabled: isEnabledCell.switchOn)
 
       onDisappear(newSource)
     }
@@ -374,25 +373,46 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
           shortDescription: $0.shortDescription,
           longDescription: $0.longDescription)
       }
-      let selectedAuthMethod = authMethodCell.selection.data
-      let preselectionIndex = selectionOptions.indexOf({ $0.data == selectedAuthMethod })!
+      let previouslySelectedAuthMethod = authMethodCell.selection.data
+      let preselectionIndex = selectionOptions.indexOf({ $0.data == previouslySelectedAuthMethod })!
       let vc = SelectionViewController(
         title: authMethodCell.labelText,
         selectionOptions: selectionOptions,
-        preselectionIndex: preselectionIndex
-        ) { [unowned self] selectedOption in
-          self.navigationController!.popViewControllerAnimated(true)
-          self.authMethodCell.selection = selectedOption
-          if selectedOption.data != selectedAuthMethod {
+        preselectionIndex: preselectionIndex,
+        selectionHandler: { [unowned self] selectedOption in
+          let currentSelectedAuthMethod = selectedOption.data
+
+          func showOrHideLoginURLCell() {
             let loginURLCellIndexPath = self.indexPathOfCell(self.loginURLCell)
-            if selectedOption.data == .PostForm {
+
+            if currentSelectedAuthMethod == .PostForm {
               self.tableView.insertRowsAtIndexPaths([loginURLCellIndexPath], withRowAnimation: .Fade)
-            } else {
+            } else if previouslySelectedAuthMethod == .PostForm {
               self.tableView.deleteRowsAtIndexPaths([loginURLCellIndexPath], withRowAnimation: .Fade)
             }
-            self.validateVCardURL(authenticationMethod: selectedOption.data)
           }
-      }
+
+          func showOrHideUsernameAndPasswordCells() {
+            let indexPaths = [self.usernameCell, self.passwordCell].map { self.indexPathOfCell($0) }
+
+            if currentSelectedAuthMethod == .None {
+              self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+            } else if previouslySelectedAuthMethod == .None {
+              self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+            }
+          }
+
+          self.navigationController!.popViewControllerAnimated(true)
+
+          if currentSelectedAuthMethod != previouslySelectedAuthMethod {
+            self.authMethodCell.selection = selectedOption
+            self.tableView.beginUpdates()
+            showOrHideLoginURLCell()
+            showOrHideUsernameAndPasswordCells()
+            self.tableView.endUpdates()
+            self.validateVCardURL(authenticationMethod: currentSelectedAuthMethod)
+          }
+        })
       navigationController!.pushViewController(vc, animated: true)
     }
   }
@@ -420,9 +440,15 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     -> Int
   {
     if let rows = cellsByIndexPath[section] {
-      return section == 0 && authMethodCell.selection.data != .PostForm
-        ? rows.count - 1
-        : rows.count
+      if section == 0 && authMethodCell.selection.data != .PostForm {
+        return rows.count - 1
+      }
+
+      if section == 1 && authMethodCell.selection.data == .None {
+        return rows.count - 2
+      }
+
+      return rows.count
     }
     fatalError("unknown section: \(section)")
   }
@@ -549,11 +575,13 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     password: String? = nil,
     loginURL: String? = nil)
   {
+    let authMethod = authenticationMethod ?? authMethodCell.selection.data
+
     let connection = VCardSource.Connection(
       vcardURL: vcardURL ?? vcardURLCell.textFieldText,
-      authenticationMethod: authenticationMethod ?? authMethodCell.selection.data,
-      username: username ?? usernameCell.textFieldText,
-      password: password ?? passwordCell.textFieldText,
+      authenticationMethod: authMethod,
+      username: authMethod == .None ? nil : (username ?? usernameCell.textFieldText),
+      password: authMethod == .None ? nil : (password ?? passwordCell.textFieldText),
       loginURL: loginURL ?? loginURLCell.textFieldText)
 
     vcardURLValidator.validate(connection)

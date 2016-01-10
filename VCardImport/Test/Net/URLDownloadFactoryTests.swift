@@ -2,28 +2,25 @@ import MiniFuture
 import XCTest
 
 class URLDownloadFactoryTests: XCTestCase {
+  func testNoAuthenticationMethodDoesNotSendCredentials() {
+    let headRequestedExpectation = expectationWithDescription("HEAD requested")
+
+    let httpSession = ProxyFakeHttpSession(headHandler: { creds in
+      XCTAssertNil(creds)
+      headRequestedExpectation.fulfill()
+    })
+
+    makeURLDownloadFactory(usingHTTPSession: httpSession)
+      .makeDownloader(connection: makeConnection(.None), headers: [:])
+      .requestFileHeaders()
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
   func testBasicAuthMethodSendsCredentials() {
     let headRequestedExpectation = expectationWithDescription("HEAD requested")
 
-    class TestHttpSession: FakeHTTPSession {
-      private let onHeadCallback: NSURLCredential? -> Void
-
-      init(headHandler onHeadCallback: NSURLCredential? -> Void) {
-        self.onHeadCallback = onHeadCallback
-      }
-
-      override func head(
-        url: NSURL,
-        headers: HTTPRequest.Headers,
-        credential: NSURLCredential?)
-        -> Future<NSHTTPURLResponse>
-      {
-        onHeadCallback(credential)
-        return super.head(url, headers: headers, credential: credential)
-      }
-    }
-
-    let httpSession = TestHttpSession(headHandler: { creds in
+    let httpSession = ProxyFakeHttpSession(headHandler: { creds in
       XCTAssertEqual(creds!.user, "uname")
       XCTAssertEqual(creds!.password, "passwd")
       XCTAssert(creds!.persistence == .ForSession)
@@ -108,5 +105,23 @@ class URLDownloadFactoryTests: XCTestCase {
       statusCode: 200,
       HTTPVersion: "HTTP/1.1",
       headerFields: [:])!
+  }
+
+  private class ProxyFakeHttpSession: FakeHTTPSession {
+    private let onHeadCallback: NSURLCredential? -> Void
+
+    init(headHandler onHeadCallback: NSURLCredential? -> Void) {
+      self.onHeadCallback = onHeadCallback
+    }
+
+    override func head(
+      url: NSURL,
+      headers: HTTPRequest.Headers,
+      credential: NSURLCredential?)
+      -> Future<NSHTTPURLResponse>
+    {
+      onHeadCallback(credential)
+      return super.head(url, headers: headers, credential: credential)
+    }
   }
 }

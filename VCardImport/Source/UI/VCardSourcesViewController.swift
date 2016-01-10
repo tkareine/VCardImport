@@ -191,10 +191,11 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     let vc = VCardSourceDetailViewController(
       source: VCardSource.empty(),
       isNewSource: true,
-      downloadsWith: urlDownloadFactory) { [unowned self] newSource in
+      downloadsWith: urlDownloadFactory,
+      disappearHandler: { [unowned self] newSource in
         self.dataSource.saveVCardSource(newSource)
         self.tableView.reloadData()
-      }
+      })
     let nc = UINavigationController(rootViewController: vc)
     nc.modalPresentationStyle = .FormSheet
     presentViewController(nc, animated: true, completion: nil)

@@ -1,7 +1,7 @@
 import Foundation
 import MiniFuture
 
-class BasicAuthURLDownloader: URLDownloadable {
+class StandardURLDownloader: URLDownloadable {
   private let httpRequests: HTTPRequestable
   private let url: NSURL
   private let headers: HTTPRequest.Headers
@@ -11,7 +11,7 @@ class BasicAuthURLDownloader: URLDownloadable {
     httpRequestsWith httpRequests: HTTPRequestable,
     url: NSURL,
     headers: HTTPRequest.Headers,
-    credential: NSURLCredential?)
+    credential: NSURLCredential? = nil)
   {
     self.httpRequests = httpRequests
     self.url = url
