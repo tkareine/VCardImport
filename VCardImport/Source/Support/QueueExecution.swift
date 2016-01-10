@@ -43,11 +43,15 @@ struct QueueExecution {
     var lastDelayId: UInt64 = 0
 
     func later(input: T) {
-      lastDelayId = lastDelayId &+ 1
-      let currentDelayId = lastDelayId
-      after(waitInMS, queue) {
-        if lastDelayId == currentDelayId {
-          block(input)
+      async(queue) {
+        // update and check delay ids in the same serial queue to ensure safe
+        // access
+        lastDelayId = lastDelayId &+ 1
+        let currentDelayId = lastDelayId
+        after(waitInMS, queue) {
+          if lastDelayId == currentDelayId {
+            block(input)
+          }
         }
       }
     }
