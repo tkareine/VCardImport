@@ -1,4 +1,5 @@
 import Dispatch
+import MiniFuture
 
 struct QueueExecution {
   typealias OnceToken = dispatch_once_t
@@ -32,7 +33,8 @@ struct QueueExecution {
   }
 
   /**
-   - parameter queue: The queue in which to execute. Must be a serial queue.
+   - parameter queue: The queue in which to call `block` parameter. Must be a
+     serial queue.
    */
   static func makeDebouncer<T>(
     waitInMS: Int,
@@ -44,8 +46,8 @@ struct QueueExecution {
 
     func later(input: T) {
       async(queue) {
-        // update and check delay ids in the same serial queue to ensure safe
-        // access
+        // update and check `lastDelayId` in the same serial queue to ensure
+        // safe access
         lastDelayId = lastDelayId &+ 1
         let currentDelayId = lastDelayId
         after(waitInMS, queue) {
@@ -57,5 +59,32 @@ struct QueueExecution {
     }
 
     return later
+  }
+
+  /**
+   - parameter queue: The queue in which to call `block` parameter. Must be a
+     serial queue.
+   */
+  static func makeSwitchToLatestFuture<T>(queue: Queue, block: Try<T> -> Void)
+    -> (Future<T> -> Void)
+  {
+    var latestFuture: Future<T>?
+
+    func switcher(future: Future<T>) {
+      async(queue) {
+        // update and check `latestFuture` in the same serial queue to ensure
+        // safe access
+        latestFuture = future
+        future.onComplete { result in
+          async(queue) {
+            if future === latestFuture {
+              block(result)
+            }
+          }
+        }
+      }
+    }
+
+    return switcher
   }
 }

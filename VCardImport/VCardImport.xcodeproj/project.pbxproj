@@ -10,14 +10,11 @@
 		8AD31A8ED4BE4362183F13A7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15622EB2A83307462D1086A /* Pods.framework */; };
 		E90684AC1A589F0700728D0B /* VCardSourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684AB1A589F0700728D0B /* VCardSourceCell.swift */; };
 		E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90684B01A58B17900728D0B /* DictionaryConvertible.swift */; };
-		E907C6A91A6B382700612C90 /* MiniFutureExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* MiniFutureExtensions.swift */; };
 		E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */; };
 		E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = E969253F1A4F7CF000B6427A /* QueueExecution.swift */; };
 		E91631E91BF7932D00B38B5F /* PostFormURLDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94AF0121BF761700050D186 /* PostFormURLDownloader.swift */; };
 		E91E62011A6B082F00543A40 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85F1A361C1B0054DCB8 /* Config.swift */; };
-		E927AD4C1AA305BD00C5CA27 /* MiniFutureExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907C6A81A6B382700612C90 /* MiniFutureExtensions.swift */; };
 		E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */; };
-		E92F0B891AA31E2000367705 /* MiniFutureExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F0B881AA31E2000367705 /* MiniFutureExtensionsTests.swift */; };
 		E942050C1BEA97A500139A79 /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942050B1BEA97A500139A79 /* HTTPResponse.swift */; };
 		E94205101BEA9A0700139A79 /* HTTPRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */; };
 		E945D5381C2DE841005A79B1 /* ProxyTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E945D5371C2DE841005A79B1 /* ProxyTextFieldDelegate.swift */; };
@@ -137,10 +134,8 @@
 		D15622EB2A83307462D1086A /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E90684AB1A589F0700728D0B /* VCardSourceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceCell.swift; path = UI/VCardSourceCell.swift; sourceTree = "<group>"; };
 		E90684B01A58B17900728D0B /* DictionaryConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryConvertible.swift; path = Support/DictionaryConvertible.swift; sourceTree = "<group>"; };
-		E907C6A81A6B382700612C90 /* MiniFutureExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiniFutureExtensions.swift; path = Support/MiniFutureExtensions.swift; sourceTree = "<group>"; };
 		E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QueueExecutionTests.swift; path = Support/QueueExecutionTests.swift; sourceTree = "<group>"; };
 		E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONSerialization.swift; path = Support/JSONSerialization.swift; sourceTree = "<group>"; };
-		E92F0B881AA31E2000367705 /* MiniFutureExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiniFutureExtensionsTests.swift; path = Support/MiniFutureExtensionsTests.swift; sourceTree = "<group>"; };
 		E942050B1BEA97A500139A79 /* HTTPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponse.swift; path = Net/HTTPResponse.swift; sourceTree = "<group>"; };
 		E942050F1BEA9A0700139A79 /* HTTPRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestTests.swift; path = Net/HTTPRequestTests.swift; sourceTree = "<group>"; };
 		E945D5371C2DE841005A79B1 /* ProxyTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyTextFieldDelegate.swift; path = UI/ProxyTextFieldDelegate.swift; sourceTree = "<group>"; };
@@ -388,7 +383,6 @@
 				E9CF04B11A3CE02A00A13EF6 /* FoundationExtensions.swift */,
 				E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */,
 				E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */,
-				E907C6A81A6B382700612C90 /* MiniFutureExtensions.swift */,
 				E969253F1A4F7CF000B6427A /* QueueExecution.swift */,
 				E99CC2481C2EA4A600B19149 /* UIKitExtensions.swift */,
 			);
@@ -438,7 +432,6 @@
 				E98FD3F31A508B5300A9DB27 /* FilesTests.swift */,
 				E9CF04B31A3CE14400A13EF6 /* FoundationExtensionsTests.swift */,
 				E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */,
-				E92F0B881AA31E2000367705 /* MiniFutureExtensionsTests.swift */,
 				E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */,
 			);
 			name = Support;
@@ -682,7 +675,6 @@
 				E947E1591A4F87A200513F77 /* Files.swift in Sources */,
 				E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */,
-				E907C6A91A6B382700612C90 /* MiniFutureExtensions.swift in Sources */,
 				E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */,
 				E99CC2491C2EA4A600B19149 /* UIKitExtensions.swift in Sources */,
 				E9828EB11A99E73600757D18 /* HTTPRequest.swift in Sources */,
@@ -735,7 +727,6 @@
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
 				E9CF04B51A3CE40E00A13EF6 /* FoundationExtensions.swift in Sources */,
 				E9EF16511A61DFC400CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
-				E927AD4C1AA305BD00C5CA27 /* MiniFutureExtensions.swift in Sources */,
 				E910BEB41A6BE706008EF26F /* QueueExecution.swift in Sources */,
 				E96CA34D1C35ED0000F1D939 /* FakeHTTPSession.swift in Sources */,
 				E9828EB41A99F12800757D18 /* HTTPRequest.swift in Sources */,
@@ -758,7 +749,6 @@
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
 				E9CF04B41A3CE14400A13EF6 /* FoundationExtensionsTests.swift in Sources */,
 				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,
-				E92F0B891AA31E2000367705 /* MiniFutureExtensionsTests.swift in Sources */,
 				E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */,
 				E975804A1A75FE26008A70E9 /* DownloadProgressTests.swift in Sources */,
 				E94205101BEA9A0700139A79 /* HTTPRequestTests.swift in Sources */,

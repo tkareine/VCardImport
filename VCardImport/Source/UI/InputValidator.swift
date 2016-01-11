@@ -18,28 +18,25 @@ class InputValidator<T> {
     }
 
     let backgroundQueue = QueueExecution.makeSerialQueue("InputValidator")
-    let switcher = Future<T>.makeSwitchLatest()
+
+    let switcher: Future<T> -> Void = QueueExecution.makeSwitchToLatestFuture(
+      backgroundQueue,
+      block: { [weak self] result in
+        // input validator object still exists, so it makes sense to call
+        // given callback with the validation result?
+        if let s = self {
+          s.isLastValidationSuccess = result.isSuccess
+          QueueExecution.async(onValidatedQueue) { onValidated(result) }
+        }
+      })
 
     validationDebouncer = QueueExecution.makeDebouncer(
       Config.UI.ValidationThrottleInMS,
       backgroundQueue,
       block: { [weak self] input in
-        // validator still exists, makes sense to validate?
+        // input validator object still exists, so it makes sense to validate?
         if self != nil {
-          // never call Future#get here as switcher completes only the latest
-          // Future
-          switcher(validate(input)).onComplete { result in
-            // pass result to the same background serial queue in order to
-            // ensure safe access to the input validator object
-            QueueExecution.async(backgroundQueue) {
-              // input validator object still exists, so it makes sense to call
-              // given callback with the validation result?
-              if let s = self {
-                s.isLastValidationSuccess = result.isSuccess
-                QueueExecution.async(onValidatedQueue) { onValidated(result) }
-              }
-            }
-          }
+          switcher(validate(input))
         }
       })
   }

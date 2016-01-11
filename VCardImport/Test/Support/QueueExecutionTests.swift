@@ -1,4 +1,5 @@
 import XCTest
+import MiniFuture
 
 class QueueExecutionTests: XCTestCase {
   func testDebouncer() {
@@ -17,5 +18,28 @@ class QueueExecutionTests: XCTestCase {
 
     waitForExpectationsWithTimeout(1, handler: nil)
     XCTAssertEqual(inputs, ["d"])
+  }
+
+  func testSwitchToLatestFuture() {
+    let expectation = expectationWithDescription("switchToLatestFuture")
+    let queue = QueueExecution.makeSerialQueue("TestSwitchToLatestFuture")
+    var results: [Try<String>] = []
+    let switcher: Future<String> -> Void = QueueExecution.makeSwitchToLatestFuture(queue) { result in
+      results.append(result)
+      expectation.fulfill()
+    }
+
+    let fut0 = Future<String>.promise()
+    let fut1 = Future<String>.promise()
+
+    switcher(fut0)
+    switcher(fut1)
+
+    fut0.complete(.Success("a"))
+    fut1.complete(.Success("b"))
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+    XCTAssertEqual(results.count, 1)
+    XCTAssertEqual(try! results.first!.value(), "b")
   }
 }
