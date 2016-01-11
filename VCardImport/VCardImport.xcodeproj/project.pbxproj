@@ -936,6 +936,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/vCard Turbo.app/vCard Turbo";
 			};
 			name = Release;
