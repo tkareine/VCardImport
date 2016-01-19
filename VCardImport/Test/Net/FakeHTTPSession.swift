@@ -44,7 +44,7 @@ class FakeHTTPSession: HTTPRequestable {
     to destination: NSURL,
     headers: HTTPRequest.Headers,
     credential: NSURLCredential?,
-    onProgress: HTTPRequest.OnProgressCallback?)
+    onProgress: HTTPRequest.OnDownloadProgressCallback?)
     -> Future<NSURL>
   {
     guard let file = fakeDownloadFiles[url] else {
@@ -62,7 +62,7 @@ class FakeHTTPSession: HTTPRequestable {
     url: NSURL,
     headers: HTTPRequest.Headers,
     credential: NSURLCredential? = nil,
-    onProgress: HTTPRequest.OnProgressCallback? = nil)
+    onProgress: HTTPRequest.OnDownloadProgressCallback? = nil)
     -> Future<NSHTTPURLResponse>
   {
     let response: NSHTTPURLResponse

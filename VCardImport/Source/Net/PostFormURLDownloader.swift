@@ -51,7 +51,7 @@ class PostFormURLDownloader: URLDownloadable {
 
   func downloadFile(
     to fileURL: NSURL,
-    onProgress: HTTPRequest.OnProgressCallback?)
+    onProgress: HTTPRequest.OnDownloadProgressCallback?)
     -> Future<NSURL>
   {
     return httpRequests.download(

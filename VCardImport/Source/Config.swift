@@ -50,6 +50,7 @@ struct Config {
   }
 
   struct UI {
+    static let ImportProgressThrottleInMS = 50
     static let MessageFadeAnimationDuration: NSTimeInterval = 0.5
     static let MessageFadeOutAnimationDelay: NSTimeInterval = 5
     static let TableCellHeaderTextColor = UIColor.blackColor()

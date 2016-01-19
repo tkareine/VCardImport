@@ -25,7 +25,7 @@ class StandardURLDownloader: URLDownloadable {
 
   func downloadFile(
     to fileURL: NSURL,
-    onProgress: HTTPRequest.OnProgressCallback? = nil)
+    onProgress: HTTPRequest.OnDownloadProgressCallback? = nil)
     -> Future<NSURL>
   {
     return httpRequests.download(

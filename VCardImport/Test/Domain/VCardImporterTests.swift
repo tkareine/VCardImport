@@ -456,7 +456,7 @@ class VCardImporterTests: XCTestCase {
       jobTitle: jobTitle,
       organization: TestOrganization,
       phones: phones)
-    try! addressBook.addRecords([record])
+    try! addressBook.addRecord(record)
     try! addressBook.save()
   }
 
@@ -500,7 +500,6 @@ class VCardImporterTests: XCTestCase {
     return VCardImporter(
       downloadsWith: URLDownloadFactory(httpSessionsWith: { httpSession }),
       queueTo: QueueExecution.mainQueue,
-      sourceDownloadHandler: { _, _ in () },
       sourceCompletionHandler: onSourceComplete,
       completionHandler: onComplete)
   }

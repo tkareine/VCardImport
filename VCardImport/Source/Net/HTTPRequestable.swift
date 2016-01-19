@@ -19,6 +19,6 @@ protocol HTTPRequestable {
     to destination: NSURL,
     headers: HTTPRequest.Headers,
     credential: NSURLCredential?,
-    onProgress: HTTPRequest.OnProgressCallback?)
+    onProgress: HTTPRequest.OnDownloadProgressCallback?)
     -> Future<NSURL>
 }

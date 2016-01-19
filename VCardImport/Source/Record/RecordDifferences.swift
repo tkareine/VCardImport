@@ -2,6 +2,9 @@ import Foundation
 import AddressBook
 
 struct RecordDifferences {
+  typealias ResolveProgress = (totalPhasesCompleted: Int, totalPhasesToComplete: Int)
+  typealias OnResolveProgressCallback = ResolveProgress -> Void
+
   let additions: [ABRecord]
   let changes: [RecordChangeSet]
   let countSkippedNewRecordsWithDuplicateNames: Int
@@ -9,12 +12,22 @@ struct RecordDifferences {
 
   static func resolveBetween(
     oldRecords oldRecords: [ABRecord],
-    newRecords: [ABRecord])
+    newRecords: [ABRecord],
+    onProgress: OnResolveProgressCallback? = nil)
     -> RecordDifferences
   {
     let (uniqueNewRecords, countSkippedNewRecordsWithDuplicateNames) = uniqueRecordsOf(newRecords)
+
+    onProgress?((totalPhasesCompleted: 1, totalPhasesToComplete: 3))
+
     let (additions, matches, countSkippedAmbiguousMatchesToExistingRecords) = findAdditionsAndExistingMatchesBetween(oldRecords, uniqueNewRecords)
+
+    onProgress?((totalPhasesCompleted: 2, totalPhasesToComplete: 3))
+
     let changes = findChanges(matches)
+
+    onProgress?((totalPhasesCompleted: 3, totalPhasesToComplete: 3))
+
     return self.init(
       additions: additions,
       changes: changes,

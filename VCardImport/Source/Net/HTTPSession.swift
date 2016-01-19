@@ -78,7 +78,7 @@ class HTTPSession: HTTPRequestable {
     to destination: NSURL,
     headers: HTTPRequest.Headers,
     credential: NSURLCredential? = nil,
-    onProgress: HTTPRequest.OnProgressCallback? = nil)
+    onProgress: HTTPRequest.OnDownloadProgressCallback? = nil)
     -> Future<NSURL>
   {
     let managedRequest = manager.download(

@@ -70,17 +70,15 @@ class AddressBook {
       .takeRetainedValue() as [ABRecord]
   }
 
-  func addRecords(records: [ABRecord]) throws {
-    for record in records {
-      var abError: Unmanaged<CFError>?
-      let isAdded = ABAddressBookAddRecord(addressBook, record, &abError)
+  func addRecord(record: ABRecord) throws {
+    var abError: Unmanaged<CFError>?
+    let isAdded = ABAddressBookAddRecord(addressBook, record, &abError)
 
-      guard isAdded else {
-        if let err = abError {
-          throw Errors.fromCFError(err.takeRetainedValue())
-        } else {
-          throw Errors.migration("Failed to add record to address book")
-        }
+    guard isAdded else {
+      if let err = abError {
+        throw Errors.fromCFError(err.takeRetainedValue())
+      } else {
+        throw Errors.migration("Failed to add record to address book")
       }
     }
   }

@@ -21,8 +21,8 @@ private let DefaultHeaders = [
 struct HTTPRequest {
   typealias Headers = [String: String]
   typealias Parameters = [String: AnyObject]
-  typealias ProgressBytes = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)
-  typealias OnProgressCallback = ProgressBytes -> Void
+  typealias DownloadProgress = (bytes: Int64, totalBytes: Int64, totalBytesExpected: Int64)
+  typealias OnDownloadProgressCallback = DownloadProgress -> Void
 
   enum RequestMethod: String {
     case HEAD = "HEAD"

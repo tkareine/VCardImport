@@ -12,7 +12,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
   private var vcardImporter: VCardImporter!
-  private var downloadProgress: DownloadProgress?
+  private var importProgress: ImportProgress?
 
   init(appContext: AppContext) {
     dataSource = VCardSourcesDataSource(
@@ -25,14 +25,6 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     vcardImporter = VCardImporter(
       downloadsWith: urlDownloadFactory,
       queueTo: QueueExecution.mainQueue,
-      sourceDownloadHandler: { [weak self] source, progress in
-        if let s = self {
-          if progress.totalBytesExpected > 0 {
-            let ratio = Float(progress.bytes) / Float(progress.totalBytesExpected)
-            s.inProgress(.Downloading(completionStepRatio: ratio), forSource: source)
-          }
-        }
-      },
       sourceCompletionHandler: { [weak self] source, recordDiff, modifiedHeaderStamp, error in
         if let s = self {
           if let err = error {
@@ -45,7 +37,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           } else {
             s.dataSource.setVCardSourceUnchangedStatus(source)
           }
-          s.inProgress(.Completed, forSource: source)
+          s.inProgress(.Complete, forSource: source)
           s.reloadTableViewSourceRow(source)
         }
       },
@@ -56,6 +48,26 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           }
           s.endProgress()
           s.refreshButtonsEnabledStates()
+        }
+      },
+      onSourceDownloadProgress: { [weak self] source, progress in
+        if let s = self {
+          if progress.totalBytesExpected > 0 {
+            let ratio = Float(progress.totalBytes) / Float(progress.totalBytesExpected)
+            s.inProgress(.Download(completionRatio: ratio), forSource: source)
+          }
+        }
+      },
+      onSourceResolveRecordsProgress: { [weak self] source, progress in
+        if let s = self {
+          let ratio = Float(progress.totalPhasesCompleted) / Float(progress.totalPhasesToComplete)
+          s.inProgress(.ResolveRecords(completionRatio: ratio), forSource: source)
+        }
+      },
+      onSourceApplyRecordsProgress: { [weak self] source, progress in
+        if let s = self {
+          let ratio = Float(progress.totalAdded + progress.totalChanged) / Float(progress.totalToApply)
+          s.inProgress(.ApplyRecords(completionRatio: ratio), forSource: source)
         }
       })
 
@@ -220,7 +232,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     toolbar.importButtonEnabled =
       !editing &&
-      downloadProgress == nil &&
+      importProgress == nil &&
       dataSource.hasEnabledVCardSources
   }
 
@@ -254,22 +266,22 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   private func beginProgress(sources: [VCardSource]) {
-    downloadProgress = DownloadProgress(sourceIds: sources.map { $0.id })
+    importProgress = ImportProgress(sourceIds: sources.map { $0.id })
     toolbar.beginProgress("Checking for changes…")
   }
 
   private func inProgress(
-    type: DownloadProgress.Progress,
+    type: ImportProgress.Progress,
     forSource source: VCardSource)
   {
-    let progress = downloadProgress!.step(type, forId: source.id)
+    let progress = importProgress!.inProgress(type, forId: source.id)
     let text = type.describeProgress(source.name)
-    NSLog("Import progress: %0.1f%% %@", progress * 100, text)
+    NSLog("Import progress %0.1f%%: %@", progress * 100, text)
     toolbar.inProgress(text: text, progress: progress)
   }
 
   private func endProgress() {
-    downloadProgress = nil
+    importProgress = nil
     toolbar.endProgress()
   }
 }

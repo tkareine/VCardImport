@@ -32,8 +32,8 @@
 		E96A17201C1A23E30016DEE9 /* SelectionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96A171F1C1A23E30016DEE9 /* SelectionOption.swift */; };
 		E96CA34D1C35ED0000F1D939 /* FakeHTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96CA34C1C35ED0000F1D939 /* FakeHTTPSession.swift */; };
 		E96CA34F1C35EF5200F1D939 /* URLDownloadFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96CA34E1C35EF5200F1D939 /* URLDownloadFactoryTests.swift */; };
-		E975804A1A75FE26008A70E9 /* DownloadProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97580491A75FE26008A70E9 /* DownloadProgressTests.swift */; };
-		E975804B1A75FE94008A70E9 /* DownloadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5E8B01A7568A000400291 /* DownloadProgress.swift */; };
+		E975804A1A75FE26008A70E9 /* ImportProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97580491A75FE26008A70E9 /* ImportProgressTests.swift */; };
+		E975804B1A75FE94008A70E9 /* ImportProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5E8B01A7568A000400291 /* ImportProgress.swift */; };
 		E97B6C0B1A34A1F100B4D3E6 /* VCardSourceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97B6C0A1A34A1F100B4D3E6 /* VCardSourceStore.swift */; };
 		E97B6C0D1A34A3F900B4D3E6 /* VCardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */; };
 		E97BCB0A1BC9BB7B000307D6 /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97BCB091BC9BB7B000307D6 /* ValidationError.swift */; };
@@ -94,7 +94,7 @@
 		E9F228A11A43934B00A10190 /* RecordDifferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */; };
 		E9F228A21A43938E00A10190 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F31E111A0FD2570015509F /* Errors.swift */; };
 		E9F31E121A0FD2570015509F /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F31E111A0FD2570015509F /* Errors.swift */; };
-		E9F5E8B11A7568A000400291 /* DownloadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5E8B01A7568A000400291 /* DownloadProgress.swift */; };
+		E9F5E8B11A7568A000400291 /* ImportProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5E8B01A7568A000400291 /* ImportProgress.swift */; };
 		E9F850351A6EFE6C0051669A /* VCardSourceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9F850341A6EFE6C0051669A /* VCardSourceCell.xib */; };
 		E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */; };
 		E9F9D85E1A3619060054DCB8 /* VCardSourcesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */; };
@@ -152,7 +152,7 @@
 		E96A171F1C1A23E30016DEE9 /* SelectionOption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectionOption.swift; path = UI/SelectionOption.swift; sourceTree = "<group>"; };
 		E96CA34C1C35ED0000F1D939 /* FakeHTTPSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FakeHTTPSession.swift; path = Net/FakeHTTPSession.swift; sourceTree = "<group>"; };
 		E96CA34E1C35EF5200F1D939 /* URLDownloadFactoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLDownloadFactoryTests.swift; path = Net/URLDownloadFactoryTests.swift; sourceTree = "<group>"; };
-		E97580491A75FE26008A70E9 /* DownloadProgressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DownloadProgressTests.swift; path = Support/DownloadProgressTests.swift; sourceTree = "<group>"; };
+		E97580491A75FE26008A70E9 /* ImportProgressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImportProgressTests.swift; path = Support/ImportProgressTests.swift; sourceTree = "<group>"; };
 		E97B6C0A1A34A1F100B4D3E6 /* VCardSourceStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourceStore.swift; path = Store/VCardSourceStore.swift; sourceTree = "<group>"; };
 		E97B6C0C1A34A3F900B4D3E6 /* VCardSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSource.swift; path = Domain/VCardSource.swift; sourceTree = "<group>"; };
 		E97BCB091BC9BB7B000307D6 /* ValidationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ValidationError.swift; path = UI/ValidationError.swift; sourceTree = "<group>"; };
@@ -199,7 +199,7 @@
 		E9F2289B1A43819200A10190 /* RecordDifferencesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordDifferencesTests.swift; path = Record/RecordDifferencesTests.swift; sourceTree = "<group>"; };
 		E9F2289D1A438A7E00A10190 /* RecordDifferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecordDifferences.swift; path = Record/RecordDifferences.swift; sourceTree = "<group>"; };
 		E9F31E111A0FD2570015509F /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Errors.swift; path = Support/Errors.swift; sourceTree = "<group>"; };
-		E9F5E8B01A7568A000400291 /* DownloadProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DownloadProgress.swift; path = Support/DownloadProgress.swift; sourceTree = "<group>"; };
+		E9F5E8B01A7568A000400291 /* ImportProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImportProgress.swift; path = Support/ImportProgress.swift; sourceTree = "<group>"; };
 		E9F850341A6EFE6C0051669A /* VCardSourceCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = VCardSourceCell.xib; path = UI/VCardSourceCell.xib; sourceTree = "<group>"; };
 		E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppContext.swift; path = Support/AppContext.swift; sourceTree = "<group>"; };
 		E9F9D85D1A3619060054DCB8 /* VCardSourcesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VCardSourcesDataSource.swift; path = UI/VCardSourcesDataSource.swift; sourceTree = "<group>"; };
@@ -377,10 +377,10 @@
 			children = (
 				E9F9D85B1A360F5F0054DCB8 /* AppContext.swift */,
 				E90684B01A58B17900728D0B /* DictionaryConvertible.swift */,
-				E9F5E8B01A7568A000400291 /* DownloadProgress.swift */,
 				E9F31E111A0FD2570015509F /* Errors.swift */,
 				E947E1581A4F87A200513F77 /* Files.swift */,
 				E9CF04B11A3CE02A00A13EF6 /* FoundationExtensions.swift */,
+				E9F5E8B01A7568A000400291 /* ImportProgress.swift */,
 				E9EF164D1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift */,
 				E927D3F31A5A064400E8DEE6 /* JSONSerialization.swift */,
 				E969253F1A4F7CF000B6427A /* QueueExecution.swift */,
@@ -428,9 +428,9 @@
 		E9F0D6A11A78BF78002191E9 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				E97580491A75FE26008A70E9 /* DownloadProgressTests.swift */,
 				E98FD3F31A508B5300A9DB27 /* FilesTests.swift */,
 				E9CF04B31A3CE14400A13EF6 /* FoundationExtensionsTests.swift */,
+				E97580491A75FE26008A70E9 /* ImportProgressTests.swift */,
 				E9EF164F1A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift */,
 				E910BEB21A6BE6B4008EF26F /* QueueExecutionTests.swift */,
 			);
@@ -670,9 +670,9 @@
 				E9F9D85C1A360F5F0054DCB8 /* AppContext.swift in Sources */,
 				E9CF04B21A3CE02A00A13EF6 /* FoundationExtensions.swift in Sources */,
 				E90684B11A58B17900728D0B /* DictionaryConvertible.swift in Sources */,
-				E9F5E8B11A7568A000400291 /* DownloadProgress.swift in Sources */,
 				E9F31E121A0FD2570015509F /* Errors.swift in Sources */,
 				E947E1591A4F87A200513F77 /* Files.swift in Sources */,
+				E9F5E8B11A7568A000400291 /* ImportProgress.swift in Sources */,
 				E9EF164E1A61C9E800CDC1E8 /* InsertionOrderDictionary.swift in Sources */,
 				E927D3F41A5A064400E8DEE6 /* JSONSerialization.swift in Sources */,
 				E96925401A4F7CF000B6427A /* QueueExecution.swift in Sources */,
@@ -722,7 +722,7 @@
 			files = (
 				E91E62011A6B082F00543A40 /* Config.swift in Sources */,
 				E9AD7D111A69F7A700F1B668 /* DictionaryConvertible.swift in Sources */,
-				E975804B1A75FE94008A70E9 /* DownloadProgress.swift in Sources */,
+				E975804B1A75FE94008A70E9 /* ImportProgress.swift in Sources */,
 				E9F228A21A43938E00A10190 /* Errors.swift in Sources */,
 				E98FD3F61A508BB300A9DB27 /* Files.swift in Sources */,
 				E9CF04B51A3CE40E00A13EF6 /* FoundationExtensions.swift in Sources */,
@@ -748,9 +748,9 @@
 				E9D37F581BF1447C0028403F /* VCardSourceStoreMigrations.swift in Sources */,
 				E98FD3F41A508B5300A9DB27 /* FilesTests.swift in Sources */,
 				E9CF04B41A3CE14400A13EF6 /* FoundationExtensionsTests.swift in Sources */,
+				E975804A1A75FE26008A70E9 /* ImportProgressTests.swift in Sources */,
 				E9EF16501A61DEB500CDC1E8 /* InsertionOrderDictionaryTests.swift in Sources */,
 				E910BEB31A6BE6B4008EF26F /* QueueExecutionTests.swift in Sources */,
-				E975804A1A75FE26008A70E9 /* DownloadProgressTests.swift in Sources */,
 				E94205101BEA9A0700139A79 /* HTTPRequestTests.swift in Sources */,
 				E96CA34F1C35EF5200F1D939 /* URLDownloadFactoryTests.swift in Sources */,
 				E9828EBB1A9A6DDD00757D18 /* AddressBookExtension.swift in Sources */,
