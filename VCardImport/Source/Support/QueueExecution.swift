@@ -1,5 +1,8 @@
 import Dispatch
+import Foundation
 import MiniFuture
+
+private let ProcessInfo = NSProcessInfo.processInfo()
 
 struct QueueExecution {
   typealias OnceToken = dispatch_once_t
@@ -86,5 +89,23 @@ struct QueueExecution {
     }
 
     return switcher
+  }
+
+  static func makeThrottler<T>(waitInMS: Int, block: T -> Void) -> (T -> Void) {
+    var blockCompletionTime: NSTimeInterval?
+
+    func throttler(input: T) {
+      if let lastTime = blockCompletionTime {
+        let intervalSinceLastCallInMS = Int((ProcessInfo.systemUptime - lastTime) * 1000)
+        if intervalSinceLastCallInMS < waitInMS {
+          return
+        }
+      }
+
+      block(input)
+      blockCompletionTime = ProcessInfo.systemUptime
+    }
+
+    return throttler
   }
 }

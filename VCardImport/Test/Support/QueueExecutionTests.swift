@@ -42,4 +42,59 @@ class QueueExecutionTests: XCTestCase {
     XCTAssertEqual(results.count, 1)
     XCTAssertEqual(try! results.first!.value(), "b")
   }
+
+  func testThrottler() {
+    let callingThrottler = Semaphore()
+    let calledThrottler = Semaphore()
+    let workSimulation = Semaphore()
+    var inputs: [Character] = []
+
+    QueueExecution.async(QueueExecution.concurrentQueue) {
+      let throttler: Character -> Void = QueueExecution.makeThrottler(100) { input in
+        workSimulation.wait()
+        inputs.append(input)
+      }
+
+      for ch in "abcde".characters {
+        callingThrottler.wait()
+        throttler(ch)
+        calledThrottler.signal()
+      }
+    }
+
+    XCTAssertEqual(inputs, [])
+
+    callingThrottler.signal()
+    workSimulation.signal()
+    calledThrottler.wait()
+
+    XCTAssertEqual(inputs, ["a"])
+
+    callingThrottler.signal()
+    calledThrottler.wait()
+
+    XCTAssertEqual(inputs, ["a"])
+
+    NSThread.sleepForTimeInterval(0.2)
+    callingThrottler.signal()
+    workSimulation.signal()
+    calledThrottler.wait()
+
+    XCTAssertEqual(inputs, ["a", "c"])
+
+    // throttling wait time gets marked after completing the block
+
+    NSThread.sleepForTimeInterval(0.2)
+    callingThrottler.signal()
+    NSThread.sleepForTimeInterval(0.2)
+    workSimulation.signal()
+    calledThrottler.wait()
+
+    XCTAssertEqual(inputs, ["a", "c", "d"])
+
+    callingThrottler.signal()
+    calledThrottler.wait()
+
+    XCTAssertEqual(inputs, ["a", "c", "d"])
+  }
 }
