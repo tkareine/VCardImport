@@ -22,7 +22,7 @@ class AddressBook {
         if let err = abError {
           throw Errors.fromCFError(err.takeRetainedValue())
         } else {
-          throw Errors.migration("Failed to create ABAddressBook")
+          throw Errors.addressBookUnknownError("Failed to create address book")
         }
       }
 
@@ -78,7 +78,7 @@ class AddressBook {
       if let err = abError {
         throw Errors.fromCFError(err.takeRetainedValue())
       } else {
-        throw Errors.migration("Failed to add record to address book")
+        throw Errors.addressBookUnknownError("Failed to add contact")
       }
     }
   }
@@ -91,7 +91,7 @@ class AddressBook {
       if let err = abError {
         throw Errors.fromCFError(err.takeRetainedValue())
       } else {
-        throw Errors.migration("Failed to save address book")
+        throw Errors.addressBookUnknownError("Failed to save contacts")
       }
     }
   }

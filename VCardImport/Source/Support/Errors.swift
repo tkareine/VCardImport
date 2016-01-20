@@ -4,23 +4,16 @@ import AddressBook
 struct Errors {
   private static let Domain = Config.BundleIdentifier + ".Error"
 
-  static func migration(description: String) -> NSError {
-    return vcardError(
-      code: 42,
-      failureReason: "Migration Error",
-      description: description)
-  }
-
   static func addressBookAccessDeniedOrRestricted() -> NSError {
     return vcardError(
-      code: 5,
+      code: 101,
       failureReason: "Contacts Access Error",
       description: "The application needs access to Contacts, but access is denied or restricted. Please allow access in System Settings.")
   }
 
   static func addressBookFailedToLoadVCardSource(reason: String) -> NSError {
     return vcardError(
-      code: 6,
+      code: 102,
       failureReason: "vCard Download Error",
       description: "Download failed: \(reason)")
   }
@@ -32,7 +25,7 @@ struct Errors {
   {
     let name = ABRecordCopyCompositeName(record).takeRetainedValue()
     return vcardError(
-      code: 8,
+      code: 103,
       failureReason: "Contact Update Error",
       description: "Failed in updating \(propertyDescription) for contact \(name)")
   }
@@ -50,16 +43,23 @@ struct Errors {
     return addressBookFailedToChange("image", of: record)
   }
 
+  static func addressBookUnknownError(reason: String) -> NSError {
+    return vcardError(
+      code: 104,
+      failureReason: "Contacts Unknown Error",
+      description: reason)
+  }
+
   static func urlIsInvalid() -> NSError {
     return vcardError(
-      code: 9,
+      code: 201,
       failureReason: "URL Error",
       description: "Invalid URL")
   }
 
   static func urlRequestFailed(reason: String) -> NSError {
     return vcardError(
-      code: 10,
+      code: 202,
       failureReason: "Request Error",
       description: reason)
   }
