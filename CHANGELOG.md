@@ -7,6 +7,7 @@ New features:
 * Describe the dates of vCard sources' last import results in relative
   terms ("Today 3:34 PM")
 * Add option to have no authentication for vCard source
+* Advance progress bar when resolving and applying contacts
 
 Bug fixes:
 
