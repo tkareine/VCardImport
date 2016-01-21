@@ -47,10 +47,10 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
         self.refreshButtonsEnabledStates()
       },
       onSourceDownloadProgress: { source, progress in
-        if progress.totalBytesExpected > 0 {
-          let ratio = Float(progress.totalBytes) / Float(progress.totalBytesExpected)
-          self.inProgress(.Download(completionRatio: ratio), forSource: source)
-        }
+        let ratio = progress.totalBytesExpected > 0
+          ? Float(progress.totalBytes) / Float(progress.totalBytesExpected)
+          : 0.33
+        self.inProgress(.Download(completionRatio: ratio), forSource: source)
       },
       onSourceResolveRecordsProgress: { source, progress in
         let ratio = Float(progress.totalPhasesCompleted) / Float(progress.totalPhasesToComplete)
