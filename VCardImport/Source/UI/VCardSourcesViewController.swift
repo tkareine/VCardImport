@@ -25,50 +25,40 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     vcardImporter = VCardImporter(
       downloadsWith: urlDownloadFactory,
       queueTo: QueueExecution.mainQueue,
-      sourceCompletionHandler: { [weak self] source, recordDiff, modifiedHeaderStamp, error in
-        if let s = self {
-          if let err = error {
-            s.dataSource.setVCardSourceErrorStatus(source, error: err)
-          } else if let diff = recordDiff {
-            s.dataSource.setVCardSourceChangedStatus(
-              source,
-              recordDifferences: diff,
-              modifiedHeaderStamp: modifiedHeaderStamp)
-          } else {
-            s.dataSource.setVCardSourceUnchangedStatus(source)
-          }
-          s.inProgress(.Complete, forSource: source)
-          s.reloadTableViewSourceRow(source)
+      sourceCompletionHandler: { source, recordDiff, modifiedHeaderStamp, error in
+        if let err = error {
+          self.dataSource.setVCardSourceErrorStatus(source, error: err)
+        } else if let diff = recordDiff {
+          self.dataSource.setVCardSourceChangedStatus(
+            source,
+            recordDifferences: diff,
+            modifiedHeaderStamp: modifiedHeaderStamp)
+        } else {
+          self.dataSource.setVCardSourceUnchangedStatus(source)
+        }
+        self.inProgress(.Complete, forSource: source)
+        self.reloadTableViewSourceRow(source)
+      },
+      completionHandler: { error in
+        if let err = error {
+          self.presentAlertForError(err)
+        }
+        self.endProgress()
+        self.refreshButtonsEnabledStates()
+      },
+      onSourceDownloadProgress: { source, progress in
+        if progress.totalBytesExpected > 0 {
+          let ratio = Float(progress.totalBytes) / Float(progress.totalBytesExpected)
+          self.inProgress(.Download(completionRatio: ratio), forSource: source)
         }
       },
-      completionHandler: { [weak self] error in
-        if let s = self {
-          if let err = error {
-            s.presentAlertForError(err)
-          }
-          s.endProgress()
-          s.refreshButtonsEnabledStates()
-        }
+      onSourceResolveRecordsProgress: { source, progress in
+        let ratio = Float(progress.totalPhasesCompleted) / Float(progress.totalPhasesToComplete)
+        self.inProgress(.ResolveRecords(completionRatio: ratio), forSource: source)
       },
-      onSourceDownloadProgress: { [weak self] source, progress in
-        if let s = self {
-          if progress.totalBytesExpected > 0 {
-            let ratio = Float(progress.totalBytes) / Float(progress.totalBytesExpected)
-            s.inProgress(.Download(completionRatio: ratio), forSource: source)
-          }
-        }
-      },
-      onSourceResolveRecordsProgress: { [weak self] source, progress in
-        if let s = self {
-          let ratio = Float(progress.totalPhasesCompleted) / Float(progress.totalPhasesToComplete)
-          s.inProgress(.ResolveRecords(completionRatio: ratio), forSource: source)
-        }
-      },
-      onSourceApplyRecordsProgress: { [weak self] source, progress in
-        if let s = self {
-          let ratio = Float(progress.totalAdded + progress.totalChanged) / Float(progress.totalToApply)
-          s.inProgress(.ApplyRecords(completionRatio: ratio), forSource: source)
-        }
+      onSourceApplyRecordsProgress: { source, progress in
+        let ratio = Float(progress.totalAdded + progress.totalChanged) / Float(progress.totalToApply)
+        self.inProgress(.ApplyRecords(completionRatio: ratio), forSource: source)
       })
 
     editButton = editButtonItem()
