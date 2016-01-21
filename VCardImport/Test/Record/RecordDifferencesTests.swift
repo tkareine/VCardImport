@@ -217,6 +217,8 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
+    XCTAssertEqual(recordDiff.countSkippedNewRecordsWithDuplicateNames, 0)
+    XCTAssertEqual(recordDiff.countSkippedAmbiguousMatchesToExistingRecords, 0)
   }
 
   func testSkipsRecordAdditionForMultipleNewRecordsHavingSameName() {
@@ -234,6 +236,8 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
+    XCTAssertEqual(recordDiff.countSkippedNewRecordsWithDuplicateNames, 6)
+    XCTAssertEqual(recordDiff.countSkippedAmbiguousMatchesToExistingRecords, 0)
   }
 
   func testSkipsRecordChangeForOldRecordsWithEmptyNames() {
@@ -251,6 +255,8 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
+    XCTAssertEqual(recordDiff.countSkippedNewRecordsWithDuplicateNames, 0)
+    XCTAssertEqual(recordDiff.countSkippedAmbiguousMatchesToExistingRecords, 0)
   }
 
   func testSkipsRecordChangeForMultipleOldRecordsHavingSameName() {
@@ -272,6 +278,8 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
+    XCTAssertEqual(recordDiff.countSkippedNewRecordsWithDuplicateNames, 0)
+    XCTAssertEqual(recordDiff.countSkippedAmbiguousMatchesToExistingRecords, 6)
   }
 
   func testSkipsRecordChangeForMultipleNewRecordsHavingSameName() {
@@ -293,6 +301,8 @@ class RecordDifferencesTests: XCTestCase {
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
+    XCTAssertEqual(recordDiff.countSkippedNewRecordsWithDuplicateNames, 6)
+    XCTAssertEqual(recordDiff.countSkippedAmbiguousMatchesToExistingRecords, 0)
   }
 
   func testDoesNotSetRecordChangeForExistingValueOfSingleValueField() {
