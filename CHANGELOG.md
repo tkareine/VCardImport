@@ -16,6 +16,10 @@ Bug fixes:
 * Fix hiding validation progress upon Login URL validation failure
   when user selects Post Form authentication and previous validation
   is still in progress
+* Don't show the vCard source name currently downloading in the
+  toolbar. Because the app downloads files in parallel, this would
+  cause the app to switch showing between the names quickly, which is
+  disorienting.
 
 # 1.3.0 / 2016-01-08
 
