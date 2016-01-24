@@ -100,7 +100,8 @@ class ImportProgress {
     func describeProgress(task: String) -> String {
       switch self {
       case .Download:
-        return "Downloading \(task)…"
+        // don't show name as downloads happen in parallel
+        return "Downloading…"
       case .ResolveRecords:
         return "Resolving \(task)…"
       case .ApplyRecords:
