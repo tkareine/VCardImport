@@ -2,7 +2,7 @@ import AddressBook
 import MiniFuture
 import XCTest
 
-class VCardImporterTests: XCTestCase {
+class VCardImportTaskTests: XCTestCase {
   let TestOrganization = "VCardImport Tests"
   let OneTestRecordVCardFile = "amelie-alpha"
   let DuplicateTestRecordsVCardFile = "amelie-alpha-3x"
@@ -19,7 +19,7 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let source = makeVCardSource()
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: makeHTTPSession(
         downloadURL: source.connection.vcardURLasURL(),
         fromFile: OneTestRecordVCardFile),
@@ -64,7 +64,7 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let source = makeVCardSource()
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: makeHTTPSession(
         downloadURL: source.connection.vcardURLasURL(),
         fromFile: OneTestRecordVCardFile),
@@ -113,7 +113,7 @@ class VCardImporterTests: XCTestCase {
 
     var sourceCompletions: [String: RecordDifferences] = [:]
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: httpSession,
       onSourceComplete: { source, recordDiff, _, error in
         XCTAssertNil(error)
@@ -161,7 +161,7 @@ class VCardImporterTests: XCTestCase {
 
     var sourceCompletions: [String: RecordDifferences] = [:]
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: httpSession,
       onSourceComplete: { source, recordDiff, _, error in
         XCTAssertNil(error)
@@ -199,7 +199,7 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let source = makeVCardSource()
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: makeHTTPSession(
         downloadURL: source.connection.vcardURLasURL(),
         fromFile: DuplicateTestRecordsVCardFile),
@@ -231,7 +231,7 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let source = makeVCardSource()
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: makeHTTPSession(
         downloadURL: source.connection.vcardURLasURL(),
         fromFile: OneTestRecordVCardFile),
@@ -259,7 +259,7 @@ class VCardImporterTests: XCTestCase {
     let importCompletionExpectation = expectationWithDescription("import completion")
     let source = makeVCardSource()
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: makeHTTPSession(
         downloadURL: source.connection.vcardURLasURL(),
         fromFile: OneTestRecordVCardFile),
@@ -294,7 +294,7 @@ class VCardImporterTests: XCTestCase {
         url: vcardURL,
         headerFields: ["Last-Modified": "Fri, 1 Jan 2016 00:43:54 GMT"]))
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNotNil(recordDiff)
@@ -328,7 +328,7 @@ class VCardImporterTests: XCTestCase {
         url: vcardURL,
         headerFields: ["ETag": "1407855624n"]))
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNotNil(recordDiff)
@@ -367,7 +367,7 @@ class VCardImporterTests: XCTestCase {
         url: vcardURL,
         headerFields: ["ETag": "1407855624n"]))
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNil(recordDiff)
@@ -404,7 +404,7 @@ class VCardImporterTests: XCTestCase {
       vcardURL,
       withResponse: makeHTTPResponse(url: vcardURL))
 
-    let importer = makeVCardImporter(
+    let importer = makeVCardImportTask(
       usingHTTPSession: httpSession,
       onSourceComplete: { _, recordDiff, modifiedHeaderStamp, error in
         XCTAssertNotNil(recordDiff)
@@ -491,13 +491,13 @@ class VCardImporterTests: XCTestCase {
     return session
   }
 
-  private func makeVCardImporter(
+  private func makeVCardImportTask(
     usingHTTPSession httpSession: HTTPRequestable,
-    onSourceComplete: VCardImporter.OnSourceCompleteCallback,
-    onComplete: VCardImporter.OnCompleteCallback)
-    -> VCardImporter
+    onSourceComplete: VCardImportTask.OnSourceCompleteCallback,
+    onComplete: VCardImportTask.OnCompleteCallback)
+    -> VCardImportTask
   {
-    return VCardImporter(
+    return VCardImportTask(
       downloadsWith: URLDownloadFactory(httpSessionsWith: { httpSession }),
       queueTo: QueueExecution.mainQueue,
       sourceCompletionHandler: onSourceComplete,

@@ -51,7 +51,7 @@ class FakeHTTPSession: HTTPRequestable {
       fatalError("no fake download file for \(url)")
     }
     let dst = Files.tempURL()
-    let src = NSBundle(forClass: VCardImporterTests.self)
+    let src = NSBundle(forClass: VCardImportTaskTests.self)
       .URLForResource(file, withExtension: "vcf")!
     Files.copy(from: src, to: dst)
     return Future.succeeded(dst)

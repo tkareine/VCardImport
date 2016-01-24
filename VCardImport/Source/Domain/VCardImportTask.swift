@@ -2,7 +2,9 @@ import Foundation
 import AddressBook
 import MiniFuture
 
-class VCardImporter {
+private let ExecutionQueue = QueueExecution.makeSerialQueue("VCardImportTask")
+
+class VCardImportTask {
   typealias OnSourceCompleteCallback = (VCardSource, RecordDifferences?, ModifiedHeaderStamp?, ErrorType?) -> Void
   typealias OnCompleteCallback = ErrorType? -> Void
   typealias OnSourceDownloadCallback = (VCardSource, HTTPRequest.DownloadProgress) -> Void
@@ -18,8 +20,6 @@ class VCardImporter {
   private let onSourceDownloadProgress: OnSourceDownloadCallback?
   private let onSourceResolveRecordsProgress: OnSourceResolveRecordsCallback?
   private let onSourceApplyRecordsProgress: OnSourceApplyRecordsCallback?
-
-  private let executionQueue = QueueExecution.makeSerialQueue("VCardImporter")
 
   init(
     downloadsWith urlDownloadFactory: URLDownloadFactory,
@@ -44,7 +44,7 @@ class VCardImporter {
     // calls to background jobs and back to the user-specified queue in one
     // place.
 
-    QueueExecution.async(executionQueue) {
+    QueueExecution.async(ExecutionQueue) {
       let addressBook: AddressBook
 
       do {

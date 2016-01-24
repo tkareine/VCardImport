@@ -11,7 +11,6 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private var tableView: UITableView!
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
-  private var vcardImporter: VCardImporter!
   private var importProgress: ImportProgress?
 
   init(appContext: AppContext) {
@@ -21,45 +20,6 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     urlDownloadFactory = appContext.urlDownloadFactory
 
     super.init(nibName: nil, bundle: nil)
-
-    vcardImporter = VCardImporter(
-      downloadsWith: urlDownloadFactory,
-      queueTo: QueueExecution.mainQueue,
-      sourceCompletionHandler: { source, recordDiff, modifiedHeaderStamp, error in
-        if let err = error {
-          self.dataSource.setVCardSourceErrorStatus(source, error: err)
-        } else if let diff = recordDiff {
-          self.dataSource.setVCardSourceChangedStatus(
-            source,
-            recordDifferences: diff,
-            modifiedHeaderStamp: modifiedHeaderStamp)
-        } else {
-          self.dataSource.setVCardSourceUnchangedStatus(source)
-        }
-        self.inProgress(.Complete, forSource: source)
-        self.reloadTableViewSourceRow(source)
-      },
-      completionHandler: { error in
-        if let err = error {
-          self.presentAlertForError(err)
-        }
-        self.endProgress()
-        self.refreshButtonsEnabledStates()
-      },
-      onSourceDownloadProgress: { source, progress in
-        let ratio = progress.totalBytesExpected > 0
-          ? Float(progress.totalBytes) / Float(progress.totalBytesExpected)
-          : 0.33
-        self.inProgress(.Download(completionRatio: ratio), forSource: source)
-      },
-      onSourceResolveRecordsProgress: { source, progress in
-        let ratio = Float(progress.totalPhasesCompleted) / Float(progress.totalPhasesToComplete)
-        self.inProgress(.ResolveRecords(completionRatio: ratio), forSource: source)
-      },
-      onSourceApplyRecordsProgress: { source, progress in
-        let ratio = Float(progress.totalAdded + progress.totalChanged) / Float(progress.totalToApply)
-        self.inProgress(.ApplyRecords(completionRatio: ratio), forSource: source)
-      })
 
     editButton = editButtonItem()
     navigationItem.leftBarButtonItem = editButton
@@ -208,9 +168,48 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
   func importVCardSources(sender: AnyObject) {
     let sources = dataSource.enabledVCardSources
+
     beginProgress(sources)
     refreshButtonsEnabledStates()
-    vcardImporter.importFrom(sources)
+
+    VCardImportTask(
+      downloadsWith: urlDownloadFactory,
+      queueTo: QueueExecution.mainQueue,
+      sourceCompletionHandler: { source, recordDiff, modifiedHeaderStamp, error in
+        if let err = error {
+          self.dataSource.setVCardSourceErrorStatus(source, error: err)
+        } else if let diff = recordDiff {
+          self.dataSource.setVCardSourceChangedStatus(
+            source,
+            recordDifferences: diff,
+            modifiedHeaderStamp: modifiedHeaderStamp)
+        } else {
+          self.dataSource.setVCardSourceUnchangedStatus(source)
+        }
+        self.inProgress(.Complete, forSource: source)
+        self.reloadTableViewSourceRow(source)
+      },
+      completionHandler: { error in
+        if let err = error {
+          self.presentAlertForError(err)
+        }
+        self.endProgress()
+        self.refreshButtonsEnabledStates()
+      },
+      onSourceDownloadProgress: { source, progress in
+        let ratio = progress.totalBytesExpected > 0
+          ? Float(progress.totalBytes) / Float(progress.totalBytesExpected)
+          : 0.33
+        self.inProgress(.Download(completionRatio: ratio), forSource: source)
+      },
+      onSourceResolveRecordsProgress: { source, progress in
+        let ratio = Float(progress.totalPhasesCompleted) / Float(progress.totalPhasesToComplete)
+        self.inProgress(.ResolveRecords(completionRatio: ratio), forSource: source)
+      },
+      onSourceApplyRecordsProgress: { source, progress in
+        let ratio = Float(progress.totalAdded + progress.totalChanged) / Float(progress.totalToApply)
+        self.inProgress(.ApplyRecords(completionRatio: ratio), forSource: source)
+    }).importFrom(sources)
   }
 
   // MARK: Helpers
