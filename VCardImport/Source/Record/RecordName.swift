@@ -14,21 +14,25 @@ class RecordName: Hashable, Equatable, CustomStringConvertible {
     let kind = (Records.getSingleValueProperty(kABPersonKindProperty, of: record) as? NSNumber) ?? (kABPersonKindPerson as NSNumber)
 
     if kind.isEqualToNumber(kABPersonKindPerson) {
-      let fn = (Records.getSingleValueProperty(kABPersonFirstNameProperty, of: record) as? String) ?? ""
-      let ln = (Records.getSingleValueProperty(kABPersonLastNameProperty, of: record) as? String) ?? ""
+      let firstName = (Records.getSingleValueProperty(kABPersonFirstNameProperty, of: record) as? String) ?? ""
+      let lastName = (Records.getSingleValueProperty(kABPersonLastNameProperty, of: record) as? String) ?? ""
+      let nickName = Records.getSingleValueProperty(kABPersonNicknameProperty, of: record) as? String ?? ""
 
-      if fn.isEmpty && ln.isEmpty {
+      if firstName.isEmpty && lastName.isEmpty && nickName.isEmpty {
         return nil
       } else {
-        return PersonRecordName(firstName: fn, lastName: ln)
+        return PersonRecordName(
+          firstName: firstName,
+          lastName: lastName,
+          nickName: nickName)
       }
     } else {
-      let n = (Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String) ?? ""
+      let name = (Records.getSingleValueProperty(kABPersonOrganizationProperty, of: record) as? String) ?? ""
 
-      if n.isEmpty {
+      if name.isEmpty {
         return nil
       } else {
-        return OrganizationRecordName(name: n)
+        return OrganizationRecordName(name: name)
       }
     }
   }
@@ -37,21 +41,28 @@ class RecordName: Hashable, Equatable, CustomStringConvertible {
 class PersonRecordName: RecordName {
   let firstName: String
   let lastName: String
+  let nickName: String
 
   override var hashValue: Int {
     var hash = 17
     hash = 31 &* hash &+ firstName.hashValue
     hash = 31 &* hash &+ lastName.hashValue
+    hash = 31 &* hash &+ nickName.hashValue
     return hash
   }
 
   override var description: String {
-    return "\(lastName), \(firstName)"
+    var str = "\(lastName), \(firstName)"
+    if !nickName.isEmpty {
+      str += " \"\(nickName)\""
+    }
+    return str
   }
 
-  init(firstName: String, lastName: String) {
+  init(firstName: String, lastName: String, nickName: String) {
     self.firstName = firstName
     self.lastName = lastName
+    self.nickName = nickName
   }
 }
 
@@ -76,7 +87,9 @@ func ==(lhs: RecordName, rhs: RecordName) -> Bool {
     lh = lhs as? PersonRecordName,
     rh = rhs as? PersonRecordName
   {
-    return lh.firstName == rh.firstName && lh.lastName == rh.lastName
+    return lh.firstName == rh.firstName
+        && lh.lastName == rh.lastName
+        && lh.nickName == rh.nickName
   } else if let
     lh = lhs as? OrganizationRecordName,
     rh = rhs as? OrganizationRecordName

@@ -26,7 +26,6 @@ struct RecordChangeSet {
     kABPersonMiddleNameProperty,
     kABPersonPrefixProperty,
     kABPersonSuffixProperty,
-    kABPersonNicknameProperty,
     kABPersonOrganizationProperty,
     kABPersonJobTitleProperty,
     kABPersonDepartmentProperty

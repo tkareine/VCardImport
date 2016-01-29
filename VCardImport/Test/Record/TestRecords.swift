@@ -4,7 +4,7 @@ import UIKit
 
 struct TestRecords {
   static func makePerson(
-    prefixName: String? = nil,
+    prefix prefix: String? = nil,
     firstName: String? = nil,
     nickName: String? = nil,
     middleName: String? = nil,
@@ -23,7 +23,7 @@ struct TestRecords {
     -> ABRecord
   {
     let record = ABPersonCreate().takeRetainedValue()
-    if let val = prefixName {
+    if let val = prefix {
       Records.setValue(val, toSingleValueProperty: kABPersonPrefixProperty, of: record)
     }
     if let val = firstName {
@@ -75,13 +75,15 @@ struct TestRecords {
   }
 
   static func makeOrganization(
-    name name: String,
+    name name: String? = nil,
     emails: [(String, NSString)]? = nil)
     -> ABRecord
   {
     let record = ABPersonCreate().takeRetainedValue()
     Records.setValue(kABPersonKindOrganization, toSingleValueProperty: kABPersonKindProperty, of: record)
-    Records.setValue(name, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
+    if let val = name {
+      Records.setValue(val, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
+    }
     if let vals = emails {
       Records.addValues(vals, toMultiValueProperty: kABPersonEmailProperty, of: record)
     }

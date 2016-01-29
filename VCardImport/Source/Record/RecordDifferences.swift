@@ -16,39 +16,48 @@ struct RecordDifferences {
     onProgress: OnResolveProgressCallback? = nil)
     -> RecordDifferences
   {
-    let (uniqueNewRecords, countSkippedNewRecordsWithDuplicateNames) = uniqueRecordsOf(newRecords)
+    let (uniqueNewRecords, duplicateNewRecords) = uniqueRecordsOf(newRecords)
+    let countDuplicateNewRecords = duplicateNewRecords.reduce(0) { $0 + $1.1 }
 
-    onProgress?((totalPhasesCompleted: 1, totalPhasesToComplete: 3))
+    onProgress?((totalPhasesCompleted: 1, totalPhasesToComplete: 4))
 
-    let (additions, matches, countSkippedAmbiguousMatchesToExistingRecords) = findAdditionsAndExistingMatchesBetween(oldRecords, uniqueNewRecords)
+    let (uniqueOldRecords, duplicateOldRecords) = uniqueRecordsOf(oldRecords)
 
-    onProgress?((totalPhasesCompleted: 2, totalPhasesToComplete: 3))
+    onProgress?((totalPhasesCompleted: 2, totalPhasesToComplete: 4))
+
+    let (additions, matches, countAmbiguousMatchesToOldRecords) =
+      findAdditionsAndUpdatesBetween(
+        oldRecords: uniqueOldRecords,
+        newRecords: uniqueNewRecords,
+        duplicateOldRecords: duplicateOldRecords)
+
+    onProgress?((totalPhasesCompleted: 3, totalPhasesToComplete: 4))
 
     let changes = findChanges(matches)
 
-    onProgress?((totalPhasesCompleted: 3, totalPhasesToComplete: 3))
+    onProgress?((totalPhasesCompleted: 4, totalPhasesToComplete: 4))
 
     return self.init(
       additions: additions,
       changes: changes,
-      countSkippedNewRecordsWithDuplicateNames: countSkippedNewRecordsWithDuplicateNames,
-      countSkippedAmbiguousMatchesToExistingRecords: countSkippedAmbiguousMatchesToExistingRecords)
+      countSkippedNewRecordsWithDuplicateNames: countDuplicateNewRecords,
+      countSkippedAmbiguousMatchesToExistingRecords: countAmbiguousMatchesToOldRecords)
   }
 
   private static func uniqueRecordsOf(records: [ABRecord])
-    -> ([RecordName: ABRecord], Int)
+    -> ([RecordName: ABRecord], [RecordName: Int])
   {
     var uniqueRecords: [RecordName: ABRecord] = [:]
-    var skippedRecords: [RecordName: Int] = [:]
+    var duplicateRecords: [RecordName: Int] = [:]
 
     for rec in records {
       if let name = RecordName.of(rec) {
-        if let skips = skippedRecords[name] {
-          skippedRecords[name] = skips + 1
+        if let countDuplicates = duplicateRecords[name] {
+          duplicateRecords[name] = countDuplicates + 1
         } else {
           if uniqueRecords.hasKey(name) {
             uniqueRecords.removeValueForKey(name)
-            skippedRecords[name] = 2
+            duplicateRecords[name] = 2
           } else {
             uniqueRecords[name] = rec
           }
@@ -56,46 +65,33 @@ struct RecordDifferences {
       }
     }
 
-    let totalSkipped = skippedRecords.reduce(0) { sum, kv in sum + kv.1 }
-
-    return (uniqueRecords, totalSkipped)
+    return (uniqueRecords, duplicateRecords)
   }
 
-  private static func findAdditionsAndExistingMatchesBetween(
-    oldRecords: [ABRecord],
-    _ newRecords: [RecordName: ABRecord])
+  private static func findAdditionsAndUpdatesBetween(
+    oldRecords oldRecords: [RecordName: ABRecord],
+    newRecords: [RecordName: ABRecord],
+    duplicateOldRecords: [RecordName: Int])
     -> ([ABRecord], [RecordName: (ABRecord, ABRecord)], Int)
   {
-    var additions: [ABRecord] = []
-    var matchingRecordsByName: [RecordName: (ABRecord, ABRecord)] = [:]
-    var countSkipped = 0
+    var additionsFound: [ABRecord] = []
+    var updatesFound: [RecordName: (ABRecord, ABRecord)] = [:]
+    var countAmbigiousMatchesToOldRecords = 0
 
     for (newRecordName, newRecord) in newRecords {
-      let existingRecordsWithName = oldRecords.filter { oldRecord in
-        if let oldRecordName = RecordName.of(oldRecord) {
-          return oldRecordName == newRecordName
-        } else {
-          return false
-        }
-      }
-
-      let countMatchingRecords = existingRecordsWithName.count
-
-      switch countMatchingRecords {
-      case 0:
-        NSLog("Marking record for addition: %@", newRecordName.description)
-        additions.append(newRecord)
-      case 1:
+      if let oldRecord = oldRecords[newRecordName] {
         NSLog("Marking record for checking changes: %@", newRecordName.description)
-        let existingRecord = existingRecordsWithName.first!
-        matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
-      default:
-        countSkipped += countMatchingRecords
-        NSLog("Skipping update for multiple existing records having same name: %@", newRecordName.description)
+        updatesFound[newRecordName] = (oldRecord, newRecord)
+      } else if let countDuplicates = duplicateOldRecords[newRecordName] {
+        NSLog("Ambigious match to old records: %d matches for %@", countDuplicates, newRecordName.description)
+        countAmbigiousMatchesToOldRecords += countDuplicates
+      } else {
+        NSLog("Marking record for addition: %@", newRecordName.description)
+        additionsFound.append(newRecord)
       }
     }
 
-    return (additions, matchingRecordsByName, countSkipped)
+    return (additionsFound, updatesFound, countAmbigiousMatchesToOldRecords)
   }
 
   private static func findChanges(
