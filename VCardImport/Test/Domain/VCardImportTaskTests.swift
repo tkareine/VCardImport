@@ -39,7 +39,7 @@ class VCardImportTaskTests: XCTestCase {
 
     waitForExpectationsWithTimeout(1, handler: nil)
 
-    let record: ABRecord! = loadTestRecordFromAddressBook()
+    let record = loadTestRecordFromAddressBook()!
     XCTAssertNotNil(record)
 
     let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as! String
@@ -84,7 +84,7 @@ class VCardImportTaskTests: XCTestCase {
 
     waitForExpectationsWithTimeout(1, handler: nil)
 
-    let record: ABRecord! = loadTestRecordFromAddressBook()
+    let record = loadTestRecordFromAddressBook()!
     XCTAssertNotNil(record)
 
     let jobTitle = Records.getSingleValueProperty(kABPersonJobTitleProperty, of: record) as! String
@@ -136,7 +136,7 @@ class VCardImportTaskTests: XCTestCase {
     XCTAssertEqual(secondSourceChangeResult.additions.count, 0)
     XCTAssertEqual(secondSourceChangeResult.changes.count, 0)
 
-    let record: ABRecord! = loadTestRecordFromAddressBook()
+    let record = loadTestRecordFromAddressBook()!
     XCTAssertNotNil(record)
 
     let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
@@ -184,7 +184,7 @@ class VCardImportTaskTests: XCTestCase {
     XCTAssertEqual(secondSourceChangeResult.additions.count, 0)
     XCTAssertEqual(secondSourceChangeResult.changes.count, 0)
 
-    let record: ABRecord! = loadTestRecordFromAddressBook()
+    let record = loadTestRecordFromAddressBook()!
     XCTAssertNotNil(record)
 
     let emails = Records.getMultiValueProperty(kABPersonEmailProperty, of: record)
@@ -450,7 +450,7 @@ class VCardImportTaskTests: XCTestCase {
     jobTitle jobTitle: String,
     phones: [(String, NSString)]? = nil)
   {
-    let record: ABRecord = TestRecords.makePerson(
+    let record = TestRecords.makePerson(
       firstName: "Amelie",
       lastName: "Alpha",
       jobTitle: jobTitle,

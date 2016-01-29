@@ -22,7 +22,7 @@ struct TestRecords {
     image: UIImage? = nil)
     -> ABRecord
   {
-    let record: ABRecord = ABPersonCreate().takeRetainedValue()
+    let record = ABPersonCreate().takeRetainedValue()
     if let val = prefixName {
       Records.setValue(val, toSingleValueProperty: kABPersonPrefixProperty, of: record)
     }
@@ -79,7 +79,7 @@ struct TestRecords {
     emails: [(String, NSString)]? = nil)
     -> ABRecord
   {
-    let record: ABRecord = ABPersonCreate().takeRetainedValue()
+    let record = ABPersonCreate().takeRetainedValue()
     Records.setValue(kABPersonKindOrganization, toSingleValueProperty: kABPersonKindProperty, of: record)
     Records.setValue(name, toSingleValueProperty: kABPersonOrganizationProperty, of: record)
     if let vals = emails {

@@ -87,7 +87,7 @@ struct RecordDifferences {
         additions.append(newRecord)
       case 1:
         NSLog("Marking record for checking changes: %@", newRecordName.description)
-        let existingRecord: ABRecord = existingRecordsWithName.first!
+        let existingRecord = existingRecordsWithName.first!
         matchingRecordsByName[newRecordName] = (existingRecord, newRecord)
       default:
         countSkipped += countMatchingRecords
