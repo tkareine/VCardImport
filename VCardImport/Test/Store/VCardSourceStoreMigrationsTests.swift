@@ -15,9 +15,9 @@ class VCardSourceStoreMigrationTests: XCTestCase {
       [oldSourceDict],
       previousVersion: 1)
 
-    let newSource = VCardSource.fromDictionary(newSourceDicts.first!)
+    let newSourceDict = VCardSource.fromDictionary(newSourceDicts.first!).toDictionary()
 
-    XCTAssertEqual(newSource.connection.authenticationMethod, HTTPRequest.AuthenticationMethod.BasicAuth)
+    XCTAssertEqual(newSourceDict["connection"]!["authenticationMethod"], "BasicAuth")
   }
 
   func testMigratesRenamedVCardURLKeyToVersion3() {
@@ -35,8 +35,8 @@ class VCardSourceStoreMigrationTests: XCTestCase {
       [oldSourceDict],
       previousVersion: 2)
 
-    let newSource = VCardSource.fromDictionary(newSourceDicts.first!)
+    let newSourceDict = VCardSource.fromDictionary(newSourceDicts.first!).toDictionary()
 
-    XCTAssertEqual(newSource.connection.vcardURL, "https://example.com/vcards")
+    XCTAssertEqual(newSourceDict["connection"]!["vcardURL"], "https://example.com/vcards")
   }
 }
