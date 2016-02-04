@@ -7,8 +7,11 @@ struct RecordChangeSet {
   let multiValueChanges: [ABPropertyID: [(String, AnyObject)]]
   let imageChange: NSData?
 
-  init?(oldRecord: ABRecord, newRecord: ABRecord) {
-    let singleValueChanges = RecordChangeSet.findSingleValueChanges(oldRecord, newRecord)
+  init?(oldRecord: ABRecord, newRecord: ABRecord, trackPersonNickName: Bool) {
+    let singleValueChanges = RecordChangeSet.findSingleValueChanges(
+      oldRecord: oldRecord,
+      newRecord: newRecord,
+      trackPersonNickName: trackPersonNickName)
     let multiValueChanges = RecordChangeSet.findMultiValueChanges(oldRecord, newRecord)
     let imageChange = RecordChangeSet.findImageChange(oldRecord, newRecord)
 
@@ -41,13 +44,18 @@ struct RecordChangeSet {
   ]
 
   private static func findSingleValueChanges(
-    oldRecord: ABRecord,
-    _ newRecord: ABRecord)
+    oldRecord oldRecord: ABRecord,
+    newRecord: ABRecord,
+    trackPersonNickName: Bool)
     -> [ABPropertyID: AnyObject]
   {
     var changes: [ABPropertyID: AnyObject] = [:]
 
-    for prop in TrackedSingleValueProperties {
+    let trackedProperties = trackPersonNickName
+      ? [kABPersonNicknameProperty] + TrackedSingleValueProperties
+      : TrackedSingleValueProperties
+
+    for prop in trackedProperties {
       let oldVal: AnyObject? = Records.getSingleValueProperty(prop, of: oldRecord)
       if oldVal == nil {
         if let newVal: AnyObject = Records.getSingleValueProperty(prop, of: newRecord) {

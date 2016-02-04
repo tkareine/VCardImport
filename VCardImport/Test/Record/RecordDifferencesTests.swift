@@ -5,7 +5,10 @@ import XCTest
 class RecordDifferencesTests: XCTestCase {
   func testSetsPersonRecordForAddition() {
     let newRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
-    let recordDiff = RecordDifferences.resolveBetween(oldRecords: [], newRecords: [newRecord])
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [],
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 1)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -13,7 +16,10 @@ class RecordDifferencesTests: XCTestCase {
 
   func testSetsOrganizationRecordForAddition() {
     let newRecord = TestRecords.makeOrganization(name: "Goverment")
-    let recordDiff = RecordDifferences.resolveBetween(oldRecords: [], newRecords: [newRecord])
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [],
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 1)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -25,19 +31,20 @@ class RecordDifferencesTests: XCTestCase {
       TestRecords.makePerson(firstName: "Arnold Alpha"),
       TestRecords.makePerson(lastName: "Alpha"),
       TestRecords.makePerson(lastName: "Arnold Alpha"),
-      TestRecords.makePerson(nickName: "Arnie"),
+      TestRecords.makePerson(nickname: "Arnie"),
       TestRecords.makePerson(lastName: "Alpha", organization: "Arnold"),
       TestRecords.makePerson(lastName: "Alpha", department: "Arnold"),
-      TestRecords.makePerson(firstName: "Arnold", nickName: "Arnie"),
-      TestRecords.makePerson(nickName: "Arnie", lastName: "Alpha"),
-      TestRecords.makePerson(firstName: "Arnold", nickName: "Arnie", lastName: "Alpha")
+      TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie"),
+      TestRecords.makePerson(nickname: "Arnie", lastName: "Alpha"),
+      TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie", lastName: "Alpha")
     ]
     let newRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 1)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -48,34 +55,37 @@ class RecordDifferencesTests: XCTestCase {
     let newRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha", jobTitle: "Crusher")
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)
   }
 
-  func testMatchesExistingPersonRecordForAdditionByFirstAndLastAndNickName() {
+  func testMatchesExistingPersonRecordForAdditionByFirstAndLastAndNickname() {
     let oldRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha"),
-      TestRecords.makePerson(firstName: "Arnold", nickName: "Big", lastName: "Alpha"),
+      TestRecords.makePerson(firstName: "Arnold", nickname: "Big", lastName: "Alpha"),
     ]
     let newRecords = [
-      TestRecords.makePerson(firstName: "Arnold", nickName: "Arnie", lastName: "Alpha")
+      TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie", lastName: "Alpha")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 1)
     XCTAssertEqual(recordDiff.changes.count, 0)
   }
 
-  func testMatchesExistingPersonRecordsForChangeByFirstAndLastAndNickName() {
-    let oldRecord = TestRecords.makePerson(firstName: "Arnold", nickName: "Arnie", lastName: "Alpha")
-    let newRecord = TestRecords.makePerson(firstName: "Arnold", nickName: "Arnie", lastName: "Alpha", jobTitle: "Crusher")
+  func testMatchesExistingPersonRecordsForChangeByFirstAndLastAndNickname() {
+    let oldRecord = TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie", lastName: "Alpha")
+    let newRecord = TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie", lastName: "Alpha", jobTitle: "Crusher")
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)
@@ -86,7 +96,8 @@ class RecordDifferencesTests: XCTestCase {
     let newRecord = TestRecords.makeOrganization(name: "Goverment")
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 1)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -97,7 +108,8 @@ class RecordDifferencesTests: XCTestCase {
     let newRecord = TestRecords.makeOrganization(name: "Goverment", emails: [("Work", "info@gov.gov")])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)
@@ -107,12 +119,13 @@ class RecordDifferencesTests: XCTestCase {
     let newRecords = [
       TestRecords.makePerson(firstName: "Goverment", lastName: ""),
       TestRecords.makePerson(firstName: "", lastName: "Goverment"),
-      TestRecords.makePerson(firstName: "", nickName: "Goverment", lastName: ""),
+      TestRecords.makePerson(firstName: "", nickname: "Goverment", lastName: ""),
       TestRecords.makeOrganization(name: "Goverment")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [],
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 4)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -150,7 +163,8 @@ class RecordDifferencesTests: XCTestCase {
       image: loadImage("aa-60"))
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)
@@ -234,7 +248,8 @@ class RecordDifferencesTests: XCTestCase {
 
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)
@@ -254,13 +269,48 @@ class RecordDifferencesTests: XCTestCase {
     XCTAssertEqual(emailChanges.first!.1 as? String, "info@gov.gov")
   }
 
+  func testDoesNotSetPersonRecordChangeForNicknameWhenIncludingPersonNicknameForEquality() {
+    let oldRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
+    let newRecord = TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie", lastName: "Alpha")
+
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [oldRecord],
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
+
+    XCTAssertEqual(recordDiff.additions.count, 1)
+    XCTAssertEqual(recordDiff.changes.count, 0)
+  }
+
+  func testSetsPersonRecordChangeForNicknameWhenNotIncludingPersonNicknameForEquality() {
+    let oldRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
+    let newRecord = TestRecords.makePerson(firstName: "Arnold", nickname: "Arnie", lastName: "Alpha")
+
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [oldRecord],
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: false)
+
+    XCTAssertEqual(recordDiff.additions.count, 0)
+    XCTAssertEqual(recordDiff.changes.count, 1)
+
+    let singleValueChanges = recordDiff.changes.first!.singleValueChanges
+
+    XCTAssertEqual(singleValueChanges.count, 1)
+
+    let nicknameChange = singleValueChanges[kABPersonNicknameProperty] as! String!
+
+    XCTAssertEqual(nicknameChange, "Arnie")
+  }
+
   func testDoesNotSetRecordChangeForNonTrackedFieldValue() {
     let oldRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
     let newRecord = TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha")
     Records.setValue("a note", toSingleValueProperty: kABPersonNoteProperty, of: newRecord)
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -269,10 +319,13 @@ class RecordDifferencesTests: XCTestCase {
   func testQuietlySkipsRecordAdditionForNewRecordsWithEmptyNames() {
     let newRecords = [
       TestRecords.makePerson(firstName: "", lastName: ""),
-      TestRecords.makePerson(firstName: "", nickName: "", lastName: ""),
+      TestRecords.makePerson(firstName: "", nickname: "", lastName: ""),
       TestRecords.makeOrganization(name: "")
     ]
-    let recordDiff = RecordDifferences.resolveBetween(oldRecords: [], newRecords: newRecords)
+    let recordDiff = RecordDifferences.resolveBetween(
+      oldRecords: [],
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -284,16 +337,17 @@ class RecordDifferencesTests: XCTestCase {
     let newRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "former"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "middle"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "latter"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "former"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "middle"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "latter"),
       TestRecords.makeOrganization(name: "Goverment"),
       TestRecords.makeOrganization(name: "Goverment"),
       TestRecords.makeOrganization(name: "Goverment")
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [],
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -304,17 +358,18 @@ class RecordDifferencesTests: XCTestCase {
   func testQuietlySkipsRecordChangeForExistingRecordsWithEmptyNames() {
     let oldRecords = [
       TestRecords.makePerson(firstName: "", lastName: ""),
-      TestRecords.makePerson(firstName: "", nickName: "", lastName: ""),
+      TestRecords.makePerson(firstName: "", nickname: "", lastName: ""),
       TestRecords.makeOrganization(name: "")
     ]
     let newRecords = [
       TestRecords.makePerson(firstName: "", lastName: "", jobTitle: "worker"),
-      TestRecords.makePerson(firstName: "", nickName: "", lastName: "", jobTitle: "tester"),
+      TestRecords.makePerson(firstName: "", nickname: "", lastName: "", jobTitle: "tester"),
       TestRecords.makeOrganization(name: "", emails: [("Work", "info@gov.gov")])
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -326,21 +381,22 @@ class RecordDifferencesTests: XCTestCase {
     let oldRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha"),
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta"),
       TestRecords.makeOrganization(name: "Goverment"),
       TestRecords.makeOrganization(name: "Goverment"),
       TestRecords.makeOrganization(name: "Goverment")
     ]
     let newRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha", jobTitle: "worker"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "tester"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "tester"),
       TestRecords.makeOrganization(name: "Goverment", emails: [("Work", "info@gov.gov")])
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -351,22 +407,23 @@ class RecordDifferencesTests: XCTestCase {
   func testSkipsRecordChangeForMultipleNewRecordsHavingSameName() {
     let oldRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta"),
       TestRecords.makeOrganization(name: "Goverment")
     ]
     let newRecords = [
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha", jobTitle: "former"),
       TestRecords.makePerson(firstName: "Arnold", lastName: "Alpha", jobTitle: "latter"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "former"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "middle"),
-      TestRecords.makePerson(firstName: "Bert", nickName: "Bee", lastName: "Beta", jobTitle: "latter"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "former"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "middle"),
+      TestRecords.makePerson(firstName: "Bert", nickname: "Bee", lastName: "Beta", jobTitle: "latter"),
       TestRecords.makeOrganization(name: "Goverment", emails: [("Work", "former@gov.gov")]),
       TestRecords.makeOrganization(name: "Goverment", emails: [("Work", "middle@gov.gov")]),
       TestRecords.makeOrganization(name: "Goverment", emails: [("Work", "latter@gov.gov")])
     ]
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
-      newRecords: newRecords)
+      newRecords: newRecords,
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -385,7 +442,8 @@ class RecordDifferencesTests: XCTestCase {
       jobTitle: "Governor")
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -402,7 +460,8 @@ class RecordDifferencesTests: XCTestCase {
       image: loadImage("bb-60"))
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -419,7 +478,8 @@ class RecordDifferencesTests: XCTestCase {
       phones: [(kABPersonPhoneMainLabel as String, "5551001001")])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -436,7 +496,8 @@ class RecordDifferencesTests: XCTestCase {
       phones: [(kABPersonPhoneMainLabel as String, "5551001002")])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)
@@ -465,7 +526,8 @@ class RecordDifferencesTests: XCTestCase {
       addresses: [("Work", addr)])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 0)
@@ -484,7 +546,8 @@ class RecordDifferencesTests: XCTestCase {
       addresses: [("Work", newAddr)])
     let recordDiff = RecordDifferences.resolveBetween(
       oldRecords: [oldRecord],
-      newRecords: [newRecord])
+      newRecords: [newRecord],
+      includePersonNicknameForEquality: true)
 
     XCTAssertEqual(recordDiff.additions.count, 0)
     XCTAssertEqual(recordDiff.changes.count, 1)

@@ -3,16 +3,16 @@ import XCTest
 class RecordNameTests: XCTestCase {
   let leonKennedy0 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy"))!
   let leonKennedy1 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy"))!
-  let leonKennedyS0 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickName: "S"))!
-  let leonKennedyS1 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickName: "S"))!
+  let leonKennedyS0 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickname: "S"))!
+  let leonKennedyS1 = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickname: "S"))!
   let jillValentine = RecordName.of(TestRecords.makePerson(firstName: "Jill", lastName: "Valentine"))!
-  let s0 = RecordName.of(TestRecords.makePerson(nickName: "S"))!
-  let s1 = RecordName.of(TestRecords.makePerson(nickName: "S"))!
+  let s0 = RecordName.of(TestRecords.makePerson(nickname: "S"))!
+  let s1 = RecordName.of(TestRecords.makePerson(nickname: "S"))!
   let umbrella0 = RecordName.of(TestRecords.makeOrganization(name: "Umbrella"))!
   let umbrella1 = RecordName.of(TestRecords.makeOrganization(name: "Umbrella"))!
   let umbrellaPF = RecordName.of(TestRecords.makePerson(firstName: "Umbrella"))!
   let umbrellaPL = RecordName.of(TestRecords.makePerson(lastName: "Umbrella"))!
-  let umbrellaPN = RecordName.of(TestRecords.makePerson(nickName: "Umbrella"))!
+  let umbrellaPN = RecordName.of(TestRecords.makePerson(nickname: "Umbrella"))!
   let rpd = RecordName.of(TestRecords.makeOrganization(name: "RPD"))!
 
   func testEqualityAndHashValueForPersonsWithSameFirstAndLastNames() {
@@ -21,7 +21,7 @@ class RecordNameTests: XCTestCase {
     XCTAssertEqual(leonKennedy0.hashValue, leonKennedy1.hashValue)
   }
 
-  func testEqualityAndHashValueForPersonsWithSameFirstAndLastAndNickNames() {
+  func testEqualityAndHashValueForPersonsWithSameFirstAndLastAndNicknames() {
     XCTAssert(leonKennedyS0 == leonKennedyS0)
     XCTAssert(leonKennedyS0 == leonKennedyS1)
     XCTAssertEqual(leonKennedyS0.hashValue, leonKennedyS1.hashValue)
@@ -76,12 +76,12 @@ class RecordNameTests: XCTestCase {
     XCTAssertNil(RecordName.of(TestRecords.makePerson()))
     XCTAssertNil(RecordName.of(TestRecords.makePerson(firstName: "")))
     XCTAssertNil(RecordName.of(TestRecords.makePerson(lastName: "")))
-    XCTAssertNil(RecordName.of(TestRecords.makePerson(nickName: "")))
+    XCTAssertNil(RecordName.of(TestRecords.makePerson(nickname: "")))
     XCTAssertNil(RecordName.of(TestRecords.makePerson(firstName: "", lastName: "")))
-    XCTAssertNil(RecordName.of(TestRecords.makePerson(firstName: "", lastName: "", nickName: "")))
+    XCTAssertNil(RecordName.of(TestRecords.makePerson(firstName: "", lastName: "", nickname: "")))
     XCTAssertNotNil(RecordName.of(TestRecords.makePerson(firstName: "Jill")))
     XCTAssertNotNil(RecordName.of(TestRecords.makePerson(lastName: "Valentine")))
-    XCTAssertNotNil(RecordName.of(TestRecords.makePerson(nickName: "JV")))
+    XCTAssertNotNil(RecordName.of(TestRecords.makePerson(nickname: "JV")))
   }
 
   func testEmptyNameForOrganizationReturnsNil() {
@@ -90,10 +90,22 @@ class RecordNameTests: XCTestCase {
   }
 
   func testTreatsEmptyNickNameAsSameWithoutNickName() {
-    let lk = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickName: ""))!
+    let lk = RecordName.of(TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickname: ""))!
 
     XCTAssert(leonKennedy0 == lk)
     XCTAssert(leonKennedy0 == lk)
     XCTAssertEqual(leonKennedy0.hashValue, lk.hashValue)
+  }
+
+  func testIgnoresDifferentNicknameWhenNotTrackingNickName() {
+    let lkS = RecordName.of(
+      TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickname: "S"),
+      includePersonNickname: false)!
+    let lkT = RecordName.of(
+      TestRecords.makePerson(firstName: "Leon", lastName: "Kennedy", nickname: "T"),
+      includePersonNickname: false)!
+
+    XCTAssert(lkS == lkT)
+    XCTAssertEqual(lkS.hashValue, lkT.hashValue)
   }
 }

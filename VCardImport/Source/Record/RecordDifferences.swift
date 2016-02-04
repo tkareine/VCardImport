@@ -13,15 +13,20 @@ struct RecordDifferences {
   static func resolveBetween(
     oldRecords oldRecords: [ABRecord],
     newRecords: [ABRecord],
+    includePersonNicknameForEquality: Bool,
     onProgress: OnResolveProgressCallback? = nil)
     -> RecordDifferences
   {
-    let (uniqueNewRecords, duplicateNewRecords) = uniqueRecordsOf(newRecords)
+    let (uniqueNewRecords, duplicateNewRecords) = uniqueRecordsOf(
+      newRecords,
+      includePersonNicknameForEquality: includePersonNicknameForEquality)
     let countDuplicateNewRecords = duplicateNewRecords.reduce(0) { $0 + $1.1 }
 
     onProgress?((totalPhasesCompleted: 1, totalPhasesToComplete: 4))
 
-    let (uniqueOldRecords, duplicateOldRecords) = uniqueRecordsOf(oldRecords)
+    let (uniqueOldRecords, duplicateOldRecords) = uniqueRecordsOf(
+      oldRecords,
+      includePersonNicknameForEquality: includePersonNicknameForEquality)
 
     onProgress?((totalPhasesCompleted: 2, totalPhasesToComplete: 4))
 
@@ -33,7 +38,7 @@ struct RecordDifferences {
 
     onProgress?((totalPhasesCompleted: 3, totalPhasesToComplete: 4))
 
-    let changes = findChanges(matches)
+    let changes = findChanges(matches, trackPersonNickname: !includePersonNicknameForEquality)
 
     onProgress?((totalPhasesCompleted: 4, totalPhasesToComplete: 4))
 
@@ -44,14 +49,16 @@ struct RecordDifferences {
       countSkippedAmbiguousMatchesToExistingRecords: countAmbiguousMatchesToOldRecords)
   }
 
-  private static func uniqueRecordsOf(records: [ABRecord])
+  private static func uniqueRecordsOf(
+    records: [ABRecord],
+    includePersonNicknameForEquality includePersonNickname: Bool)
     -> ([RecordName: ABRecord], [RecordName: Int])
   {
     var uniqueRecords: [RecordName: ABRecord] = [:]
     var duplicateRecords: [RecordName: Int] = [:]
 
     for rec in records {
-      if let name = RecordName.of(rec) {
+      if let name = RecordName.of(rec, includePersonNickname: includePersonNickname) {
         if let countDuplicates = duplicateRecords[name] {
           duplicateRecords[name] = countDuplicates + 1
         } else {
@@ -95,13 +102,18 @@ struct RecordDifferences {
   }
 
   private static func findChanges(
-    matchingRecords: [RecordName: (ABRecord, ABRecord)])
+    matchingRecords: [RecordName: (ABRecord, ABRecord)],
+    trackPersonNickname: Bool)
     -> [RecordChangeSet]
   {
     var changeSets: [RecordChangeSet] = []
 
     for (recordName, (existingRecord, newRecord)) in matchingRecords {
-      if let cs = RecordChangeSet(oldRecord: existingRecord, newRecord: newRecord) {
+      if let cs = RecordChangeSet(
+        oldRecord: existingRecord,
+        newRecord: newRecord,
+        trackPersonNickName: trackPersonNickname)
+      {
         NSLog("Marking record for having changes: %@", recordName.description)
         changeSets.append(cs)
       }

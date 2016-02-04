@@ -6,7 +6,7 @@ struct TestRecords {
   static func makePerson(
     prefix prefix: String? = nil,
     firstName: String? = nil,
-    nickName: String? = nil,
+    nickname: String? = nil,
     middleName: String? = nil,
     lastName: String? = nil,
     suffixName: String? = nil,
@@ -29,7 +29,7 @@ struct TestRecords {
     if let val = firstName {
       Records.setValue(val, toSingleValueProperty: kABPersonFirstNameProperty, of: record)
     }
-    if let val = nickName {
+    if let val = nickname {
       Records.setValue(val, toSingleValueProperty: kABPersonNicknameProperty, of: record)
     }
     if let val = middleName {
