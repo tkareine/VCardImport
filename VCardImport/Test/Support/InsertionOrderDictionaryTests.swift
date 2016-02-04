@@ -23,9 +23,9 @@ class InsertionOrderDictionaryTests: XCTestCase {
     XCTAssertEqual(dict.debugDescription, "[\"a\": 0, \"b\": 1]")
     XCTAssertEqual(dict.keys, ["a", "b"])
     XCTAssertEqual(dict.values, [0, 1])
-    XCTAssertEqual(dict["a"]!, 0)
+    XCTAssertEqual(dict["a"], 0)
     XCTAssertEqual(dict[0], 0)
-    XCTAssertEqual(dict["b"]!, 1)
+    XCTAssertEqual(dict["b"], 1)
     XCTAssertEqual(dict[1], 1)
   }
 
@@ -37,8 +37,8 @@ class InsertionOrderDictionaryTests: XCTestCase {
     dict[0] = 10
 
     XCTAssertEqual(dict.count, 2)
-    XCTAssertEqual(dict["a"]!, 10)
-    XCTAssertEqual(dict["b"]!, 11)
+    XCTAssertEqual(dict["a"], 10)
+    XCTAssertEqual(dict["b"], 11)
   }
 
   func testRemove() {
@@ -46,15 +46,15 @@ class InsertionOrderDictionaryTests: XCTestCase {
     dict["a"] = 0
     dict["b"] = 1
 
-    XCTAssertEqual(dict["a"]!, 0)
+    XCTAssertEqual(dict["a"], 0)
 
     let r0 = dict.removeValueAtIndex(0)
 
-    XCTAssertEqual(r0!, 0)
+    XCTAssertEqual(r0, 0)
     XCTAssertEqual(dict.count, 1)
     XCTAssert(dict["a"] == nil)
     XCTAssertEqual(dict[0], 1)
-    XCTAssertEqual(dict["b"]!, 1)
+    XCTAssertEqual(dict["b"], 1)
 
     let r1 = dict.removeValueForKey("a")
 
@@ -62,7 +62,7 @@ class InsertionOrderDictionaryTests: XCTestCase {
 
     let r2 = dict.removeValueForKey("b")
 
-    XCTAssertEqual(r2!, 1)
+    XCTAssertEqual(r2, 1)
     XCTAssertTrue(dict.isEmpty)
     XCTAssert(dict["b"] == nil)
   }
@@ -119,8 +119,8 @@ class InsertionOrderDictionaryTests: XCTestCase {
 
   func testIndexOf() {
     let dict: InsertionOrderDictionary<String, Float> = ["a": 3.14, "b": 42]
-    XCTAssertEqual(dict.indexOf("a")!, 0)
-    XCTAssertEqual(dict.indexOf("b")!, 1)
+    XCTAssertEqual(dict.indexOf("a"), 0)
+    XCTAssertEqual(dict.indexOf("b"), 1)
     XCTAssert(dict.indexOf("c") == nil)
   }
 
