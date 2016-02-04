@@ -209,7 +209,7 @@ class VCardImportTask {
     return RecordDifferences.resolveBetween(
       oldRecords: oldRecords,
       newRecords: newRecords,
-      includePersonNicknameForEquality: true,
+      includePersonNicknameForEquality: source.includePersonNicknameForEquality,
       onProgress: onProgress)
   }
   

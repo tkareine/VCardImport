@@ -3,6 +3,7 @@ import Foundation
 struct VCardSource {
   let name: String
   let connection: Connection
+  let includePersonNicknameForEquality: Bool
   let isEnabled: Bool
   let id: String
   let lastImportResult: ImportResult?
@@ -10,12 +11,14 @@ struct VCardSource {
   init(
     name: String,
     connection: Connection,
+    includePersonNicknameForEquality: Bool,
     isEnabled: Bool,
     id: String = NSUUID().UUIDString,
     lastImportResult: ImportResult? = nil)
   {
     self.name = name
     self.connection = connection
+    self.includePersonNicknameForEquality = includePersonNicknameForEquality
     self.isEnabled = isEnabled
     self.id = id
     self.lastImportResult = lastImportResult
@@ -25,12 +28,14 @@ struct VCardSource {
     return self.init(
       name: "",
       connection: Connection.empty(),
+      includePersonNicknameForEquality: false,
       isEnabled: true)
   }
 
   func with(
     name name: String,
     connection: Connection,
+    includePersonNicknameForEquality: Bool,
     isEnabled: Bool)
     -> VCardSource
   {
@@ -40,6 +45,7 @@ struct VCardSource {
     return VCardSource(
       name: name,
       connection: connection,
+      includePersonNicknameForEquality: includePersonNicknameForEquality,
       isEnabled: isEnabled,
       id: id,
       lastImportResult: stamp)
@@ -55,6 +61,7 @@ struct VCardSource {
     return VCardSource(
       name: name,
       connection: connection,
+      includePersonNicknameForEquality: includePersonNicknameForEquality,
       isEnabled: isEnabled,
       id: id,
       lastImportResult: lastImportResult)
@@ -73,6 +80,7 @@ struct VCardSource {
     return VCardSource(
       name: name,
       connection: connection,
+      includePersonNicknameForEquality: includePersonNicknameForEquality,
       isEnabled: isEnabled,
       id: id,
       lastImportResult: VCardSource.ImportResult(
@@ -138,6 +146,7 @@ extension VCardSource: DictionaryConvertible {
     var dict: [String: AnyObject] = [
       "name": name,
       "connection": connection.toDictionary(),
+      "includePersonNicknameForEquality": includePersonNicknameForEquality,
       "isEnabled": isEnabled,
       "id": id
     ]
@@ -156,6 +165,7 @@ extension VCardSource: DictionaryConvertible {
     return self.init(
       name: dictionary["name"] as! String,
       connection: Connection.fromDictionary(dictionary["connection"] as! [String: AnyObject]),
+      includePersonNicknameForEquality: dictionary["includePersonNicknameForEquality"] as! Bool,
       isEnabled: dictionary["isEnabled"] as! Bool,
       id: dictionary["id"] as! String,
       lastImportResult: lastImportResult)

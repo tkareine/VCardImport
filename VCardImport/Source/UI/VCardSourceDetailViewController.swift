@@ -18,6 +18,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   private var authMethodCell: LabeledSelectionCell<HTTPRequest.AuthenticationMethod>!
   private var usernameCell: LabeledTextFieldCell!
   private var passwordCell: LabeledTextFieldCell!
+  private var includePersonNicknameForEqualityCell: LabeledSwitchCell!
   private var isEnabledCell: LabeledSwitchCell!
 
   private var nameValidator: InputValidator<String>!
@@ -160,6 +161,12 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         ))
     }
 
+    func makeIncludePersonNicknameForEqualityCell() -> LabeledSwitchCell {
+      return LabeledSwitchCell(
+        label: "Matching with nickname",
+        isEnabled: source.includePersonNicknameForEquality)
+    }
+
     func makeIsEnabledCell() -> LabeledSwitchCell {
       return LabeledSwitchCell(
         label: "Enabled",
@@ -255,6 +262,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     authMethodCell = makeAuthMethodCell()
     usernameCell = makeUsernameCell()
     passwordCell = makePasswordCell()
+    includePersonNicknameForEqualityCell = makeIncludePersonNicknameForEqualityCell()
     isEnabledCell = makeIsEnabledCell()
 
     nameValidator = makeNameValidator()
@@ -322,6 +330,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       let newSource = source.with(
         name: nameCell.textFieldText.trimmed,
         connection: newConnection,
+        includePersonNicknameForEquality: includePersonNicknameForEqualityCell.switchOn,
         isEnabled: isEnabledCell.switchOn)
 
       onSave(newSource)
@@ -541,6 +550,9 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         2: passwordCell
       ],
       2: [
+        0: includePersonNicknameForEqualityCell
+      ],
+      3: [
         0: isEnabledCell
       ]
     ]

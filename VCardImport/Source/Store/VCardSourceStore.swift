@@ -1,6 +1,6 @@
 import Foundation
 
-private let CurrentStoreVersion = 3
+private let CurrentStoreVersion = 4
 
 class VCardSourceStore {
   private let keychainItem: KeychainItemWrapper
@@ -167,12 +167,14 @@ class VCardSourceStore {
         connection: VCardSource.Connection(
           vcardURL: "https://dl.dropboxusercontent.com/u/1404049/vcards/bodycorp.vcf",
           authenticationMethod: .None),
+        includePersonNicknameForEquality: true,
         isEnabled: true),
       VCardSource(
         name: "Cold Temp",
         connection: VCardSource.Connection(
           vcardURL: "https://dl.dropboxusercontent.com/u/1404049/vcards/coldtemp.vcf",
           authenticationMethod: .BasicAuth),
+        includePersonNicknameForEquality: false,
         isEnabled: true)
     ]
   }

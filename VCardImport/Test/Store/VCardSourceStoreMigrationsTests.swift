@@ -39,4 +39,24 @@ class VCardSourceStoreMigrationTests: XCTestCase {
 
     XCTAssertEqual(newSourceDict["connection"]!["vcardURL"], "https://example.com/vcards")
   }
+
+  func testMigratesIncludePersonNicknameForEqualityOptionForVersion4() {
+    let oldSourceDict: [String: AnyObject] = [
+      "name": "Test",
+      "connection": [
+        "vcardURL": "https://example.com/vcards",
+        "authenticationMethod": "None"
+      ],
+      "isEnabled": true,
+      "id": NSUUID().UUIDString
+    ]
+
+    let newSourceDicts = VCardSourceStoreMigrations.migrateNonSensitiveData(
+      [oldSourceDict],
+      previousVersion: 3)
+
+    let newSourceDict = VCardSource.fromDictionary(newSourceDicts.first!).toDictionary()
+
+    XCTAssertEqual(newSourceDict["includePersonNicknameForEquality"] as? Bool, false)
+  }
 }

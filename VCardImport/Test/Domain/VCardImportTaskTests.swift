@@ -465,7 +465,8 @@ class VCardImportTaskTests: XCTestCase {
       name: name,
       connection: VCardSource.Connection(
         vcardURL: "https://example.com/vcards/\(name).vcf",
-        authenticationMethod: .BasicAuth),
+        authenticationMethod: .None),
+      includePersonNicknameForEquality: true,
       isEnabled: true)
   }
 

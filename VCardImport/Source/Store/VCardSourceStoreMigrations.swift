@@ -14,6 +14,10 @@ struct VCardSourceStoreMigrations {
       sources = sources.map(vcardSourceWithRenamedVCardURLKey)
     }
 
+    if previousVersion < 4 {
+      sources = sources.map(vcardSourceWithIncludePersonNicknameForEqualityOption)
+    }
+
     return sources
   }
 
@@ -34,6 +38,14 @@ struct VCardSourceStoreMigrations {
     var connection = sourceDict["connection"] as! [String: AnyObject]
     connection["vcardURL"] = connection.removeValueForKey("url")
     sourceDict["connection"] = connection
+    return sourceDict
+  }
+
+  private static func vcardSourceWithIncludePersonNicknameForEqualityOption(
+    var sourceDict: [String: AnyObject])
+    -> [String: AnyObject]
+  {
+    sourceDict["includePersonNicknameForEquality"] = false
     return sourceDict
   }
 }
