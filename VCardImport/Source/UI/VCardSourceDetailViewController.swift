@@ -9,8 +9,9 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
   private var tableView: UITableView!
 
-  private var noteLabel: MultilineLabel!
+  private var generalGuideLabel: MultilineLabel!
   private var vcardURLValidationResultView: LabeledActivityIndicator!
+  private var includePersonNicknameForEqualityGuideLabel: MultilineLabel!
 
   private var nameCell: LabeledTextFieldCell!
   private var vcardURLCell: LabeledTextFieldCell!
@@ -74,6 +75,22 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       tv.delegate = self
       tv.dataSource = self
       return tv
+    }
+
+    func makeGuideLabel(
+      text text: String,
+      textAlignment: NSTextAlignment,
+      topMargin: Float = MultilineLabel.DefaultMargin,
+      bottomMargin: Float = MultilineLabel.DefaultMargin)
+      -> MultilineLabel
+    {
+      return MultilineLabel(
+        frame: CGRect.zero,
+        text: text,
+        textColor: Config.UI.GuideLabelTextColor,
+        textAlignment: textAlignment,
+        topMargin: topMargin,
+        bottomMargin: bottomMargin)
     }
 
     func makeTextFieldDelegate(
@@ -256,6 +273,18 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       view.addGestureRecognizer(tapRecognizer)
     }
 
+    generalGuideLabel = makeGuideLabel(
+      text: "Specify vCard file URL at remote server you trust. Prefer secure connections with https URLs. All contacts in the vCard file will be considered for importing.",
+      textAlignment: .Center)
+
+    includePersonNicknameForEqualityGuideLabel = makeGuideLabel(
+      text: "If enabled, importing detects existing persons by first and last name and nickname. If disabled, importing uses just first and last name for detection. Enable if vCard contains different persons with the same first and last names, but with different nicknames.",
+      textAlignment: .Left,
+      topMargin: 10,
+      bottomMargin: 20)
+
+    vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect.zero)
+
     nameCell = makeNameCell()
     vcardURLCell = makeVCardURLCell()
     loginURLCell = makeLoginURLCell()
@@ -269,12 +298,6 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     vcardURLValidator = makeVCardURLValidator()
 
     cellsByIndexPath = makeCellsByIndexPath()
-
-    noteLabel = MultilineLabel(
-      frame: CGRect.zero,
-      labelText: "Specify vCard file URL at remote server you trust. Prefer secure connections with https URLs. All contacts in the vCard file will be considered for importing.")
-
-    vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect.zero)
 
     tableView = makeTableView()
     view = tableView
@@ -353,7 +376,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     -> CGFloat
   {
     switch section {
-    case 0, 1:
+    case 0, 1, 3:
       return UITableViewAutomaticDimension
     default:
       return 20
@@ -367,9 +390,11 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
   {
     switch section {
     case 0:
-      return noteLabel
+      return generalGuideLabel
     case 1:
       return vcardURLValidationResultView
+    case 3:
+      return includePersonNicknameForEqualityGuideLabel
     default:
       return nil
     }
