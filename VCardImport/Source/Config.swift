@@ -50,13 +50,14 @@ struct Config {
   }
 
   struct UI {
-    static let GuideLabelTextColor = UIColor.grayColor()
     static let ImportProgressThrottleInMS = 50
     static let MessageFadeAnimationDuration: NSTimeInterval = 0.5
     static let MessageFadeOutAnimationDelay: NSTimeInterval = 5
     static let TableCellHeaderTextColor = UIColor.blackColor()
     static let TableCellDescriptionTextColor = UIColor.darkGrayColor()
     static let TableCellDisabledTextColor = UIColor.grayColor()
+    static let TableGuideTextColor = UIColor.grayColor()
+    static let TableSectionHeaderTextColor = UIColor.grayColor()
     static let TintColor = UIColor(red: 0.000, green: 0.664, blue: 0.434, alpha: 1)  // #00AA6F
     static let ToolbarBackgroundColor = UIColor(white: 0.92, alpha: 0.6)
     static let ToolbarBorderColor = UIColor(white: 0.8, alpha: 1).CGColor

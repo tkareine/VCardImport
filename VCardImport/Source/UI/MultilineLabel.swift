@@ -21,24 +21,27 @@ private func makeLabel(
 }
 
 class MultilineLabel: UIView {
-  static let DefaultMargin: Float = 15
+  static let DefaultHorizontalMargin: CGFloat = 15
+  static let DefaultVerticalMargin: CGFloat = 10
 
   private let label: UILabel
 
+  private var leadingLayoutConstraint: NSLayoutConstraint!
+  private var trailingLayoutConstraint: NSLayoutConstraint!
+
   init(
-    frame: CGRect,
     text: String,
     textColor: UIColor,
     textAlignment: NSTextAlignment,
-    topMargin: Float = DefaultMargin,
-    bottomMargin: Float = DefaultMargin)
+    topMargin: CGFloat = DefaultVerticalMargin,
+    bottomMargin: CGFloat = DefaultVerticalMargin)
   {
     self.label = makeLabel(
       text: text,
       textColor: textColor,
       textAlignment: textAlignment)
 
-    super.init(frame: frame)
+    super.init(frame: CGRect.zero)
 
     addSubview(label)
 
@@ -59,6 +62,11 @@ class MultilineLabel: UIView {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
+  func setHorizontalMargins(leading leading: CGFloat, trailing: CGFloat) {
+    leadingLayoutConstraint.constant = leading
+    trailingLayoutConstraint.constant = trailing
+  }
+
   // MARK: Notification Handlers
 
   func resetFontSizes() {
@@ -67,26 +75,36 @@ class MultilineLabel: UIView {
 
   // MARK: Helpers
 
-  private func setupLayout(topMargin topMargin: Float, bottomMargin: Float) {
+  private func setupLayout(topMargin topMargin: CGFloat, bottomMargin: CGFloat) {
     label.translatesAutoresizingMaskIntoConstraints = false
 
-    let viewNamesToObjects = ["label": label]
+    self.leadingLayoutConstraint = NSLayoutConstraint(
+      item: label,
+      attribute: .Leading,
+      relatedBy: .Equal,
+      toItem: self,
+      attribute: .Leading,
+      multiplier: 1,
+      constant: MultilineLabel.DefaultHorizontalMargin)
+    self.leadingLayoutConstraint.active = true
+
+    self.trailingLayoutConstraint = NSLayoutConstraint(
+      item: self,
+      attribute: .Trailing,
+      relatedBy: .Equal,
+      toItem: label,
+      attribute: .Trailing,
+      multiplier: 1,
+      constant: MultilineLabel.DefaultHorizontalMargin)
+    self.trailingLayoutConstraint.active = true
 
     NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-margin-[label]-margin-|",
-      options: [],
-      metrics: [
-        "margin": MultilineLabel.DefaultMargin
-      ],
-      views: viewNamesToObjects))
-
-    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "V:|-topMargin-[label]-bottomMargin-|",
+      "V:|-(topMargin)-[label]-(bottomMargin)-|",
       options: [],
       metrics: [
         "topMargin": topMargin,
         "bottomMargin": bottomMargin
       ],
-      views: viewNamesToObjects))
+      views: ["label": label]))
   }
 }

@@ -9,17 +9,26 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
   private var tableView: UITableView!
 
+  // section 0
   private var generalGuideLabel: MultilineLabel!
-  private var vcardURLValidationResultView: LabeledActivityIndicator!
-  private var includePersonNicknameForEqualityGuideLabel: MultilineLabel!
-
   private var nameCell: LabeledTextFieldCell!
   private var vcardURLCell: LabeledTextFieldCell!
   private var loginURLCell: LabeledTextFieldCell!
-  private var authMethodCell: LabeledSelectionCell<HTTPRequest.AuthenticationMethod>!
+  private var vcardURLValidationResultView: LabeledActivityIndicator!
+
+  // section 1
+  private var authenticationHeaderLabel: MultilineLabel!
+  private var authenticationMethodCell: LabeledSelectionCell<HTTPRequest.AuthenticationMethod>!
   private var usernameCell: LabeledTextFieldCell!
   private var passwordCell: LabeledTextFieldCell!
+
+  // section 2
+  private var contactMatchingHeaderLabel: MultilineLabel!
   private var includePersonNicknameForEqualityCell: LabeledSwitchCell!
+  private var includePersonNicknameForEqualityGuideLabel: MultilineLabel!
+
+  // section 3
+  private var isEnabledHeaderLabel: MultilineLabel!
   private var isEnabledCell: LabeledSwitchCell!
 
   private var nameValidator: InputValidator<String>!
@@ -69,25 +78,34 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     func makeTableView() -> UITableView {
       let tv = UITableView(frame: CGRect.zero, style: .Grouped)
       tv.estimatedSectionHeaderHeight = 50
+      tv.estimatedSectionFooterHeight = 50
       tv.estimatedRowHeight = 40
+      tv.sectionHeaderHeight = UITableViewAutomaticDimension
       tv.rowHeight = UITableViewAutomaticDimension
-      tv.sectionFooterHeight = 0
       tv.delegate = self
       tv.dataSource = self
       return tv
     }
 
+    func makeHeaderLabel(text text: String) -> MultilineLabel {
+      return MultilineLabel(
+        text: text,
+        textColor: Config.UI.TableSectionHeaderTextColor,
+        textAlignment: .Left,
+        topMargin: 8,
+        bottomMargin: 4)
+    }
+
     func makeGuideLabel(
       text text: String,
       textAlignment: NSTextAlignment,
-      topMargin: Float = MultilineLabel.DefaultMargin,
-      bottomMargin: Float = MultilineLabel.DefaultMargin)
+      topMargin: CGFloat = MultilineLabel.DefaultVerticalMargin,
+      bottomMargin: CGFloat = MultilineLabel.DefaultVerticalMargin)
       -> MultilineLabel
     {
       return MultilineLabel(
-        frame: CGRect.zero,
         text: text,
-        textColor: Config.UI.GuideLabelTextColor,
+        textColor: Config.UI.TableGuideTextColor,
         textAlignment: textAlignment,
         topMargin: topMargin,
         bottomMargin: bottomMargin)
@@ -147,9 +165,9 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         ))
     }
 
-    func makeAuthMethodCell() -> LabeledSelectionCell<HTTPRequest.AuthenticationMethod> {
+    func makeAuthenticationMethodCell() -> LabeledSelectionCell<HTTPRequest.AuthenticationMethod> {
       return LabeledSelectionCell(
-        label: "Authentication",
+        label: "Method",
         selection: SelectionOption(
           data: source.connection.authenticationMethod,
           shortDescription: source.connection.authenticationMethod.shortDescription))
@@ -180,7 +198,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
     func makeIncludePersonNicknameForEqualityCell() -> LabeledSwitchCell {
       return LabeledSwitchCell(
-        label: "Matching with nickname",
+        label: "Persons by nickname",
         isEnabled: source.includePersonNicknameForEquality)
     }
 
@@ -275,23 +293,25 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
     generalGuideLabel = makeGuideLabel(
       text: "Specify vCard file URL at remote server you trust. Prefer secure connections with https URLs. All contacts in the vCard file will be considered for importing.",
-      textAlignment: .Center)
-
-    includePersonNicknameForEqualityGuideLabel = makeGuideLabel(
-      text: "If enabled, importing detects existing persons by first and last name and nickname. If disabled, importing uses just first and last name for detection. Enable if vCard contains different persons with the same first and last names, but with different nicknames.",
-      textAlignment: .Left,
-      topMargin: 10,
-      bottomMargin: 20)
-
-    vcardURLValidationResultView = LabeledActivityIndicator(frame: CGRect.zero)
-
+      textAlignment: .Center,
+      bottomMargin: 2 * MultilineLabel.DefaultVerticalMargin)
     nameCell = makeNameCell()
     vcardURLCell = makeVCardURLCell()
     loginURLCell = makeLoginURLCell()
-    authMethodCell = makeAuthMethodCell()
+    vcardURLValidationResultView = LabeledActivityIndicator()
+
+    authenticationHeaderLabel = makeHeaderLabel(text: "AUTHENTICATION")
+    authenticationMethodCell = makeAuthenticationMethodCell()
     usernameCell = makeUsernameCell()
     passwordCell = makePasswordCell()
+
+    contactMatchingHeaderLabel = makeHeaderLabel(text: "CONTACT MATCHING")
     includePersonNicknameForEqualityCell = makeIncludePersonNicknameForEqualityCell()
+    includePersonNicknameForEqualityGuideLabel = makeGuideLabel(
+      text: "If enabled, importing matches persons in the vCard file to persons in Contacts by the combination of first name, last name, and nickname. If disabled, importing matches persons only by first and last name. Enable the option if the vCard file contains different persons with the same first and last names, but different nicknames.",
+      textAlignment: .Left)
+
+    isEnabledHeaderLabel = makeHeaderLabel(text: "IMPORTING")
     isEnabledCell = makeIsEnabledCell()
 
     nameValidator = makeNameValidator()
@@ -335,13 +355,31 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     }
   }
 
+  override func viewWillLayoutSubviews() {
+    let insets = tableView.layoutMargins
+
+    let multilineLabels = [
+      generalGuideLabel,
+      authenticationHeaderLabel,
+      contactMatchingHeaderLabel,
+      includePersonNicknameForEqualityGuideLabel,
+      isEnabledHeaderLabel
+    ]
+
+    for v in multilineLabels {
+      v.setHorizontalMargins(leading: insets.left, trailing: insets.right)
+    }
+
+    vcardURLValidationResultView.setHorizontalMargins(leading: insets.left, trailing: insets.right)
+  }
+
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
 
     NSNotificationCenter.defaultCenter().removeObserver(self)
 
     if shouldCallOnSave {
-      let authenticationMethod = authMethodCell.selection.data
+      let authenticationMethod = authenticationMethodCell.selection.data
 
       let newConnection = VCardSource.Connection(
         vcardURL: vcardURLCell.textFieldText,
@@ -367,20 +405,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     shouldHighlightRowAtIndexPath indexPath: NSIndexPath)
     -> Bool
   {
-    return cellAtIndexPath(indexPath) === authMethodCell
-  }
-
-  func tableView(
-    tableView: UITableView,
-    heightForHeaderInSection section: Int)
-    -> CGFloat
-  {
-    switch section {
-    case 0, 1, 3:
-      return UITableViewAutomaticDimension
-    default:
-      return 20
-    }
+    return cellAtIndexPath(indexPath) === authenticationMethodCell
   }
 
   func tableView(
@@ -392,8 +417,38 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     case 0:
       return generalGuideLabel
     case 1:
-      return vcardURLValidationResultView
+      return authenticationHeaderLabel
+    case 2:
+      return contactMatchingHeaderLabel
     case 3:
+      return isEnabledHeaderLabel
+    default:
+      return nil
+    }
+  }
+
+  func tableView(
+    tableView: UITableView,
+    heightForFooterInSection section: Int)
+    -> CGFloat
+  {
+    switch section {
+    case 0, 2:
+      return UITableViewAutomaticDimension
+    default:
+      return 10
+    }
+  }
+
+  func tableView(
+    tableView: UITableView,
+    viewForFooterInSection section: Int)
+    -> UIView?
+  {
+    switch section {
+    case 0:
+      return vcardURLValidationResultView
+    case 2:
       return includePersonNicknameForEqualityGuideLabel
     default:
       return nil
@@ -404,17 +459,17 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     tableView: UITableView,
     didSelectRowAtIndexPath indexPath: NSIndexPath)
   {
-    if let cell = cellAtIndexPath(indexPath) where cell === authMethodCell {
+    if let cell = cellAtIndexPath(indexPath) where cell === authenticationMethodCell {
       let selectionOptions = HTTPRequest.AuthenticationMethod.allValues.map {
         SelectionOption(
           data: $0,
           shortDescription: $0.shortDescription,
           longDescription: $0.longDescription)
       }
-      let previouslySelectedAuthMethod = authMethodCell.selection.data
+      let previouslySelectedAuthMethod = authenticationMethodCell.selection.data
       let preselectionIndex = selectionOptions.indexOf({ $0.data == previouslySelectedAuthMethod })!
       let vc = SelectionViewController(
-        title: authMethodCell.labelText,
+        title: authenticationMethodCell.labelText,
         selectionOptions: selectionOptions,
         preselectionIndex: preselectionIndex,
         selectionHandler: { [unowned self] selectedOption in
@@ -443,7 +498,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
           self.navigationController!.popViewControllerAnimated(true)
 
           if currentSelectedAuthMethod != previouslySelectedAuthMethod {
-            self.authMethodCell.selection = selectedOption
+            self.authenticationMethodCell.selection = selectedOption
             self.tableView.beginUpdates()
             showOrHideLoginURLCell()
             showOrHideUsernameAndPasswordCells()
@@ -478,11 +533,11 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     -> Int
   {
     if let rows = cellsByIndexPath[section] {
-      if section == 0 && authMethodCell.selection.data != .PostForm {
+      if section == 0 && authenticationMethodCell.selection.data != .PostForm {
         return rows.count - 1
       }
 
-      if section == 1 && authMethodCell.selection.data == .None {
+      if section == 1 && authenticationMethodCell.selection.data == .None {
         return rows.count - 2
       }
 
@@ -570,7 +625,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
         2: loginURLCell
       ],
       1: [
-        0: authMethodCell,
+        0: authenticationMethodCell,
         1: usernameCell,
         2: passwordCell
       ],
@@ -616,7 +671,7 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     password: String? = nil,
     loginURL: String? = nil)
   {
-    let authMethod = authenticationMethod ?? authMethodCell.selection.data
+    let authMethod = authenticationMethod ?? authenticationMethodCell.selection.data
 
     let connection = VCardSource.Connection(
       vcardURL: vcardURL ?? vcardURLCell.textFieldText,

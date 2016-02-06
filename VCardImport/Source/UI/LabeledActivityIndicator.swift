@@ -1,5 +1,7 @@
 import UIKit
 
+private let ActivityIndicatorSpace: CGFloat = 28
+
 private func makeFont() -> UIFont {
   return UIFont.fontForBodyStyle().sizeAdjusted(-4)
 }
@@ -17,8 +19,12 @@ class LabeledActivityIndicator: UIView {
   private let label = makeLabel()
   private let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
 
-  override init(frame: CGRect) {
-    super.init(frame: frame)
+  private var labelLeadingLayoutConstraint: NSLayoutConstraint!
+  private var labelTrailingLayoutConstraint: NSLayoutConstraint!
+  private var activityIndicatorTrailingLayoutConstraint: NSLayoutConstraint!
+
+  init() {
+    super.init(frame: CGRect.zero)
 
     addSubview(label)
     addSubview(activityIndicator)
@@ -38,6 +44,12 @@ class LabeledActivityIndicator: UIView {
 
   deinit {
     NSNotificationCenter.defaultCenter().removeObserver(self)
+  }
+
+  func setHorizontalMargins(leading leading: CGFloat, trailing: CGFloat) {
+    labelLeadingLayoutConstraint.constant = leading + ActivityIndicatorSpace
+    labelTrailingLayoutConstraint.constant = trailing + ActivityIndicatorSpace
+    activityIndicatorTrailingLayoutConstraint.constant = trailing
   }
 
   func start(text: String) {
@@ -83,19 +95,31 @@ class LabeledActivityIndicator: UIView {
     label.translatesAutoresizingMaskIntoConstraints = false
     activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 
-    let viewNamesToObjects = ["label": label]
+    self.labelLeadingLayoutConstraint = NSLayoutConstraint(
+      item: label,
+      attribute: .Leading,
+      relatedBy: .Equal,
+      toItem: self,
+      attribute: .Leading,
+      multiplier: 1,
+      constant: ActivityIndicatorSpace)
+    self.labelLeadingLayoutConstraint.active = true
 
-    NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-      "H:|-28-[label]-28-|",
-      options: [],
-      metrics: nil,
-      views: viewNamesToObjects))
+    self.labelTrailingLayoutConstraint = NSLayoutConstraint(
+      item: self,
+      attribute: .Trailing,
+      relatedBy: .Equal,
+      toItem: label,
+      attribute: .Trailing,
+      multiplier: 1,
+      constant: ActivityIndicatorSpace)
+    self.labelTrailingLayoutConstraint.active = true
 
     NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
       "V:|-[label(>=20)]-|",
       options: [],
       metrics: nil,
-      views: viewNamesToObjects))
+      views: ["label": label]))
 
     NSLayoutConstraint(
       item: activityIndicator,
@@ -106,13 +130,14 @@ class LabeledActivityIndicator: UIView {
       multiplier: 1,
       constant: 0).active = true
 
-    NSLayoutConstraint(
-      item: activityIndicator,
+    self.activityIndicatorTrailingLayoutConstraint = NSLayoutConstraint(
+      item: self,
       attribute: .Trailing,
       relatedBy: .Equal,
-      toItem: self,
-      attribute: .TrailingMargin,
+      toItem: activityIndicator,
+      attribute: .Trailing,
       multiplier: 1,
-      constant: 0).active = true
+      constant: 0)
+     self.activityIndicatorTrailingLayoutConstraint.active = true
   }
 }
