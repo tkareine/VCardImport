@@ -8,6 +8,9 @@ New features:
   terms ("Today 3:34 PM")
 * Add option to have no authentication for vCard source
 * Advance progress bar when resolving and applying contacts
+* Add option to include nickname for matching persons in the vCard
+  file to persons in Contacts. Allows importing different persons with
+  same first and last names, but with different nicknames.
 
 Bug fixes:
 
@@ -20,6 +23,8 @@ Bug fixes:
   toolbar. Because the app downloads files in parallel, this would
   cause the app to switch showing between the names quickly, which is
   disorienting.
+* Make guide text and URL validation activity indicator in vCard
+  source detail view to align with input fields
 
 # 1.3.0 / 2016-01-08
 
