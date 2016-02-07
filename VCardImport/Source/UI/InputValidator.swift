@@ -31,7 +31,7 @@ class InputValidator<T> {
       })
 
     validationDebouncer = QueueExecution.makeDebouncer(
-      Config.UI.ValidationThrottleInMS,
+      Config.UI.ValidationDebounceInMS,
       backgroundQueue,
       block: { [weak self] input in
         // input validator object still exists, so it makes sense to validate?
