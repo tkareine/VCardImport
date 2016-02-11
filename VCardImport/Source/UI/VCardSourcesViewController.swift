@@ -109,7 +109,6 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   }
 
   override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
     let insets = makeTableContentInsets()
     tableView.contentInset = insets
     tableView.scrollIndicatorInsets = insets
