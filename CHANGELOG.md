@@ -11,6 +11,7 @@ New features:
 * Add option to include nickname for matching persons in the vCard
   file to persons in Contacts. Allows importing different persons with
   same first and last names, but with different nicknames.
+* Show guide text to add a vCard source when no sources exist
 
 Bug fixes:
 
