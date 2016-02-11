@@ -2,6 +2,7 @@ import UIKit
 
 private let CellIdentifier = "VCardSourceCell"
 private let ToolbarHeight: CGFloat = 52
+private let AddGuideLabelHorizontalMargin: CGFloat = 25
 
 class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private let dataSource: VCardSourcesDataSource
@@ -11,6 +12,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
   private var tableView: UITableView!
   private var editButton: UIBarButtonItem!
   private var addButton: UIBarButtonItem!
+  private var addGuideLabel: UILabel!
   private var importProgress: ImportProgress?
 
   init(appContext: AppContext) {
@@ -59,6 +61,17 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       return tv
     }
 
+    func makeAddGuideLabel() -> UILabel {
+      let label = UILabel()
+      label.text = "Tap + to add a vCard source"
+      label.textColor = UIColor.grayColor()
+      label.font = UIFont.fontForHeadlineStyle()
+      label.textAlignment = .Center
+      label.lineBreakMode = .ByWordWrapping
+      label.numberOfLines = 0
+      return label
+    }
+
     func setupLayout() {
       let viewNamesToObjects = [
         "tableView": tableView,
@@ -95,23 +108,39 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
     toolbar = makeToolbar()
     tableView = makeTableView()
+    addGuideLabel = makeAddGuideLabel()
 
     view = UIView()
     view.addSubview(tableView)
     view.addSubview(toolbar)
+    view.addSubview(addGuideLabel)
 
     setupLayout()
   }
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    refreshButtonsEnabledStates()
+    refreshSubviewStates()
   }
 
   override func viewWillLayoutSubviews() {
+    func centeredFrameFor(subview: UIView, horizontalMargin: CGFloat) -> CGRect {
+      let maxSize = CGSize(
+        width: view.bounds.width - horizontalMargin * 2,
+        height: view.bounds.height)
+      let minSize = subview.sizeThatFits(maxSize)
+      return CGRect(
+        x: view.bounds.origin.x + view.bounds.width / 2 - minSize.width / 2,
+        y: view.bounds.origin.y + view.bounds.height / 2 - minSize.height / 2,
+        width: minSize.width,
+        height: minSize.height)
+    }
+
     let insets = makeTableContentInsets()
     tableView.contentInset = insets
     tableView.scrollIndicatorInsets = insets
+
+    addGuideLabel.frame = centeredFrameFor(addGuideLabel, horizontalMargin: AddGuideLabelHorizontalMargin)
   }
 
   // MARK: UITableViewDelegate
@@ -138,7 +167,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     tableView: UITableView,
     didEndEditingRowAtIndexPath indexPath: NSIndexPath)
   {
-    refreshButtonsEnabledStates()
+    refreshSubviewStates()
   }
 
   // MARK: Actions
@@ -147,7 +176,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
     if !editing {
-      refreshButtonsEnabledStates()
+      refreshSubviewStates()
     }
   }
 
@@ -169,7 +198,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     let sources = dataSource.enabledVCardSources
 
     beginProgress(sources)
-    refreshButtonsEnabledStates()
+    refreshSubviewStates()
 
     VCardImportTask(
       downloadsWith: urlDownloadFactory,
@@ -193,7 +222,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
           self.presentAlertForError(err)
         }
         self.endProgress()
-        self.refreshButtonsEnabledStates()
+        self.refreshSubviewStates()
       },
       onSourceDownloadProgress: { source, progress in
         let ratio = progress.totalBytesExpected > 0
@@ -213,7 +242,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
   // MARK: Helpers
 
-  private func refreshButtonsEnabledStates() {
+  private func refreshSubviewStates() {
     addButton.enabled = !editing
 
     editButton.enabled = dataSource.hasVCardSources
@@ -222,6 +251,8 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       !editing &&
       importProgress == nil &&
       dataSource.hasEnabledVCardSources
+
+    addGuideLabel.hidden = dataSource.hasVCardSources
   }
 
   private func reloadTableViewSourceRow(source: VCardSource) {

@@ -2,7 +2,11 @@ import UIKit
 
 extension UIFont {
   static func fontForBodyStyle() -> UIFont {
-    return UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    return fontForStyle(UIFontTextStyleBody)
+  }
+
+  static func fontForHeadlineStyle() -> UIFont {
+    return fontForStyle(UIFontTextStyleHeadline)
   }
 
   func sizeAdjusted(sizeAdjustment: CGFloat) -> UIFont {
@@ -15,6 +19,10 @@ extension UIFont {
 
   func normalized() -> UIFont {
     return traited([])
+  }
+
+  private static func fontForStyle(styleName: String) -> UIFont {
+    return UIFont.preferredFontForTextStyle(styleName)
   }
 
   private func traited(traits: [UIFontDescriptorSymbolicTraits]) -> UIFont {
