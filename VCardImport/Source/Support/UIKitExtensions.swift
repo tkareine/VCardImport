@@ -10,7 +10,9 @@ extension UIFont {
   }
 
   func sizeAdjusted(sizeAdjustment: CGFloat) -> UIFont {
-    return fontWithSize(pointSize + sizeAdjustment)
+    return sizeAdjustment == 0
+      ? self
+      : fontWithSize(pointSize + sizeAdjustment)
   }
 
   func bolded() -> UIFont {
