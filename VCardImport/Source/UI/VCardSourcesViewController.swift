@@ -56,8 +56,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
       tv.tableFooterView = UIView(frame: CGRect.zero)
       tv.dataSource = dataSource
       tv.delegate = self
-      let cellNib = UINib(nibName: CellIdentifier, bundle: nil)
-      tv.registerNib(cellNib, forCellReuseIdentifier: CellIdentifier)
+      tv.registerClass(VCardSourceCell.self, forCellReuseIdentifier: CellIdentifier)
       return tv
     }
 
