@@ -41,12 +41,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
 
   override func loadView() {
     func makeToolbar() -> VCardToolbar {
-      let tb = VCardToolbar()
-      tb.addImportButtonTarget(
-        self,
-        action: "importVCardSources:",
-        forControlEvents: .TouchUpInside)
-      return tb
+      return VCardToolbar(importHandler: { [unowned self] in self.importVCardSources() })
     }
 
     func makeTableView() -> UITableView {
@@ -193,7 +188,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     presentViewController(nc, animated: true, completion: nil)
   }
 
-  func importVCardSources(sender: AnyObject) {
+  func importVCardSources() {
     let sources = dataSource.enabledVCardSources
 
     beginProgress(sources)

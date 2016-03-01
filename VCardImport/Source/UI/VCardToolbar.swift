@@ -49,16 +49,22 @@ private func getBorderLayerRect(width: CGFloat) -> CGRect {
 }
 
 class VCardToolbar: UIView {
+  typealias ImportHandler = () -> Void
+
   private let effectView = makeEffectView()
   private let importButton = makeButton("Import", align: .Left)
   private let backupButton = makeButton("Backup", align: .Right)
   private let progressLabel = makeProgressLabel()
   private let progressView = makeProgressView()
 
+  private let importHandler: ImportHandler
+
   private var border: CALayer!
 
-  override init(frame: CGRect) {
-    super.init(frame: frame)
+  init(importHandler: ImportHandler) {
+    self.importHandler = importHandler
+
+    super.init(frame: CGRect.zero)
 
     border = makeBorderLayer()
 
@@ -76,6 +82,8 @@ class VCardToolbar: UIView {
 
     setupLayout()
 
+    importButton.addTarget(self, action: "onTapImportButton:", forControlEvents: .TouchUpInside)
+
     backupButton.hidden = true  // not implemented yet
   }
 
@@ -90,14 +98,6 @@ class VCardToolbar: UIView {
     set {
       importButton.enabled = newValue
     }
-  }
-
-  func addImportButtonTarget(
-    target: AnyObject?,
-    action: Selector,
-    forControlEvents: UIControlEvents)
-  {
-    importButton.addTarget(target, action: action, forControlEvents: forControlEvents)
   }
 
   func beginProgress(text: String) {
@@ -138,6 +138,12 @@ class VCardToolbar: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
     border.frame = getBorderLayerRect(bounds.size.width)
+  }
+
+  // MARK: Actions
+
+  func onTapImportButton(sender: AnyObject) {
+    importHandler()
   }
 
   // MARK: Helpers
