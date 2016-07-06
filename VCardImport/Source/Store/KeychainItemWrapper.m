@@ -139,7 +139,7 @@
 
     CFMutableDictionaryRef outDictionary = NULL;
 
-    if (! SecItemCopyMatching((__bridge CFDictionaryRef)tempQuery, (CFTypeRef *)&outDictionary) == noErr)
+    if (SecItemCopyMatching((__bridge CFDictionaryRef)tempQuery, (CFTypeRef *)&outDictionary) != errSecSuccess)
     {
       // Stick these default values into keychain item if nothing found.
       [self resetKeychainItem];
