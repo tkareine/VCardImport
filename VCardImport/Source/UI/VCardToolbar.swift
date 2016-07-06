@@ -82,7 +82,10 @@ class VCardToolbar: UIView {
 
     setupLayout()
 
-    importButton.addTarget(self, action: "onTapImportButton:", forControlEvents: .TouchUpInside)
+    importButton.addTarget(
+      self,
+      action: #selector(VCardToolbar.onTapImportButton(_:)),
+      forControlEvents: .TouchUpInside)
 
     backupButton.hidden = true  // not implemented yet
   }

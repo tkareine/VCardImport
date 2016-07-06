@@ -29,7 +29,7 @@ class VCardSourcesViewController: UIViewController, UITableViewDelegate {
     addButton = UIBarButtonItem(
       barButtonSystemItem: .Add,
       target: self,
-      action: "addVCardSource:")
+      action: #selector(VCardSourcesViewController.addVCardSource(_:)))
     navigationItem.rightBarButtonItem = addButton
 
     navigationItem.title = Config.Executable

@@ -33,7 +33,7 @@ class LabeledSelectionCell<T>: UITableViewCell {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(LabeledSelectionCell.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

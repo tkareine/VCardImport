@@ -114,23 +114,28 @@ class HTTPSession: HTTPRequestable {
     method method: HTTPRequest.RequestMethod,
     url: NSURL,
     promise: PromiseFuture<NSHTTPURLResponse>)
-  (
+    -> (
     request: NSURLRequest?,
     response: NSHTTPURLResponse?,
     data: NSData?,
     error: NSError?)
+    -> Void
   {
-    if let res = response {
-      if HTTPResponse.isSuccessStatusCode(res.statusCode) {
-        promise.resolve(res)
+    return { (request: NSURLRequest?, response: NSHTTPURLResponse?, data: NSData?, error: NSError?) in
+      let _ = self.manager  // ensure manager instance stays allocated until the completion of this closure
+
+      if let res = response {
+        if HTTPResponse.isSuccessStatusCode(res.statusCode) {
+          promise.resolve(res)
+        } else {
+          promise.reject(Errors.urlRequestFailed(res))
+        }
+      } else if let err = error {
+        NSLog("%@ request error <%@>: %@", method.rawValue, url, err)
+        promise.reject(Errors.urlRequestFailed(err))
       } else {
-        promise.reject(Errors.urlRequestFailed(res))
+        promise.reject(Errors.urlRequestFailed("Unknown request error for \(method) \(url)"))
       }
-    } else if let err = error {
-      NSLog("%@ request error <%@>: %@", method.rawValue, url, err)
-      promise.reject(Errors.urlRequestFailed(err))
-    } else {
-      promise.reject(Errors.urlRequestFailed("Unknown request error for \(method) \(url)"))
     }
   }
 
@@ -138,23 +143,28 @@ class HTTPSession: HTTPRequestable {
     url url: NSURL,
     to destination: NSURL,
     promise: PromiseFuture<NSURL>)
-    (
+    -> (
     request: NSURLRequest?,
     response: NSHTTPURLResponse?,
     data: NSData?,
     error: NSError?)
+    -> Void
   {
-    if let res = response {
-      if HTTPResponse.isSuccessStatusCode(res.statusCode) {
-        promise.resolve(destination)
+    return { (request: NSURLRequest?, response: NSHTTPURLResponse?, data: NSData?, error: NSError?) in
+      let _ = self.manager  // ensure manager instance stays allocated until the completion of this closure
+
+      if let res = response {
+        if HTTPResponse.isSuccessStatusCode(res.statusCode) {
+          promise.resolve(destination)
+        } else {
+          promise.reject(Errors.urlRequestFailed(res))
+        }
+      } else if let err = error {
+        NSLog("Download error <%@>: %@", url, err)
+        promise.reject(Errors.urlRequestFailed(err))
       } else {
-        promise.reject(Errors.urlRequestFailed(res))
+        promise.reject(Errors.urlRequestFailed("Unknown download error for \(url)"))
       }
-    } else if let err = error {
-      NSLog("Download error <%@>: %@", url, err)
-      promise.reject(Errors.urlRequestFailed(err))
-    } else {
-      promise.reject(Errors.urlRequestFailed("Unknown download error for \(url)"))
     }
   }
 }

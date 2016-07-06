@@ -35,7 +35,7 @@ class LabeledSwitchCell: UITableViewCell {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(LabeledSwitchCell.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

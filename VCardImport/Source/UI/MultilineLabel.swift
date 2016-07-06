@@ -49,7 +49,7 @@ class MultilineLabel: UIView {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(MultilineLabel.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

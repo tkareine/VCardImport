@@ -45,7 +45,7 @@ class VCardSourceCell: UITableViewCell {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(VCardSourceCell.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

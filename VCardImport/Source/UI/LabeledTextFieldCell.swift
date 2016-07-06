@@ -75,7 +75,7 @@ class LabeledTextFieldCell: UITableViewCell {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(LabeledTextFieldCell.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

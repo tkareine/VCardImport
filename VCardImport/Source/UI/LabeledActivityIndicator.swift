@@ -33,7 +33,7 @@ class LabeledActivityIndicator: UIView {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(LabeledActivityIndicator.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

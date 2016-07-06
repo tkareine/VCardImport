@@ -2,50 +2,55 @@ import Foundation
 
 struct VCardSourceStoreMigrations {
   static func migrateNonSensitiveData(
-    var sources: [[String: AnyObject]],
+    sources: [[String: AnyObject]],
     previousVersion: Int)
     -> [[String: AnyObject]]
   {
+    var srcs = sources
+
     if previousVersion < 2 {
-      sources = sources.map(vcardSourceWithAuthenticationMethod)
+      srcs = srcs.map(vcardSourceWithAuthenticationMethod)
     }
 
     if previousVersion < 3 {
-      sources = sources.map(vcardSourceWithRenamedVCardURLKey)
+      srcs = srcs.map(vcardSourceWithRenamedVCardURLKey)
     }
 
     if previousVersion < 4 {
-      sources = sources.map(vcardSourceWithIncludePersonNicknameForEqualityOption)
+      srcs = srcs.map(vcardSourceWithIncludePersonNicknameForEqualityOption)
     }
 
-    return sources
+    return srcs
   }
 
   private static func vcardSourceWithAuthenticationMethod(
-    var sourceDict: [String: AnyObject])
+    sourceDict: [String: AnyObject])
     -> [String: AnyObject]
   {
-    var connection = sourceDict["connection"] as! [String: AnyObject]
+    var srcDct = sourceDict
+    var connection = srcDct["connection"] as! [String: AnyObject]
     connection["authenticationMethod"] = HTTPRequest.AuthenticationMethod.BasicAuth.rawValue
-    sourceDict["connection"] = connection
-    return sourceDict
+    srcDct["connection"] = connection
+    return srcDct
   }
 
   private static func vcardSourceWithRenamedVCardURLKey(
-    var sourceDict: [String: AnyObject])
+    sourceDict: [String: AnyObject])
     -> [String: AnyObject]
   {
-    var connection = sourceDict["connection"] as! [String: AnyObject]
+    var srcDct = sourceDict
+    var connection = srcDct["connection"] as! [String: AnyObject]
     connection["vcardURL"] = connection.removeValueForKey("url")
-    sourceDict["connection"] = connection
-    return sourceDict
+    srcDct["connection"] = connection
+    return srcDct
   }
 
   private static func vcardSourceWithIncludePersonNicknameForEqualityOption(
-    var sourceDict: [String: AnyObject])
+    sourceDict: [String: AnyObject])
     -> [String: AnyObject]
   {
-    sourceDict["includePersonNicknameForEquality"] = false
-    return sourceDict
+    var srcDct = sourceDict
+    srcDct["includePersonNicknameForEquality"] = false
+    return srcDct
   }
 }

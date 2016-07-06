@@ -39,7 +39,7 @@ class SelectionOptionCell: UITableViewCell {
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "resetFontSizes",
+      selector: #selector(SelectionOptionCell.resetFontSizes),
       name: UIContentSizeCategoryDidChangeNotification,
       object: nil)
   }

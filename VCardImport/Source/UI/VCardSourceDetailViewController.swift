@@ -61,12 +61,12 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
       navigationItem.leftBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .Cancel,
         target: self,
-        action: "cancel:")
+        action: #selector(VCardSourceDetailViewController.cancel(_:)))
 
       navigationItem.rightBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .Done,
         target: self,
-        action: "done:")
+        action: #selector(VCardSourceDetailViewController.done(_:)))
     }
   }
 
@@ -286,7 +286,9 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
     }
 
     func setupBackgroundTapTo(view: UIView) {
-      let tapRecognizer = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
+      let tapRecognizer = UITapGestureRecognizer(
+        target: self,
+        action: #selector(VCardSourceDetailViewController.backgroundTapped(_:)))
       tapRecognizer.cancelsTouchesInView = false
       view.addGestureRecognizer(tapRecognizer)
     }
@@ -334,13 +336,13 @@ class VCardSourceDetailViewController: UIViewController, UITableViewDelegate, UI
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "keyboardDidShow:",
+      selector: #selector(VCardSourceDetailViewController.keyboardDidShow(_:)),
       name: UIKeyboardDidShowNotification,
       object: nil)
 
     NSNotificationCenter.defaultCenter().addObserver(
       self,
-      selector: "keyboardWillHide:",
+      selector: #selector(VCardSourceDetailViewController.keyboardWillHide(_:)),
       name: UIKeyboardWillHideNotification,
       object: nil)
 
