@@ -205,7 +205,7 @@
     OSStatus junk =
 #endif
     SecItemDelete((__bridge CFDictionaryRef)tempDictionary);
-    NSAssert( junk == noErr || junk == errSecItemNotFound, @"Problem deleting current dictionary." );
+    NSAssert( junk == errSecSuccess || junk == errSecItemNotFound, @"Problem deleting current dictionary." );
   }
 
   // Default attributes for keychain item.
@@ -265,7 +265,7 @@
 
   // Acquire the password data from the attributes.
   CFDataRef passwordData = NULL;
-  if (SecItemCopyMatching((__bridge CFDictionaryRef)returnDictionary, (CFTypeRef *)&passwordData) == noErr)
+  if (SecItemCopyMatching((__bridge CFDictionaryRef)returnDictionary, (CFTypeRef *)&passwordData) == errSecSuccess)
   {
     // Remove the search, class, and identifier key/value, we don't need them anymore.
     [returnDictionary removeObjectForKey:(__bridge id)kSecReturnData];
@@ -296,7 +296,7 @@
   NSMutableDictionary *updateItem = nil;
   OSStatus result;
 
-  if (SecItemCopyMatching((__bridge CFDictionaryRef)genericPasswordQuery, (CFTypeRef *)&attributes) == noErr)
+  if (SecItemCopyMatching((__bridge CFDictionaryRef)genericPasswordQuery, (CFTypeRef *)&attributes) == errSecSuccess)
   {
     // First we need the attributes from the Keychain.
     updateItem = [NSMutableDictionary dictionaryWithDictionary:(__bridge NSDictionary *)attributes];
@@ -328,13 +328,13 @@
 #endif
     SecItemUpdate((__bridge CFDictionaryRef)updateItem, (__bridge CFDictionaryRef)tempCheck);
 
-    NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
+    NSAssert( result == errSecSuccess, @"Couldn't update the Keychain Item." );
   }
   else
   {
     // No previous item found; add the new one.
     result = SecItemAdd((__bridge CFDictionaryRef)[self dictionaryToSecItemFormat:keychainItemData], NULL);
-    NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
+    NSAssert( result == errSecSuccess, @"Couldn't add the Keychain Item." );
   }
 
   if(attributes) CFRelease(attributes);
