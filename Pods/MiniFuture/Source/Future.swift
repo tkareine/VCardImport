@@ -31,23 +31,28 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  public class func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
+  /**
+   - note: Eventually, `block` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
+  public static func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
-  public class func succeeded(val: T) -> ImmediateFuture<T> {
+  public static func succeeded(val: T) -> ImmediateFuture<T> {
     return fromTry(.Success(val))
   }
 
-  public class func failed(error: ErrorType) -> ImmediateFuture<T> {
+  public static func failed(error: ErrorType) -> ImmediateFuture<T> {
     return fromTry(.Failure(error))
   }
 
-  public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
+  public static func fromTry(val: Try<T>) -> ImmediateFuture<T> {
     return ImmediateFuture(val)
   }
 
-  public class func promise() -> PromiseFuture<T> {
+  public static func promise() -> PromiseFuture<T> {
     return PromiseFuture()
   }
 
@@ -71,10 +76,20 @@ public class Future<T> {
     fatalError("must be overridden")
   }
 
+  /**
+   - note: Eventually, `block` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public func onComplete(block: CompletionCallback) {
     fatalError("must be overridden")
   }
 
+  /**
+   - note: Eventually, `f` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public func flatMap<U>(f: T throws -> Future<U>) -> Future<U> {
     let promise = PromiseFuture<U>()
     onComplete { res in
@@ -96,6 +111,11 @@ public class Future<T> {
     return promise
   }
 
+  /**
+   - note: Eventually, `f` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public func map<U>(f: T throws -> U) -> Future<U> {
     return flatMap { e in
       do {
@@ -216,6 +236,10 @@ public class PromiseFuture<T>: Future<T> {
     for block in callbacks {
       FutureExecution.async { block(value) }
     }
+  }
+
+  public func completeWith(future: Future<T>) {
+    future.onComplete { self.complete($0) }
   }
 
   override public func get() -> Try<T> {

@@ -9,7 +9,8 @@ Only the essential features are in place currently. We're using the library in
 production, and it appears to work as expected. There's a benchmark that acts
 as a stress test, see [Performance](#performance) below.
 
-[![Pod version](https://badge.fury.io/co/MiniFuture.svg)](http://badge.fury.io/co/MiniFuture)
+[![Pod version](https://badge.fury.io/co/MiniFuture.svg)][MiniFuturePod]
+[![Build status](https://secure.travis-ci.org/tkareine/MiniFuture.svg)][MiniFutureBuild]
 
 ## Requirements
 
@@ -27,10 +28,11 @@ Cocoa libraries. It integrates libraries as embedded frameworks to your
 project. This requires that the minimum deployment target of your project is
 iOS 8.0 or OS X 10.9.
 
-To add MiniFuture to your project, add the following line to your `Podfile`:
+MiniFuture is available as a [pod][MiniFuturePod]. Add the following line to
+your project's `Podfile` in order to have the library as a dependency:
 
 ```ruby
-pod 'MiniFuture'
+pod 'MiniFuture', '~> 0.5.0'
 ```
 
 And run `pod install`.
@@ -103,9 +105,9 @@ assert(String(fut.get()) == "Failure(Deliberate(\"[0, 1]\"))")
 
 All asynchronous operations run in libdispatch's default global concurrent
 queue. Closures passed to `Future#flatMap(_:)`, `Future#map(_:)`,
-`Future#onComplete(_:)`, and `Future.async(_:)` always execute in a queue
-worker thread. Use synchronization as appropriate when accessing shared state
-outside the closures.
+`Future#onComplete(_:)`, and `Future.async(_:)` are always executed in a queue
+worker thread. Use proper synchronization when accessing shared state via
+references captured in the closures.
 
 ## Usage
 
@@ -127,6 +129,11 @@ with success (`Future#resolve(_:)`) or failure (`Future#reject(_:)`). You can
 immediately return a `PromiseFuture` to code expecting Futures and let the
 `PromiseFuture` object complete later.
 
+You can complete a `PromiseFuture` with the result of another future,
+too. Call `PromiseFuture#completeWith(_:)`, passing another future as
+the argument. Once the future completes, the promise completes with
+the same result as the future.
+
 When you get a handle to a Future, use `Future#flatMap(_:)` or
 `Future#map(_:)` to compose another Future that depends on the completed
 result of the previous Future. Use `Future#get()` to wait for the result of a
@@ -137,6 +144,10 @@ run when the Future completes.
 
 ```swift
 extension String {
+  var trimmed: String {
+    return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+  }
+
   func excerpt(maxLength: Int) -> String {
     precondition(maxLength >= 0, "maxLength must be positive")
 
@@ -150,7 +161,7 @@ extension String {
       return self
     }
 
-    return self[self.startIndex..<startIndex.advancedBy(maxLength-1))] + "…"
+    return self[startIndex..<startIndex.advancedBy(maxLength-1)].trimmed + "…"
   }
 }
 
@@ -224,9 +235,7 @@ $ make example
 # xcodebuild output…
 
 ./build/Example
-Excerpt from today's featured article at Wikipedia:
-
-Kareena Kapoor (born 1980) is an Indian Bollywood actress. She is the daugh…
+Excerpt from today's featured article at Wikipedia: Upper and Lower Table Rock are two prominent volcanic plateaus just north of…
 ```
 
 ## Performance
@@ -252,11 +261,11 @@ $ make benchmark
 ./build/Benchmark
 iterations: 500, futures composed: 2000
 
-warm up: 61 ms (± 3 ms)
-measure: 61 ms (± 4 ms)
+warm up: 65 ms (± 4 ms)
+measure: 65 ms (± 3 ms)
 
-Apple Swift version 2.1.1 (swiftlang-700.1.101.15 clang-700.1.81)
-Target: x86_64-apple-darwin15.2.0
+Apple Swift version 2.2 (swiftlang-703.0.18.1 clang-703.0.29)
+Target: x86_64-apple-macosx10.9
 ```
 
 Total memory consumption of the process stayed below 15 MB.
@@ -269,3 +278,6 @@ Total memory consumption of the process stayed below 15 MB.
 ## License
 
 MiniFuture is released under the MIT license. See `LICENSE.txt` for details.
+
+[MiniFuturePod]: https://cocoapods.org/pods/MiniFuture
+[MiniFutureBuild]: https://travis-ci.org/tkareine/MiniFuture

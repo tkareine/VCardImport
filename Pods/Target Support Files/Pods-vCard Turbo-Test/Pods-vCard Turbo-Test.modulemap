@@ -1,0 +1,6 @@
+framework module Pods_vCard_Turbo_Test {
+  umbrella header "Pods-vCard Turbo-Test-umbrella.h"
+
+  export *
+  module * { export * }
+}
