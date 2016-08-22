@@ -30,11 +30,11 @@ class VCardSourceStore {
   }
 
   subscript(index: Int) -> VCardSource {
-    return store[index]
+    return store[index].1
   }
 
   func hasSource(source: VCardSource) -> Bool {
-    return store[source.id] != nil
+    return store.hasKey(source.id)
   }
 
   func indexOf(source: VCardSource) -> Int? {
@@ -42,7 +42,7 @@ class VCardSourceStore {
   }
 
   func update(source: VCardSource) {
-    store[source.id] = source
+    store.put(source.id, to: source)
   }
 
   func remove(index: Int) {
@@ -153,7 +153,7 @@ class VCardSourceStore {
   private func resetFrom(sources: [VCardSource]) {
     var store: InsertionOrderDictionary<String, VCardSource> = InsertionOrderDictionary()
     for source in sources {
-      store[source.id] = source
+      store.put(source.id, to: source)
     }
     self.store = store
   }

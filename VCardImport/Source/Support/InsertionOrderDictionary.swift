@@ -1,54 +1,36 @@
-struct InsertionOrderDictionary<K: Hashable, V> {
-  private var keyOrder: [K]
-  private var dictionary: [K: V]
+struct InsertionOrderDictionary<Key: Hashable, Value> {
+  private var keyOrder: [Key]
+  private var dictionary: [Key: Value]
 
   init() {
     keyOrder = []
     dictionary = [:]
   }
 
-  var isEmpty: Bool {
-    return keyOrder.isEmpty
-  }
-
-  var count: Int {
-    return keyOrder.count
-  }
-
-  var keys: [K] {
+  var keys: [Key] {
     return keyOrder
   }
 
-  var values: [V] {
-    return Array(self).map { $1 }
+  var values: [Value] {
+    var result = [Value]()
+    for key in keyOrder {
+      result.append(dictionary[key]!)
+    }
+    return result
   }
 
-  subscript(key: K) -> V? {
-    get {
-      return dictionary[key]
-    }
-
-    set {
-      if !hasKey(key) {
-        keyOrder.append(key)
-      }
-      dictionary[key] = newValue
-    }
+  func get(key: Key) -> Value? {
+    return dictionary[key]
   }
 
-  subscript(index: Int) -> V {
-    get {
-      let key = keyOrder[index]
-      return dictionary[key]!
+  mutating func put(key: Key, to value: Value) {
+    if !hasKey(key) {
+      keyOrder.append(key)
     }
-
-    set {
-      let key = keyOrder[index]
-      dictionary[key] = newValue
-    }
+    dictionary[key] = value
   }
 
-  mutating func removeValueForKey(key: K) -> V? {
+  mutating func removeValueForKey(key: Key) -> Value? {
     if hasKey(key) {
       let index = keyOrder.indexOf(key)!
       return remove(index, key)
@@ -57,7 +39,7 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     }
   }
 
-  mutating func removeValueAtIndex(index: Int) -> V? {
+  mutating func removeValueAtIndex(index: Int) -> Value? {
     if index < keyOrder.count {
       let key = keyOrder[index]
       return remove(index, key)
@@ -66,7 +48,7 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     }
   }
 
-  private mutating func remove(index: Int, _ key: K) -> V {
+  private mutating func remove(index: Int, _ key: Key) -> Value {
     keyOrder.removeAtIndex(index)
     return dictionary.removeValueForKey(key)!
   }
@@ -80,49 +62,81 @@ struct InsertionOrderDictionary<K: Hashable, V> {
     keyOrder.insert(key, atIndex: toIndex)
   }
 
-  func hasKey(key: K) -> Bool {
-    return self[key] != nil
+  func hasKey(key: Key) -> Bool {
+    return get(key) != nil
   }
 
-  func indexOf(key: K) -> Int? {
+  func indexOf(key: Key) -> Int? {
     return keyOrder.indexOf(key)
   }
 }
 
-struct InsertionOrderDictionaryGenerator<K: Hashable, V>: GeneratorType {
-  private var keyOrder: [K]
-  private var dictionary: [K: V]
+struct InsertionOrderDictionaryGenerator<Key: Hashable, Value>: GeneratorType {
+  private let keyOrder: [Key]
+  private let dictionary: [Key: Value]
+  private var index: Int = 0
 
-  typealias Element = (K, V)
+  typealias Element = (Key, Value)
 
-  mutating func next() -> Element? {
-    if keyOrder.isEmpty {
+  init(keyOrder: [Key], dictionary: [Key: Value]) {
+    self.keyOrder = keyOrder
+    self.dictionary = dictionary
+  }
+
+  mutating func next() -> (Key, Value)? {
+    guard index < keyOrder.endIndex else {
       return nil
     }
-    let key = keyOrder[0]
+
+    let key = keyOrder[index]
     let value = dictionary[key]!
-    keyOrder = Array(keyOrder[1..<keyOrder.count])
-    dictionary.removeValueForKey(key)
+    index += 1
     return (key, value)
   }
 }
 
-extension InsertionOrderDictionary: SequenceType {
-  typealias Generator = InsertionOrderDictionaryGenerator<K, V>
+extension InsertionOrderDictionary: MutableCollectionType {
+  typealias Generator = InsertionOrderDictionaryGenerator<Key, Value>
+  typealias Index = Int
 
   func generate() -> Generator {
     return InsertionOrderDictionaryGenerator(
       keyOrder: keyOrder,
       dictionary: dictionary)
   }
+
+  var startIndex: Int {
+    return keyOrder.startIndex
+  }
+
+  var endIndex: Int {
+    return keyOrder.endIndex
+  }
+
+  subscript(index: Int) -> (Key, Value) {
+    get {
+      let key = keyOrder[index]
+      return (key, dictionary[key]!)
+    }
+
+    set {
+      let oldKey = keyOrder[index]
+
+      dictionary.removeValueForKey(oldKey)
+
+      let newKey = newValue.0
+
+      keyOrder[index] = newKey
+      dictionary[newKey] = newValue.1
+    }
+  }
 }
 
 extension InsertionOrderDictionary: DictionaryLiteralConvertible {
-  init(dictionaryLiteral elements: (K, V)...) {
+  init(dictionaryLiteral elements: (Key, Value)...) {
     self.init()
     for (key, value) in elements {
-      keyOrder.append(key)
-      dictionary[key] = value
+      put(key, to: value)
     }
   }
 }
@@ -136,7 +150,7 @@ extension InsertionOrderDictionary: CustomStringConvertible, CustomDebugStringCo
     return describeWith { key, value in "\(String(reflecting: key)): \(String(reflecting: value))" }
   }
 
-  private func describeWith(@noescape pairDescriber: (K, V) -> String) -> String {
+  private func describeWith(@noescape pairDescriber: (Key, Value) -> String) -> String {
     func join(pairs: [String]) -> String {
       let joined = pairs.joinWithSeparator(", ")
       return "[" + joined + "]"
